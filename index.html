@@ -3509,7 +3509,8 @@
                 currentUser.properties.push({
                     id: selectedProperty.id,
                     purpose: purchasePurpose, // 'rent' или 'live'
-                    purchaseDate: new Date().toISOString()
+                    purchaseDate: new Date().toISOString(),
+                    purchasePrice: selectedProperty.price // Сохраняем цену покупки для продажи
                 });
                 
                 const transaction = {
@@ -3552,6 +3553,154 @@
                 }
             } else {
                 showNotification('Недостаточно средств для покупки!', 'error');
+            }
+        }
+
+        // ==================== ФУНКЦИЯ ПРОДАЖИ НЕДВИЖИМОСТИ ====================
+        
+        async function sellProperty(propertyId) {
+            if (!confirm('Вы уверены, что хотите продать эту недвижимость? Вы получите 50% от её стоимости.')) {
+                return;
+            }
+            
+            // Находим недвижимость у пользователя
+            const userPropertyIndex = currentUser.properties.findIndex(p => p.id === propertyId);
+            if (userPropertyIndex === -1) {
+                showNotification('Недвижимость не найдена', 'error');
+                return;
+            }
+            
+            const userProperty = currentUser.properties[userPropertyIndex];
+            const property = properties.find(p => p.id === propertyId);
+            if (!property) {
+                showNotification('Недвижимость не найдена в каталоге', 'error');
+                return;
+            }
+            
+            // Определяем сумму продажи (50% от цены покупки или текущей цены)
+            const sellPrice = Math.floor((userProperty.purchasePrice || property.price) * 0.5);
+            
+            // Удаляем недвижимость у пользователя
+            currentUser.properties.splice(userPropertyIndex, 1);
+            
+            // Добавляем деньги
+            currentUser.balance += sellPrice;
+            
+            // Создаём транзакцию
+            const transaction = {
+                id: "trans_" + Date.now().toString(),
+                userId: currentUser.id,
+                type: 'property_sale',
+                amount: sellPrice,
+                description: `Продажа недвижимости: ${property.title} (получено 50% от стоимости)`,
+                date: new Date().toISOString(),
+                propertyId: propertyId
+            };
+            transactions.push(transaction);
+            
+            // Сохраняем изменения
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+            }
+            
+            // Сохраняем в облако
+            if (syncMode === 'online' && firestore) {
+                await saveUserToFirebase(currentUser);
+                await saveTransactionToFirebase(transaction);
+            }
+            
+            // Сохраняем локально
+            saveLocalData();
+            
+            // Обновляем интерфейс
+            updateUserInfo();
+            showNotification(`Вы продали недвижимость "${property.title}" за $${sellPrice.toLocaleString()} (50% от стоимости)`, 'success');
+            
+            // Обновляем отображение
+            renderOwnedProperties();
+            if (!document.getElementById('mainPage').classList.contains('hidden')) {
+                applyFilters();
+            }
+        }
+
+        // ==================== ФУНКЦИЯ ПРОДАЖИ АВТОМОБИЛЯ ====================
+        
+        async function sellCar(carId) {
+            if (!confirm('Вы уверены, что хотите продать этот автомобиль? Вы получите 50% от его стоимости.')) {
+                return;
+            }
+            
+            // Находим автомобиль у пользователя
+            const userCarIndex = currentUser.cars.findIndex(c => c.id === carId);
+            if (userCarIndex === -1) {
+                showNotification('Автомобиль не найден', 'error');
+                return;
+            }
+            
+            const userCar = currentUser.cars[userCarIndex];
+            
+            // Ищем автомобиль в каталогах (новых или БУ)
+            let car = cars.find(c => c.id === carId);
+            let isUsedCar = false;
+            
+            if (!car) {
+                car = usedCars.find(c => c.id === carId);
+                isUsedCar = true;
+            }
+            
+            if (!car) {
+                showNotification('Автомобиль не найден в каталоге', 'error');
+                return;
+            }
+            
+            // Определяем сумму продажи (50% от цены покупки или текущей цены)
+            const sellPrice = Math.floor((userCar.purchasePrice || car.price) * 0.5);
+            
+            // Удаляем автомобиль у пользователя
+            currentUser.cars.splice(userCarIndex, 1);
+            
+            // Добавляем деньги
+            currentUser.balance += sellPrice;
+            
+            // Создаём транзакцию
+            const transaction = {
+                id: "trans_" + Date.now().toString(),
+                userId: currentUser.id,
+                type: isUsedCar ? 'used_car_sale' : 'car_sale',
+                amount: sellPrice,
+                description: `Продажа автомобиля: ${car.title} (получено 50% от стоимости)`,
+                date: new Date().toISOString(),
+                carId: carId
+            };
+            transactions.push(transaction);
+            
+            // Сохраняем изменения
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+            }
+            
+            // Сохраняем в облако
+            if (syncMode === 'online' && firestore) {
+                await saveUserToFirebase(currentUser);
+                await saveTransactionToFirebase(transaction);
+            }
+            
+            // Сохраняем локально
+            saveLocalData();
+            
+            // Обновляем интерфейс
+            updateUserInfo();
+            showNotification(`Вы продали автомобиль "${car.title}" за $${sellPrice.toLocaleString()} (50% от стоимости)`, 'success');
+            
+            // Обновляем отображение
+            renderOwnedCars();
+            if (!document.getElementById('carsPage').classList.contains('hidden')) {
+                applyCarFilters();
+            }
+            if (!document.getElementById('usedCarsPage').classList.contains('hidden')) {
+                applyUsedCarFilters();
             }
         }
 
@@ -4224,14 +4373,16 @@
             if (currentUser.balance >= selectedCar.price) {
                 currentUser.balance -= selectedCar.price;
                 
-                // Добавляем автомобиль
+                // Добавляем автомобиль с сохранением цены покупки
                 if (!currentUser.cars) {
                     currentUser.cars = [];
                 }
                 
                 currentUser.cars.push({
                     id: selectedCar.id,
-                    purchaseDate: new Date().toISOString()
+                    purchaseDate: new Date().toISOString(),
+                    purchasePrice: selectedCar.price, // Сохраняем цену покупки
+                    isUsed: false
                 });
                 
                 const transaction = {
@@ -4532,7 +4683,7 @@
             if (currentUser.balance >= selectedUsedCar.price) {
                 currentUser.balance -= selectedUsedCar.price;
                 
-                // Добавляем бу автомобиль
+                // Добавляем бу автомобиль с сохранением цены покупки
                 if (!currentUser.cars) {
                     currentUser.cars = [];
                 }
@@ -4540,6 +4691,7 @@
                 currentUser.cars.push({
                     id: selectedUsedCar.id,
                     purchaseDate: new Date().toISOString(),
+                    purchasePrice: selectedUsedCar.price, // Сохраняем цену покупки
                     isUsed: true,
                     durability: selectedUsedCar.durability
                 });
@@ -5217,8 +5369,10 @@
             ownedProperties.forEach(prop => {
                 const userProperty = currentUser.properties.find(p => p.id === prop.id);
                 const purpose = userProperty ? userProperty.purpose : 'rent';
+                const purchasePrice = userProperty ? userProperty.purchasePrice : prop.price;
+                const sellPrice = Math.floor(purchasePrice * 0.5);
                 
-                totalValue += prop.price;
+                totalValue += purchasePrice;
                 
                 // Считаем доход только от недвижимости, купленной для аренды
                 if (purpose === 'rent') {
@@ -5265,9 +5419,12 @@
                             </div>
                         </div>
                         <div class="property-footer">
-                            <div class="property-price">$${prop.price.toLocaleString()}</div>
-                            <div style="color: ${purpose === 'rent' ? 'var(--success)' : 'var(--warning)'}; font-weight: bold;">
-                                ${purpose === 'rent' ? 'Приносит доход' : 'Для личного пользования'}
+                            <div>
+                                <div class="property-price">$${purchasePrice.toLocaleString()}</div>
+                                <div style="font-size: 0.8rem; color: var(--light-blue);">Продажа: $${sellPrice.toLocaleString()}</div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-danger" onclick="sellProperty('${prop.id}')">Продать</button>
                             </div>
                         </div>
                     </div>
@@ -5285,11 +5442,7 @@
         function renderOwnedCars() {
             const container = document.getElementById('ownedCarsContainer');
             
-            const ownedCars = cars.filter(car => 
-                currentUser.cars && currentUser.cars.some(c => c.id === car.id)
-            );
-            
-            if (ownedCars.length === 0) {
+            if (!currentUser.cars || currentUser.cars.length === 0) {
                 container.innerHTML = `
                     <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--light-blue);">
                         <p style="font-size: 1.2rem;">У вас пока нет автомобилей</p>
@@ -5309,18 +5462,31 @@
             
             container.innerHTML = '';
             
-            ownedCars.forEach(car => {
-                totalValue += car.price;
+            currentUser.cars.forEach(userCar => {
+                // Ищем автомобиль в каталогах (новых или БУ)
+                let car = cars.find(c => c.id === userCar.id);
+                let isUsed = userCar.isUsed || false;
                 
-                if (car.price > mostExpensiveCar.price) {
-                    mostExpensiveCar = { price: car.price, title: car.title };
+                if (!car && isUsed) {
+                    car = usedCars.find(c => c.id === userCar.id);
+                }
+                
+                if (!car) return;
+                
+                const purchasePrice = userCar.purchasePrice || car.price;
+                const sellPrice = Math.floor(purchasePrice * 0.5);
+                
+                totalValue += purchasePrice;
+                
+                if (purchasePrice > mostExpensiveCar.price) {
+                    mostExpensiveCar = { price: purchasePrice, title: car.title };
                 }
                 
                 let backgroundStyle = '';
                 if (car.photos && car.photos.length > 0) {
                     backgroundStyle = `background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${car.photos[0]}'); background-size: cover; background-position: center;`;
                 } else {
-                    backgroundStyle = `background: linear-gradient(135deg, ${car.imageColor}, #152642)`;
+                    backgroundStyle = `background: linear-gradient(135deg, ${car.imageColor || '#3498db'}, #152642)`;
                 }
                 
                 const classColors = {
@@ -5335,31 +5501,34 @@
                     premium: "Премиум"
                 };
                 
-                const userCar = currentUser.cars.find(c => c.id === car.id);
-                const isUsed = userCar ? userCar.isUsed : false;
-                const durability = userCar ? userCar.durability : 0;
+                const typeNames = {
+                    sedan: "СЕДАН",
+                    suv: "ВНЕДОРОЖНИК",
+                    sport: "СПОРТКАР",
+                    luxury: "ЛЮКС"
+                };
                 
                 const card = document.createElement('div');
                 card.className = 'car-card owned-card';
                 card.innerHTML = `
                     <div class="car-image" style="${backgroundStyle}">
-                        <div class="car-class-badge ${classColors[car.class]}">${classNames[car.class]}</div>
+                        <div class="car-class-badge ${classColors[car.class] || 'car-economy'}">${isUsed ? 'БУ • ' : ''}${classNames[car.class] || 'Эконом'}</div>
                         ${car.photos && car.photos.length > 0 ? '<div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem;">📷 ' + car.photos.length + ' фото</div>' : ''}
                     </div>
                     <div class="car-info">
-                        <div class="car-type">${car.type === 'sedan' ? 'СЕДАН' : car.type === 'suv' ? 'ВНЕДОРОЖНИК' : car.type === 'sport' ? 'СПОРТКАР' : 'ЛЮКС'}</div>
+                        <div class="car-type">${typeNames[car.type] || 'СЕДАН'}</div>
                         <h3 class="car-title">${car.title}</h3>
                         <p class="car-description">${car.description}</p>
                         ${isUsed ? `
                             <div style="margin: 10px 0; padding: 8px; background: rgba(243, 156, 18, 0.1); border-radius: 6px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                                     <span style="color: var(--light-blue); font-size: 0.9rem;">Прочность:</span>
-                                    <span style="color: ${durability >= 70 ? '#2ecc71' : durability >= 55 ? '#f39c12' : '#e74c3c'}; font-weight: bold; font-size: 0.9rem;">
-                                        ${durability}%
+                                    <span style="color: ${userCar.durability >= 70 ? '#2ecc71' : userCar.durability >= 55 ? '#f39c12' : '#e74c3c'}; font-weight: bold; font-size: 0.9rem;">
+                                        ${userCar.durability}%
                                     </span>
                                 </div>
                                 <div style="width: 100%; height: 6px; background: #2c3e50; border-radius: 3px; overflow: hidden;">
-                                    <div style="width: ${durability}%; height: 100%; background: ${durability >= 70 ? '#2ecc71' : durability >= 55 ? '#f39c12' : '#e74c3c'};"></div>
+                                    <div style="width: ${userCar.durability}%; height: 100%; background: ${userCar.durability >= 70 ? '#2ecc71' : userCar.durability >= 55 ? '#f39c12' : '#e74c3c'};"></div>
                                 </div>
                                 <div style="color: var(--warning); font-size: 0.8rem; margin-top: 5px;">🚗 БУ автомобиль</div>
                             </div>
@@ -5379,9 +5548,12 @@
                             </div>
                         </div>
                         <div class="car-footer">
-                            <div class="car-price">$${car.price.toLocaleString()}</div>
-                            <div style="color: ${car.class === 'economy' ? 'var(--car-economy)' : car.class === 'comfort' ? 'var(--car-comfort)' : 'var(--car-premium)'}; font-weight: bold;">
-                                ${classNames[car.class]}
+                            <div>
+                                <div class="car-price">$${purchasePrice.toLocaleString()}</div>
+                                <div style="font-size: 0.8rem; color: var(--light-blue);">Продажа: $${sellPrice.toLocaleString()}</div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-danger" onclick="sellCar('${car.id}')">Продать</button>
                             </div>
                         </div>
                     </div>
@@ -5390,7 +5562,7 @@
             });
             
             document.getElementById('totalCarsValue').textContent = `$${totalValue.toLocaleString()}`;
-            document.getElementById('carCount').textContent = ownedCars.length;
+            document.getElementById('carCount').textContent = currentUser.cars.length;
             document.getElementById('mostExpensiveCar').textContent = mostExpensiveCar.title || '-';
         }
 
