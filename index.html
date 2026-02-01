@@ -27,6 +27,7 @@
             --car-economy: #3498db;
             --car-comfort: #9b59b6;
             --car-premium: #e74c3c;
+            --used-car: #f39c12;
         }
         
         * {
@@ -998,6 +999,7 @@
         <div class="nav-links hidden" id="navLinks">
             <button class="btn btn-primary" onclick="showPage('main')">Недвижимость</button>
             <button class="btn btn-primary" onclick="showPage('cars')">Автосалон</button>
+            <button class="btn btn-primary" onclick="showPage('usedCars')">Авторынок (БУ)</button>
             <button class="btn btn-primary" onclick="showPage('myProperties')">Моя недвижимость</button>
             <button class="btn btn-primary" onclick="showPage('myCars')">Мои автомобили</button>
             <button class="btn btn-gold" onclick="showPage('casino')">🎰 Казино</button>
@@ -1128,6 +1130,65 @@
             
             <div class="cars-grid" id="carsContainer">
                 <!-- Карточки автомобилей будут здесь -->
+            </div>
+        </div>
+
+        <!-- Страница Авторынка (БУ автомобили) -->
+        <div id="usedCarsPage" class="hidden">
+            <h1 style="color: var(--warning); margin-bottom: 30px;">🚗 Авторынок (БУ автомобили)</h1>
+            
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(243, 156, 18, 0.1); border-radius: 10px; border-left: 4px solid var(--warning);">
+                <p style="color: var(--light-blue);">
+                    <strong>📝 Особенности авторынка:</strong><br>
+                    • Все автомобили бывшие в употреблении<br>
+                    • Прочность каждого автомобиля: <span style="color: var(--warning);">40-80%</span><br>
+                    • Цена зависит от прочности автомобиля<br>
+                    • Более высокий процент прочности = выше цена<br>
+                    • Риск возможных скрытых дефектов
+                </p>
+            </div>
+            
+            <div class="filters card">
+                <div class="filter-group">
+                    <label>Класс автомобиля</label>
+                    <select id="usedCarClassFilter">
+                        <option value="all">Все классы</option>
+                        <option value="economy">Эконом</option>
+                        <option value="comfort">Комфорт</option>
+                        <option value="premium">Премиум</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Тип</label>
+                    <select id="usedCarTypeFilter">
+                        <option value="all">Все типы</option>
+                        <option value="sedan">Седан</option>
+                        <option value="suv">Внедорожник</option>
+                        <option value="sport">Спорткар</option>
+                        <option value="luxury">Люкс</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Минимальная прочность, %</label>
+                    <input type="range" id="durabilitySlider" min="40" max="80" value="40" class="price-range">
+                    <div class="price-display">
+                        <span>40%</span>
+                        <span id="minDurability">80%</span>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Цена, $</label>
+                    <input type="range" id="usedCarPriceSlider" min="0" max="300000" value="300000" class="price-range">
+                    <div class="price-display">
+                        <span>$0</span>
+                        <span id="usedCarMaxPrice">$300,000</span>
+                    </div>
+                </div>
+                <button class="btn btn-warning" onclick="applyUsedCarFilters()" style="align-self: end; background: linear-gradient(90deg, #d35400, #f39c12);">Применить фильтры</button>
+            </div>
+            
+            <div class="cars-grid" id="usedCarsContainer">
+                <!-- Карточки бу автомобилей будут здесь -->
             </div>
         </div>
 
@@ -1304,7 +1365,7 @@
             
             <!-- Вкладка: Пользователи -->
             <div id="adminTabUsers" class="admin-section">
-                <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Управление пользователями</h2>
+                <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Управление пользователей</h2>
                 
                 <div class="balance-control" style="margin-bottom: 20px;">
                     <input type="text" id="searchUser" placeholder="Поиск по имени или логину" onkeyup="searchUsers()">
@@ -1715,6 +1776,69 @@
         </div>
     </div>
 
+    <!-- Модальное окно покупки бу автомобиля -->
+    <div class="modal" id="purchaseUsedCarModal">
+        <div class="modal-content modal-wide">
+            <button class="close-modal" onclick="closeUsedCarModal()">&times;</button>
+            <h2 style="color: var(--warning);">Подтверждение покупки бу автомобиля</h2>
+            
+            <div style="margin: 15px 0; padding: 15px; background: rgba(243, 156, 18, 0.1); border-radius: 8px; border-left: 4px solid var(--warning);">
+                <p style="color: var(--light-blue); margin: 0;">
+                    ⚠️ <strong>Внимание:</strong> Вы покупаете автомобиль бывший в употреблении.
+                    Прочность автомобиля влияет на его надёжность и возможные затраты на ремонт.
+                </p>
+            </div>
+            
+            <!-- Галерея фотографий -->
+            <div class="car-gallery" id="usedCarGallery">
+                <img class="gallery-image" id="usedCarGalleryMainImage" src="" alt="Фото автомобиля" style="display: none;">
+                <div class="gallery-nav">
+                    <button class="gallery-btn" onclick="changeUsedCarGalleryImage(-1)">‹</button>
+                    <button class="gallery-btn" onclick="changeUsedCarGalleryImage(1)">›</button>
+                </div>
+                <div class="gallery-dots" id="usedCarGalleryDots">
+                    <!-- Точки навигации будут здесь -->
+                </div>
+            </div>
+            
+            <div id="modalUsedCarInfo"></div>
+            
+            <div class="purchase-details">
+                <div class="detail-row">
+                    <span>Исходная цена (новая):</span>
+                    <span style="color: var(--light-blue); text-decoration: line-through;" id="modalUsedCarOriginalPrice">$0</span>
+                </div>
+                <div class="detail-row">
+                    <span>Прочность:</span>
+                    <span id="modalUsedCarDurability" style="color: var(--warning); font-weight:bold;">0%</span>
+                </div>
+                <div class="detail-row">
+                    <span>Пробег:</span>
+                    <span id="modalUsedCarMileage" style="color: white;">0 км</span>
+                </div>
+                <div class="detail-row">
+                    <span>Дефекты:</span>
+                    <span id="modalUsedCarDefects" style="color: var(--light-blue);">Нет</span>
+                </div>
+                <div class="detail-row">
+                    <span style="font-weight: bold;">Итоговая цена:</span>
+                    <span id="modalUsedCarPrice" style="color: var(--warning); font-weight:bold; font-size: 1.2rem;">$0</span>
+                </div>
+                <div class="detail-row">
+                    <span>Ваш баланс:</span>
+                    <span id="modalUsedCarBalance" style="color:var(--success); font-weight:bold;">$0</span>
+                </div>
+                <div class="detail-row">
+                    <span>Остаток после покупки:</span>
+                    <span id="modalUsedCarRemaining" style="color:var(--danger); font-weight:bold;">$0</span>
+                </div>
+            </div>
+            <button class="btn confirm-btn" onclick="confirmUsedCarPurchase()" style="width: 100%; padding: 15px; background: linear-gradient(90deg, #d35400, #f39c12); color: white; font-weight: bold;">
+                🚗 КУПИТЬ БУ АВТОМОБИЛЬ
+            </button>
+        </div>
+    </div>
+
     <!-- Модальное окно управления активами пользователя -->
     <div class="modal" id="manageAssetsModal">
         <div class="modal-content modal-extra-wide">
@@ -1799,6 +1923,7 @@
         // Данные
         let properties = [];
         let cars = [];
+        let usedCars = [];
         let users = [];
         let currentUser = null;
         let transactions = [];
@@ -1813,12 +1938,18 @@
         // Выбранные объекты для покупки
         let selectedProperty = null;
         let selectedCar = null;
+        let selectedUsedCar = null;
         let currentGalleryIndex = 0;
         let currentCarGalleryIndex = 0;
+        let currentUsedCarGalleryIndex = 0;
         
         // Управление активами
         let managingAssetsUserId = null;
         let currentlyEditingCell = null;
+        
+        // Для редактирования в админке
+        let currentlyEditingPropertyId = null;
+        let currentlyEditingCarId = null;
         
         // Ключи для LocalStorage (резервное копирование)
         const STORAGE_KEYS = {
@@ -1827,6 +1958,7 @@
             TRANSACTIONS: 'real_estate_transactions_cloud',
             PROPERTIES: 'real_estate_properties_cloud',
             CARS: 'real_estate_cars_cloud',
+            USED_CARS: 'real_estate_used_cars_cloud',
             LAST_SYNC: 'real_estate_last_sync',
             CASINO_STATS: 'real_estate_casino_stats',
             CELLS: 'real_estate_cells_cloud'
@@ -2058,6 +2190,200 @@
             }
         ];
 
+        // Демо-данные бу автомобилей
+        const usedCarsData = [
+            {
+                id: "used1",
+                class: "economy",
+                type: "sedan",
+                title: "Toyota Corolla 2019",
+                description: "Надёжный седан с пробегом. Регулярное ТО, не битый, красивый серебристый цвет. Идеальный первый автомобиль.",
+                originalPrice: 22000,
+                durability: 75,
+                price: 16500, // 22000 * 0.75
+                year: "2019",
+                power: "132 л.с.",
+                imageColor: "#7f8c8d",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "85,000 км",
+                defects: "Незначительные царапины на бампере",
+                cellId: null
+            },
+            {
+                id: "used2",
+                class: "economy",
+                type: "suv",
+                title: "Hyundai Tucson 2018",
+                description: "Кроссовер в отличном состоянии для своего возраста. Полный привод, климат-контроль, кожаный салон.",
+                originalPrice: 28000,
+                durability: 68,
+                price: 19040,
+                year: "2018",
+                power: "150 л.с.",
+                imageColor: "#34495e",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "120,000 км",
+                defects: "Износ шин 60%",
+                cellId: null
+            },
+            {
+                id: "used3",
+                class: "comfort",
+                type: "sedan",
+                title: "BMW 320i 2017",
+                description: "Немецкий премиум седан с богатой историей обслуживания. Спортивный пакет, кожаный салон, навигация.",
+                originalPrice: 45000,
+                durability: 62,
+                price: 27900,
+                year: "2017",
+                power: "184 л.с.",
+                imageColor: "#2c3e50",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "95,000 км",
+                defects: "Требуется замена тормозных колодок",
+                cellId: null
+            },
+            {
+                id: "used4",
+                class: "comfort",
+                type: "suv",
+                title: "Mercedes-Benz GLA 2019",
+                description: "Стильный компактный кроссовер от Mercedes. Панорамная крыша, премиум аудиосистема, камера заднего вида.",
+                originalPrice: 52000,
+                durability: 72,
+                price: 37440,
+                year: "2019",
+                power: "163 л.с.",
+                imageColor: "#2c3e50",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "65,000 км",
+                defects: "Царапина на правой двери",
+                cellId: null
+            },
+            {
+                id: "used5",
+                class: "premium",
+                type: "sport",
+                title: "Porsche Cayman 2016",
+                description: "Легендарный спорткар с задним расположением двигателя. Сервисная история, не участвовал в гонках.",
+                originalPrice: 85000,
+                durability: 58,
+                price: 49300,
+                year: "2016",
+                power: "275 л.с.",
+                imageColor: "#c0392b",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "45,000 км",
+                defects: "Небольшая вмятина на капоте",
+                cellId: null
+            },
+            {
+                id: "used6",
+                class: "premium",
+                type: "luxury",
+                title: "Audi A8 2018",
+                description: "Флагманский седан с максимальным комфортом. Массажные кресла, ночной визор, система динамического управления.",
+                originalPrice: 95000,
+                durability: 65,
+                price: 61750,
+                year: "2018",
+                power: "286 л.с.",
+                imageColor: "#95a5a6",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "70,000 км",
+                defects: "Потертости на руле",
+                cellId: null
+            },
+            {
+                id: "used7",
+                class: "economy",
+                type: "sedan",
+                title: "Honda Civic 2020",
+                description: "Современный хетчбек с минимальным пробегом. Экономичный двигатель, мультимедиа система Apple CarPlay.",
+                originalPrice: 24000,
+                durability: 80,
+                price: 19200,
+                year: "2020",
+                power: "158 л.с.",
+                imageColor: "#3498db",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "40,000 км",
+                defects: "Нет",
+                cellId: null
+            },
+            {
+                id: "used8",
+                class: "comfort",
+                type: "suv",
+                title: "Volvo XC60 2019",
+                description: "Шведский внедорожник с акцентом на безопасность. Система автоторможения, адаптивный круиз-контроль.",
+                originalPrice: 58000,
+                durability: 70,
+                price: 40600,
+                year: "2019",
+                power: "250 л.с.",
+                imageColor: "#1a5276",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "55,000 км",
+                defects: "Небольшой люфт в подвеске",
+                cellId: null
+            },
+            {
+                id: "used9",
+                class: "premium",
+                type: "sport",
+                title: "Nissan GT-R 2015",
+                description: "Легендарный Godzilla с феноменальной динамикой. Полный привод, керамические тормоза, спортивная подвеска.",
+                originalPrice: 120000,
+                durability: 45,
+                price: 54000,
+                year: "2015",
+                power: "545 л.с.",
+                imageColor: "#2c3e50",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "30,000 км",
+                defects: "Требуется замена масла в трансмиссии",
+                cellId: null
+            },
+            {
+                id: "used10",
+                class: "premium",
+                type: "luxury",
+                title: "Lexus LS 2017",
+                description: "Роскошный японский седан с плавным ходом. Система шумоподавления, кресла с подогревом и вентиляцией.",
+                originalPrice: 90000,
+                durability: 78,
+                price: 70200,
+                year: "2017",
+                power: "415 л.с.",
+                imageColor: "#5d6d7e",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "50,000 км",
+                defects: "Незначительный износ салона",
+                cellId: null
+            }
+        ];
+
         // ==================== ИНИЦИАЛИЗАЦИЯ FIREBASE ====================
         
         async function initializeFirebase() {
@@ -2140,6 +2466,13 @@
                     firebaseCars.push({ id: doc.id, ...doc.data() });
                 });
                 
+                // Загружаем бу автомобили
+                const usedCarsSnapshot = await firestore.collection('usedCars').get();
+                const firebaseUsedCars = [];
+                usedCarsSnapshot.forEach(doc => {
+                    firebaseUsedCars.push({ id: doc.id, ...doc.data() });
+                });
+                
                 // Загружаем транзакции
                 const transactionsSnapshot = await firestore.collection('transactions').get();
                 const firebaseTransactions = [];
@@ -2154,7 +2487,7 @@
                     firebaseCells.push({ id: doc.id, ...doc.data() });
                 });
                 
-                console.log(`📊 Загружено из Firebase: ${firebaseUsers.length} пользователей, ${firebaseProperties.length} объектов, ${firebaseCars.length} автомобилей, ${firebaseCells.length} ячеек`);
+                console.log(`📊 Загружено из Firebase: ${firebaseUsers.length} пользователей, ${firebaseProperties.length} объектов, ${firebaseCars.length} автомобилей, ${firebaseUsedCars.length} бу автомобилей, ${firebaseCells.length} ячеек`);
                 
                 // Обновляем локальные данные
                 if (firebaseUsers.length > 0) {
@@ -2175,6 +2508,14 @@
                     // Если в Firebase нет данных, загружаем демо-данные
                     cars = JSON.parse(JSON.stringify(demoCarsData));
                     await saveCarsToFirebase();
+                }
+                
+                if (firebaseUsedCars.length > 0) {
+                    usedCars = firebaseUsedCars;
+                } else {
+                    // Если в Firebase нет данных, загружаем демо-данные
+                    usedCars = JSON.parse(JSON.stringify(usedCarsData));
+                    await saveUsedCarsToFirebase();
                 }
                 
                 if (firebaseTransactions.length > 0) {
@@ -2203,6 +2544,9 @@
                     }
                     if (!document.getElementById('carsPage').classList.contains('hidden')) {
                         renderCars();
+                    }
+                    if (!document.getElementById('usedCarsPage').classList.contains('hidden')) {
+                        renderUsedCars();
                     }
                 }
                 
@@ -2295,6 +2639,9 @@
                         }
                         if (!document.getElementById('myCarsPage').classList.contains('hidden')) {
                             renderOwnedCars();
+                        }
+                        if (!document.getElementById('usedCarsPage').classList.contains('hidden')) {
+                            renderUsedCars();
                         }
                     }
                 });
@@ -2417,6 +2764,47 @@
             }
         }
 
+        async function saveUsedCarsToFirebase() {
+            if (syncMode !== 'online' || !firestore) return;
+            
+            try {
+                updateSyncStatus('syncing', 'Сохранение бу автомобилей...');
+                
+                for (const car of usedCars) {
+                    const carToSave = {
+                        id: String(car.id),
+                        class: car.class || 'economy',
+                        type: car.type || 'sedan',
+                        title: car.title || '',
+                        description: car.description || '',
+                        originalPrice: Number(car.originalPrice) || 0,
+                        durability: Number(car.durability) || 50,
+                        price: Number(car.price) || 0,
+                        year: car.year || '',
+                        power: car.power || '',
+                        imageColor: car.imageColor || '#f39c12',
+                        photos: Array.isArray(car.photos) ? car.photos : [],
+                        hasCustomImage: Boolean(car.hasCustomImage),
+                        isUsed: Boolean(car.isUsed),
+                        mileage: car.mileage || '',
+                        defects: car.defects || '',
+                        cellId: car.cellId || null
+                    };
+                    
+                    await firestore.collection('usedCars').doc(String(car.id)).set(carToSave, { merge: true });
+                }
+                
+                localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
+                updateSyncStatus('synced', 'БУ автомобили сохранены');
+                
+                return true;
+            } catch (error) {
+                console.error('Ошибка сохранения бу автомобилей:', error);
+                updateSyncStatus('error', 'Ошибка сохранения');
+                return false;
+            }
+        }
+
         async function saveTransactionToFirebase(transaction) {
             if (syncMode !== 'online' || !firestore) return;
             
@@ -2472,6 +2860,7 @@
             const localUsers = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || [];
             const localProperties = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROPERTIES));
             const localCars = JSON.parse(localStorage.getItem(STORAGE_KEYS.CARS));
+            const localUsedCars = JSON.parse(localStorage.getItem(STORAGE_KEYS.USED_CARS));
             const localCurrentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER));
             const localTransactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) || [];
             const localCells = JSON.parse(localStorage.getItem(STORAGE_KEYS.CELLS)) || [];
@@ -2485,6 +2874,7 @@
             if (localUsers.length > 0) users = localUsers;
             if (localProperties) properties = localProperties;
             if (localCars) cars = localCars;
+            if (localUsedCars) usedCars = localUsedCars;
             if (localCurrentUser) currentUser = localCurrentUser;
             if (localTransactions.length > 0) transactions = localTransactions;
             if (localCells.length > 0) cells = localCells;
@@ -2500,6 +2890,12 @@
                 cars = JSON.parse(JSON.stringify(demoCarsData));
                 saveLocalData();
             }
+            
+            // Если нет бу автомобилей, загружаем демо
+            if (!usedCars || usedCars.length === 0) {
+                usedCars = JSON.parse(JSON.stringify(usedCarsData));
+                saveLocalData();
+            }
         }
 
         function saveLocalData() {
@@ -2507,6 +2903,7 @@
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
             localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
             localStorage.setItem(STORAGE_KEYS.CARS, JSON.stringify(cars));
+            localStorage.setItem(STORAGE_KEYS.USED_CARS, JSON.stringify(usedCars));
             localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
             localStorage.setItem(STORAGE_KEYS.CELLS, JSON.stringify(cells));
             localStorage.setItem(STORAGE_KEYS.CASINO_STATS, JSON.stringify({ wins: casinoWins, losses: casinoLosses }));
@@ -2705,6 +3102,24 @@
             showNotification('Вы вышли из системы', 'warning');
         }
 
+        // ==================== ФИКС: КНОПКА "ДЛЯ ПРОЖИВАНИЯ" ====================
+        
+        function selectPurpose(purpose) {
+            purchasePurpose = purpose;
+            document.getElementById('purposeRent').classList.remove('selected');
+            document.getElementById('purposeLive').classList.remove('selected');
+            document.getElementById('purpose' + (purpose === 'rent' ? 'Rent' : 'Live')).classList.add('selected');
+            
+            // Обновляем отображение дохода в модальном окне
+            const rentalIncomeDisplay = document.getElementById('rentalIncomeDisplay');
+            if (purpose === 'rent') {
+                rentalIncomeDisplay.textContent = `+$${selectedProperty.rentalIncome}/неделя`;
+                rentalIncomeDisplay.style.display = 'block';
+            } else {
+                rentalIncomeDisplay.style.display = 'none';
+            }
+        }
+
         // ==================== СКРЫТАЯ АДМИН-ПАНЕЛЬ ====================
         
         function showAdminPanel() {
@@ -2715,6 +3130,7 @@
             
             document.getElementById('mainPage').classList.add('hidden');
             document.getElementById('carsPage').classList.add('hidden');
+            document.getElementById('usedCarsPage').classList.add('hidden');
             document.getElementById('myPropertiesPage').classList.add('hidden');
             document.getElementById('myCarsPage').classList.add('hidden');
             document.getElementById('casinoPage').classList.add('hidden');
@@ -2732,7 +3148,7 @@
                     '<span style="color: #e74c3c;">✗ Не подключено</span>';
             }
             
-            document.getElementById('firebaseDocCount').textContent = users.length + properties.length + cars.length + transactions.length + cells.length;
+            document.getElementById('firebaseDocCount').textContent = users.length + properties.length + cars.length + usedCars.length + transactions.length + cells.length;
             
             // Показываем первую вкладку
             switchAdminTab('users');
@@ -2778,6 +3194,7 @@
             document.getElementById('authPage').classList.remove('hidden');
             document.getElementById('mainPage').classList.add('hidden');
             document.getElementById('carsPage').classList.add('hidden');
+            document.getElementById('usedCarsPage').classList.add('hidden');
             document.getElementById('myPropertiesPage').classList.add('hidden');
             document.getElementById('myCarsPage').classList.add('hidden');
             document.getElementById('casinoPage').classList.add('hidden');
@@ -2811,6 +3228,7 @@
             
             document.getElementById('mainPage').classList.add('hidden');
             document.getElementById('carsPage').classList.add('hidden');
+            document.getElementById('usedCarsPage').classList.add('hidden');
             document.getElementById('myPropertiesPage').classList.add('hidden');
             document.getElementById('myCarsPage').classList.add('hidden');
             document.getElementById('casinoPage').classList.add('hidden');
@@ -2824,6 +3242,9 @@
                     break;
                 case 'cars':
                     renderCars();
+                    break;
+                case 'usedCars':
+                    renderUsedCars();
                     break;
                 case 'myProperties':
                     renderOwnedProperties();
@@ -3134,6 +3555,477 @@
             }
         }
 
+        // ==================== АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ НЕДВИЖИМОСТЬЮ ====================
+        
+        function renderPropertiesManagement() {
+            const container = document.getElementById('adminPropertiesList');
+            container.innerHTML = '';
+            
+            properties.forEach(property => {
+                const item = document.createElement('div');
+                item.className = 'property-list-item';
+                item.textContent = property.title;
+                item.onclick = () => selectPropertyForEditing(property.id);
+                container.appendChild(item);
+            });
+        }
+
+        function selectPropertyForEditing(propertyId) {
+            const property = properties.find(p => p.id === propertyId);
+            if (!property) return;
+
+            // Убираем активный класс у всех элементов
+            document.querySelectorAll('.property-list-item').forEach(el => el.classList.remove('active'));
+            // Добавляем активный класс выбранному
+            event.target.classList.add('active');
+
+            // Заполняем форму
+            document.getElementById('editPropertyTitle').value = property.title;
+            document.getElementById('editPropertyType').value = property.type;
+            document.getElementById('editPropertyDistrict').value = property.district;
+            document.getElementById('editPropertyPrice').value = property.price;
+            document.getElementById('editPropertyRooms').value = property.rooms;
+            document.getElementById('editPropertySize').value = property.size;
+            document.getElementById('editPropertyRental').value = property.rentalIncome;
+            document.getElementById('editPropertyDescription').value = property.description;
+
+            // Показываем превью фотографии, если есть
+            const imagePreview = document.getElementById('propertyImagePreview');
+            imagePreview.innerHTML = '';
+            if (property.photos && property.photos.length > 0) {
+                const img = document.createElement('img');
+                img.src = property.photos[0];
+                imagePreview.appendChild(img);
+            } else {
+                imagePreview.innerHTML = '<div style="color: var(--light-blue);">Фотографий нет</div>';
+            }
+
+            // Показываем форму
+            document.getElementById('propertyFormFields').classList.remove('hidden');
+            document.getElementById('propertyFormEmpty').classList.add('hidden');
+            document.getElementById('propertyFormTitle').textContent = `Редактирование: ${property.title}`;
+
+            // Сохраняем ID редактируемого объекта
+            currentlyEditingPropertyId = propertyId;
+        }
+
+        async function savePropertyChanges() {
+            if (!currentlyEditingPropertyId) {
+                showNotification('Сначала выберите объект для редактирования', 'error');
+                return;
+            }
+
+            const propertyIndex = properties.findIndex(p => p.id === currentlyEditingPropertyId);
+            if (propertyIndex === -1) {
+                showNotification('Объект не найден', 'error');
+                return;
+            }
+
+            const property = properties[propertyIndex];
+
+            // Обновляем данные из формы
+            property.title = document.getElementById('editPropertyTitle').value;
+            property.type = document.getElementById('editPropertyType').value;
+            property.district = document.getElementById('editPropertyDistrict').value;
+            property.price = parseInt(document.getElementById('editPropertyPrice').value) || 0;
+            property.rooms = document.getElementById('editPropertyRooms').value;
+            property.size = document.getElementById('editPropertySize').value;
+            property.rentalIncome = parseInt(document.getElementById('editPropertyRental').value) || 0;
+            property.description = document.getElementById('editPropertyDescription').value;
+
+            // Сохраняем в Firebase
+            if (syncMode === 'online' && firestore) {
+                await savePropertiesToFirebase();
+            }
+
+            // Сохраняем локально
+            saveLocalData();
+
+            showNotification('Изменения сохранены', 'success');
+
+            // Обновляем отображение в админке и на главной странице
+            renderPropertiesManagement();
+            if (!document.getElementById('mainPage').classList.contains('hidden')) {
+                renderProperties();
+            }
+            if (!document.getElementById('myPropertiesPage').classList.contains('hidden')) {
+                renderOwnedProperties();
+            }
+        }
+
+        async function deleteProperty() {
+            if (!currentlyEditingPropertyId) {
+                showNotification('Сначала выберите объект для удаления', 'error');
+                return;
+            }
+
+            if (!confirm('Вы уверены, что хотите удалить этот объект недвижимости?')) {
+                return;
+            }
+
+            const propertyIndex = properties.findIndex(p => p.id === currentlyEditingPropertyId);
+            if (propertyIndex === -1) return;
+
+            // Удаляем из Firebase
+            if (syncMode === 'online' && firestore) {
+                try {
+                    await firestore.collection('properties').doc(currentlyEditingPropertyId).delete();
+                } catch (error) {
+                    console.error('Ошибка удаления из Firebase:', error);
+                }
+            }
+
+            // Удаляем из локального массива
+            properties.splice(propertyIndex, 1);
+
+            // Сохраняем локально
+            saveLocalData();
+
+            // Сбрасываем форму
+            document.getElementById('propertyFormFields').classList.add('hidden');
+            document.getElementById('propertyFormEmpty').classList.remove('hidden');
+            document.getElementById('propertyFormTitle').textContent = 'Выберите объект';
+            
+            currentlyEditingPropertyId = null;
+
+            showNotification('Объект недвижимости удалён', 'warning');
+            
+            // Обновляем отображение
+            renderPropertiesManagement();
+            if (!document.getElementById('mainPage').classList.contains('hidden')) {
+                renderProperties();
+            }
+        }
+
+        function previewPropertyImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('propertyImagePreview');
+            
+            preview.innerHTML = '';
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                    
+                    // Сохраняем изображение в объект недвижимости
+                    if (currentlyEditingPropertyId) {
+                        const propertyIndex = properties.findIndex(p => p.id === currentlyEditingPropertyId);
+                        if (propertyIndex !== -1) {
+                            if (!properties[propertyIndex].photos) {
+                                properties[propertyIndex].photos = [];
+                            }
+                            properties[propertyIndex].photos.push(e.target.result);
+                            properties[propertyIndex].hasCustomImage = true;
+                            
+                            // Сохраняем изменения
+                            saveLocalData();
+                            if (syncMode === 'online' && firestore) {
+                                savePropertiesToFirebase();
+                            }
+                            
+                            showNotification('Фотография загружена', 'success');
+                        }
+                    }
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function resetPropertyImage() {
+            if (!currentlyEditingPropertyId) {
+                showNotification('Сначала выберите объект', 'error');
+                return;
+            }
+
+            const propertyIndex = properties.findIndex(p => p.id === currentlyEditingPropertyId);
+            if (propertyIndex === -1) return;
+
+            properties[propertyIndex].photos = [];
+            properties[propertyIndex].hasCustomImage = false;
+
+            // Обновляем превью
+            const imagePreview = document.getElementById('propertyImagePreview');
+            imagePreview.innerHTML = '<div style="color: var(--light-blue);">Фотографий нет</div>';
+
+            // Сохраняем изменения
+            saveLocalData();
+            if (syncMode === 'online' && firestore) {
+                savePropertiesToFirebase();
+            }
+
+            showNotification('Фотография удалена', 'warning');
+        }
+
+        function addNewProperty() {
+            const newProperty = {
+                id: "property_" + Date.now().toString(),
+                type: "apartment",
+                district: "poor",
+                title: "Новый объект",
+                description: "Описание нового объекта недвижимости",
+                price: 100000,
+                rooms: "2 комнаты",
+                size: "60 м²",
+                imageColor: "#4682B4",
+                rentalIncome: 200,
+                photos: [],
+                hasCustomImage: false,
+                cellId: null
+            };
+
+            properties.push(newProperty);
+            saveLocalData();
+            
+            if (syncMode === 'online' && firestore) {
+                savePropertiesToFirebase();
+            }
+
+            showNotification('Новый объект добавлен', 'success');
+            
+            // Переключаемся на редактирование нового объекта
+            renderPropertiesManagement();
+            selectPropertyForEditing(newProperty.id);
+        }
+
+        // ==================== АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ АВТОМОБИЛЯМИ ====================
+        
+        function renderCarsManagement() {
+            const container = document.getElementById('adminCarsList');
+            container.innerHTML = '';
+            
+            cars.forEach(car => {
+                const item = document.createElement('div');
+                item.className = 'car-list-item';
+                item.textContent = car.title;
+                item.onclick = () => selectCarForEditing(car.id);
+                container.appendChild(item);
+            });
+        }
+
+        function selectCarForEditing(carId) {
+            const car = cars.find(c => c.id === carId);
+            if (!car) return;
+
+            // Убираем активный класс у всех элементов
+            document.querySelectorAll('.car-list-item').forEach(el => el.classList.remove('active'));
+            // Добавляем активный класс выбранному
+            event.target.classList.add('active');
+
+            // Заполняем форму
+            document.getElementById('editCarTitle').value = car.title;
+            document.getElementById('editCarClass').value = car.class;
+            document.getElementById('editCarType').value = car.type;
+            document.getElementById('editCarPrice').value = car.price;
+            document.getElementById('editCarYear').value = car.year;
+            document.getElementById('editCarPower').value = car.power;
+            document.getElementById('editCarDescription').value = car.description;
+
+            // Показываем превью фотографии, если есть
+            const imagePreview = document.getElementById('carImagePreview');
+            imagePreview.innerHTML = '';
+            if (car.photos && car.photos.length > 0) {
+                const img = document.createElement('img');
+                img.src = car.photos[0];
+                imagePreview.appendChild(img);
+            } else {
+                imagePreview.innerHTML = '<div style="color: var(--light-blue);">Фотографий нет</div>';
+            }
+
+            // Показываем форму
+            document.getElementById('carFormFields').classList.remove('hidden');
+            document.getElementById('carFormEmpty').classList.add('hidden');
+            document.getElementById('carFormTitle').textContent = `Редактирование: ${car.title}`;
+
+            // Сохраняем ID редактируемого объекта
+            currentlyEditingCarId = carId;
+        }
+
+        async function saveCarChanges() {
+            if (!currentlyEditingCarId) {
+                showNotification('Сначала выберите автомобиль для редактирования', 'error');
+                return;
+            }
+
+            const carIndex = cars.findIndex(c => c.id === currentlyEditingCarId);
+            if (carIndex === -1) {
+                showNotification('Автомобиль не найден', 'error');
+                return;
+            }
+
+            const car = cars[carIndex];
+
+            // Обновляем данные из формы
+            car.title = document.getElementById('editCarTitle').value;
+            car.class = document.getElementById('editCarClass').value;
+            car.type = document.getElementById('editCarType').value;
+            car.price = parseInt(document.getElementById('editCarPrice').value) || 0;
+            car.year = document.getElementById('editCarYear').value;
+            car.power = document.getElementById('editCarPower').value;
+            car.description = document.getElementById('editCarDescription').value;
+
+            // Сохраняем в Firebase
+            if (syncMode === 'online' && firestore) {
+                await saveCarsToFirebase();
+            }
+
+            // Сохраняем локально
+            saveLocalData();
+
+            showNotification('Изменения сохранены', 'success');
+
+            // Обновляем отображение в админке и на главной странице
+            renderCarsManagement();
+            if (!document.getElementById('carsPage').classList.contains('hidden')) {
+                renderCars();
+            }
+            if (!document.getElementById('myCarsPage').classList.contains('hidden')) {
+                renderOwnedCars();
+            }
+        }
+
+        async function deleteCar() {
+            if (!currentlyEditingCarId) {
+                showNotification('Сначала выберите автомобиль для удаления', 'error');
+                return;
+            }
+
+            if (!confirm('Вы уверены, что хотите удалить этот автомобиль?')) {
+                return;
+            }
+
+            const carIndex = cars.findIndex(c => c.id === currentlyEditingCarId);
+            if (carIndex === -1) return;
+
+            // Удаляем из Firebase
+            if (syncMode === 'online' && firestore) {
+                try {
+                    await firestore.collection('cars').doc(currentlyEditingCarId).delete();
+                } catch (error) {
+                    console.error('Ошибка удаления из Firebase:', error);
+                }
+            }
+
+            // Удаляем из локального массива
+            cars.splice(carIndex, 1);
+
+            // Сохраняем локально
+            saveLocalData();
+
+            // Сбрасываем форму
+            document.getElementById('carFormFields').classList.add('hidden');
+            document.getElementById('carFormEmpty').classList.remove('hidden');
+            document.getElementById('carFormTitle').textContent = 'Выберите автомобиль';
+            
+            currentlyEditingCarId = null;
+
+            showNotification('Автомобиль удалён', 'warning');
+            
+            // Обновляем отображение
+            renderCarsManagement();
+            if (!document.getElementById('carsPage').classList.contains('hidden')) {
+                renderCars();
+            }
+        }
+
+        function previewCarImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('carImagePreview');
+            
+            preview.innerHTML = '';
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                    
+                    // Сохраняем изображение в объект автомобиля
+                    if (currentlyEditingCarId) {
+                        const carIndex = cars.findIndex(c => c.id === currentlyEditingCarId);
+                        if (carIndex !== -1) {
+                            if (!cars[carIndex].photos) {
+                                cars[carIndex].photos = [];
+                            }
+                            cars[carIndex].photos.push(e.target.result);
+                            cars[carIndex].hasCustomImage = true;
+                            
+                            // Сохраняем изменения
+                            saveLocalData();
+                            if (syncMode === 'online' && firestore) {
+                                saveCarsToFirebase();
+                            }
+                            
+                            showNotification('Фотография загружена', 'success');
+                        }
+                    }
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function resetCarImage() {
+            if (!currentlyEditingCarId) {
+                showNotification('Сначала выберите автомобиль', 'error');
+                return;
+            }
+
+            const carIndex = cars.findIndex(c => c.id === currentlyEditingCarId);
+            if (carIndex === -1) return;
+
+            cars[carIndex].photos = [];
+            cars[carIndex].hasCustomImage = false;
+
+            // Обновляем превью
+            const imagePreview = document.getElementById('carImagePreview');
+            imagePreview.innerHTML = '<div style="color: var(--light-blue);">Фотографий нет</div>';
+
+            // Сохраняем изменения
+            saveLocalData();
+            if (syncMode === 'online' && firestore) {
+                saveCarsToFirebase();
+            }
+
+            showNotification('Фотография удалена', 'warning');
+        }
+
+        function addNewCar() {
+            const newCar = {
+                id: "car_" + Date.now().toString(),
+                class: "economy",
+                type: "sedan",
+                title: "Новый автомобиль",
+                description: "Описание нового автомобиля",
+                price: 30000,
+                year: "2023",
+                power: "150 л.с.",
+                imageColor: "#3498db",
+                photos: [],
+                hasCustomImage: false,
+                cellId: null
+            };
+
+            cars.push(newCar);
+            saveLocalData();
+            
+            if (syncMode === 'online' && firestore) {
+                saveCarsToFirebase();
+            }
+
+            showNotification('Новый автомобиль добавлен', 'success');
+            
+            // Переключаемся на редактирование нового автомобиля
+            renderCarsManagement();
+            selectCarForEditing(newCar.id);
+        }
+
         // ==================== СИСТЕМА АВТОМОБИЛЕЙ ====================
         
         function renderCars(filteredCars = cars) {
@@ -3375,6 +4267,316 @@
                 showNotification(`Поздравляем! Вы купили: "${selectedCar.title}"`, 'success');
                 
                 closeCarModal();
+                
+                // Обновляем страницу моих автомобилей если она открыта
+                if (!document.getElementById('myCarsPage').classList.contains('hidden')) {
+                    renderOwnedCars();
+                }
+            } else {
+                showNotification('Недостаточно средств для покупки!', 'error');
+            }
+        }
+
+        // ==================== СИСТЕМА АВТОРЫНКА (БУ АВТОМОБИЛИ) ====================
+        
+        function renderUsedCars(filteredUsedCars = usedCars) {
+            const container = document.getElementById('usedCarsContainer');
+            container.innerHTML = '';
+
+            // Получаем ID купленных автомобилей (включая бу)
+            const ownedCarIds = currentUser.cars ? currentUser.cars.map(c => c.id) : [];
+            
+            const availableUsedCars = filteredUsedCars.filter(car => 
+                !ownedCarIds.includes(car.id)
+            );
+
+            if (availableUsedCars.length === 0) {
+                container.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <h3 style="color: var(--warning); margin-bottom: 15px;">Все бу автомобили куплены!</h3>
+                        <p style="color: var(--light-blue);">Вы приобрели все доступные бу автомобили по текущим фильтрам.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            availableUsedCars.forEach(car => {
+                const classNames = {
+                    economy: "Эконом",
+                    comfort: "Комфорт",
+                    premium: "Премиум"
+                };
+
+                const classColors = {
+                    economy: "car-economy",
+                    comfort: "car-comfort",
+                    premium: "car-premium"
+                };
+
+                const typeNames = {
+                    sedan: "СЕДАН",
+                    suv: "ВНЕДОРОЖНИК",
+                    sport: "СПОРТКАР",
+                    luxury: "ЛЮКС"
+                };
+
+                const canAfford = currentUser.balance >= car.price;
+                const buttonText = canAfford ? "КУПИТЬ" : "НЕДОСТАТОЧНО СРЕДСТВ";
+                
+                // Определяем цвет прочности
+                let durabilityColor = '#e74c3c'; // красный для низкой прочности
+                if (car.durability >= 70) durabilityColor = '#2ecc71'; // зеленый для высокой
+                else if (car.durability >= 55) durabilityColor = '#f39c12'; // желтый для средней
+
+                // Определяем фон для изображения
+                let backgroundStyle = '';
+                if (car.photos && car.photos.length > 0) {
+                    backgroundStyle = `background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${car.photos[0]}'); background-size: cover; background-position: center;`;
+                } else {
+                    backgroundStyle = `background: linear-gradient(135deg, ${car.imageColor}, #152642)`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'car-card';
+                card.innerHTML = `
+                    <div class="car-image" style="${backgroundStyle}">
+                        <div class="car-class-badge ${classColors[car.class]}" style="background: var(--used-car);">БУ • ${classNames[car.class]}</div>
+                        <div style="position: absolute; top: 45px; left: 15px; padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; background: rgba(0,0,0,0.7); color: white;">
+                            Пробег: ${car.mileage}
+                        </div>
+                        ${car.photos && car.photos.length > 0 ? '<div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem;">📷 ' + car.photos.length + ' фото</div>' : ''}
+                    </div>
+                    <div class="car-info">
+                        <div class="car-type">${typeNames[car.type]}</div>
+                        <h3 class="car-title">${car.title}</h3>
+                        <p class="car-description">${car.description}</p>
+                        
+                        <div style="margin: 15px 0; padding: 10px; background: rgba(243, 156, 18, 0.1); border-radius: 6px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--light-blue);">Прочность:</span>
+                                <span style="color: ${durabilityColor}; font-weight: bold;">${car.durability}%</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: #2c3e50; border-radius: 4px; overflow: hidden;">
+                                <div style="width: ${car.durability}%; height: 100%; background: ${durabilityColor};"></div>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--light-blue); margin-top: 5px;">
+                                ${car.defects ? `⚠️ ${car.defects}` : '✅ Без дефектов'}
+                            </div>
+                        </div>
+                        
+                        <div class="car-details">
+                            <div class="detail">
+                                <div class="detail-value">${car.year}</div>
+                                <div class="detail-label">Год выпуска</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">${car.power}</div>
+                                <div class="detail-label">Мощность</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">${car.originalPrice ? `$${(car.originalPrice/1000).toFixed(0)}k` : '—'}</div>
+                                <div class="detail-label">Цена новой</div>
+                            </div>
+                        </div>
+                        <div class="car-footer">
+                            <div>
+                                <div class="car-price" style="color: var(--warning);">$${car.price.toLocaleString()}</div>
+                                <div style="font-size: 0.8rem; color: var(--light-blue); text-decoration: line-through;">
+                                    Было: $${car.originalPrice ? car.originalPrice.toLocaleString() : '—'}
+                                </div>
+                            </div>
+                            <button class="buy-btn" ${!canAfford ? 'disabled' : ''} 
+                                    onclick="openPurchaseUsedCarModal('${car.id}')"
+                                    style="background: linear-gradient(90deg, #d35400, #f39c12);">
+                                ${buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function applyUsedCarFilters() {
+            const classFilter = document.getElementById('usedCarClassFilter').value;
+            const typeFilter = document.getElementById('usedCarTypeFilter').value;
+            const minDurability = parseInt(document.getElementById('durabilitySlider').value);
+            const maxPrice = parseInt(document.getElementById('usedCarPriceSlider').value);
+
+            const filtered = usedCars.filter(car => {
+                const classMatch = classFilter === 'all' || car.class === classFilter;
+                const typeMatch = typeFilter === 'all' || car.type === typeFilter;
+                const durabilityMatch = car.durability >= minDurability;
+                const priceMatch = car.price <= maxPrice;
+                return classMatch && typeMatch && durabilityMatch && priceMatch;
+            });
+
+            renderUsedCars(filtered);
+        }
+
+        function openPurchaseUsedCarModal(carId) {
+            selectedUsedCar = usedCars.find(c => c.id == carId);
+            if (!selectedUsedCar) return;
+
+            const modal = document.getElementById('purchaseUsedCarModal');
+            const remaining = currentUser.balance - selectedUsedCar.price;
+
+            // Настраиваем галерею
+            setupUsedCarGallery(selectedUsedCar);
+
+            // Определяем цвет прочности
+            let durabilityColor = '#e74c3c';
+            if (selectedUsedCar.durability >= 70) durabilityColor = '#2ecc71';
+            else if (selectedUsedCar.durability >= 55) durabilityColor = '#f39c12';
+
+            document.getElementById('modalUsedCarInfo').innerHTML = `
+                <h3 style="margin-bottom:10px; color: white;">${selectedUsedCar.title}</h3>
+                <p style="color:#b0b0b0; margin-bottom:15px; line-height: 1.6;">${selectedUsedCar.description}</p>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: var(--light-blue);">Год выпуска:</span>
+                    <span style="color: white;">${selectedUsedCar.year}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: var(--light-blue);">Мощность:</span>
+                    <span style="color: white;">${selectedUsedCar.power}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--light-blue);">Класс:</span>
+                    <span style="color: ${selectedUsedCar.class === 'economy' ? 'var(--car-economy)' : selectedUsedCar.class === 'comfort' ? 'var(--car-comfort)' : 'var(--car-premium)'}; font-weight: bold;">
+                        ${selectedUsedCar.class === 'economy' ? 'Эконом' : selectedUsedCar.class === 'comfort' ? 'Комфорт' : 'Премиум'}
+                    </span>
+                </div>
+            `;
+
+            document.getElementById('modalUsedCarOriginalPrice').textContent = `$${selectedUsedCar.originalPrice ? selectedUsedCar.originalPrice.toLocaleString() : '0'}`;
+            document.getElementById('modalUsedCarDurability').textContent = `${selectedUsedCar.durability}%`;
+            document.getElementById('modalUsedCarDurability').style.color = durabilityColor;
+            document.getElementById('modalUsedCarMileage').textContent = selectedUsedCar.mileage;
+            document.getElementById('modalUsedCarDefects').textContent = selectedUsedCar.defects || 'Нет';
+            document.getElementById('modalUsedCarPrice').textContent = `$${selectedUsedCar.price.toLocaleString()}`;
+            document.getElementById('modalUsedCarBalance').textContent = `$${currentUser.balance.toLocaleString()}`;
+            document.getElementById('modalUsedCarRemaining').textContent = `$${remaining.toLocaleString()}`;
+            
+            if (remaining < 0) {
+                document.getElementById('modalUsedCarRemaining').style.color = 'var(--danger)';
+            } else {
+                document.getElementById('modalUsedCarRemaining').style.color = 'var(--success)';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function setupUsedCarGallery(car) {
+            const gallery = document.getElementById('usedCarGallery');
+            const imageElement = document.getElementById('usedCarGalleryMainImage');
+            const dotsContainer = document.getElementById('usedCarGalleryDots');
+            
+            dotsContainer.innerHTML = '';
+            currentUsedCarGalleryIndex = 0;
+            
+            if (car.photos && car.photos.length > 0) {
+                imageElement.src = car.photos[0];
+                imageElement.style.display = 'block';
+                gallery.style.display = 'block';
+                
+                car.photos.forEach((_, index) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'gallery-dot' + (index === 0 ? ' active' : '');
+                    dot.onclick = () => changeUsedCarGalleryImageTo(index);
+                    dotsContainer.appendChild(dot);
+                });
+            } else {
+                gallery.style.background = `linear-gradient(135deg, ${car.imageColor}, #152642)`;
+                gallery.style.display = 'flex';
+                gallery.style.alignItems = 'center';
+                gallery.style.justifyContent = 'center';
+                gallery.innerHTML = `
+                    <div style="text-align: center; color: white; font-size: 1.2rem;">
+                        <div style="font-size: 3rem;">🚗</div>
+                        <div>Фотографий пока нет</div>
+                    </div>
+                `;
+                imageElement.style.display = 'none';
+            }
+        }
+
+        function changeUsedCarGalleryImage(direction) {
+            if (!selectedUsedCar || !selectedUsedCar.photos || selectedUsedCar.photos.length <= 1) return;
+            
+            currentUsedCarGalleryIndex += direction;
+            if (currentUsedCarGalleryIndex < 0) currentUsedCarGalleryIndex = selectedUsedCar.photos.length - 1;
+            if (currentUsedCarGalleryIndex >= selectedUsedCar.photos.length) currentUsedCarGalleryIndex = 0;
+            
+            changeUsedCarGalleryImageTo(currentUsedCarGalleryIndex);
+        }
+
+        function changeUsedCarGalleryImageTo(index) {
+            if (!selectedUsedCar || !selectedUsedCar.photos || !selectedUsedCar.photos[index]) return;
+            
+            currentUsedCarGalleryIndex = index;
+            document.getElementById('usedCarGalleryMainImage').src = selectedUsedCar.photos[index];
+            
+            document.querySelectorAll('#usedCarGalleryDots .gallery-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        function closeUsedCarModal() {
+            document.getElementById('purchaseUsedCarModal').style.display = 'none';
+            selectedUsedCar = null;
+        }
+
+        async function confirmUsedCarPurchase() {
+            if (!selectedUsedCar) return;
+
+            if (currentUser.balance >= selectedUsedCar.price) {
+                currentUser.balance -= selectedUsedCar.price;
+                
+                // Добавляем бу автомобиль
+                if (!currentUser.cars) {
+                    currentUser.cars = [];
+                }
+                
+                currentUser.cars.push({
+                    id: selectedUsedCar.id,
+                    purchaseDate: new Date().toISOString(),
+                    isUsed: true,
+                    durability: selectedUsedCar.durability
+                });
+                
+                const transaction = {
+                    id: "trans_" + Date.now().toString(),
+                    userId: currentUser.id,
+                    type: 'used_car_purchase',
+                    amount: -selectedUsedCar.price,
+                    description: `Покупка БУ автомобиля: ${selectedUsedCar.title} (прочность: ${selectedUsedCar.durability}%)`,
+                    date: new Date().toISOString(),
+                    carId: selectedUsedCar.id
+                };
+                transactions.push(transaction);
+                
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = currentUser;
+                }
+                
+                // Сохраняем в облако
+                if (syncMode === 'online' && firestore) {
+                    await saveUserToFirebase(currentUser);
+                    await saveTransactionToFirebase(transaction);
+                }
+                
+                // Сохраняем локально
+                saveLocalData();
+                
+                updateUserInfo();
+                
+                // Сразу обновляем список автомобилей без перезагрузки страницы
+                applyUsedCarFilters();
+                
+                showNotification(`Поздравляем! Вы купили БУ автомобиль: "${selectedUsedCar.title}"`, 'success');
+                
+                closeUsedCarModal();
                 
                 // Обновляем страницу моих автомобилей если она открыта
                 if (!document.getElementById('myCarsPage').classList.contains('hidden')) {
@@ -3983,982 +5185,6 @@
             updateAdminStats();
         }
 
-        // ==================== АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ НЕДВИЖИМОСТЬЮ ====================
-        
-        let currentlyEditingProperty = null;
-
-        function renderPropertiesManagement() {
-            const container = document.getElementById('adminPropertiesList');
-            container.innerHTML = '';
-            
-            properties.forEach(prop => {
-                const item = document.createElement('div');
-                item.className = 'property-list-item';
-                item.id = `adminProp_${prop.id}`;
-                item.onclick = () => selectPropertyForEditing(prop.id);
-                
-                item.innerHTML = `
-                    <div style="font-weight: bold; color: white; margin-bottom: 5px;">${prop.title}</div>
-                    <div style="color: var(--light-blue); font-size: 0.9rem;">
-                        ${prop.type === 'apartment' ? 'Квартира' : 'Дом'} • ${prop.district === 'poor' ? 'Бедный район' : prop.district === 'good' ? 'Хороший район' : 'Элитный район'}
-                    </div>
-                    <div style="color: var(--success); font-size: 0.9rem; margin-top: 5px;">
-                        $${prop.price.toLocaleString()}
-                        ${prop.photos && prop.photos.length > 0 ? ` • 📷 ${prop.photos.length} фото</div>` : ''}
-                    </div>
-                `;
-                
-                container.appendChild(item);
-            });
-            
-            document.getElementById('propertyFormFields').classList.add('hidden');
-            document.getElementById('propertyFormEmpty').classList.remove('hidden');
-            document.getElementById('propertyImagePreview').innerHTML = '';
-            document.getElementById('propertyFormTitle').textContent = 'Выберите объект';
-        }
-
-        function selectPropertyForEditing(propertyId) {
-            document.querySelectorAll('.property-list-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.getElementById(`adminProp_${propertyId}`).classList.add('active');
-            
-            const property = properties.find(p => p.id == propertyId);
-            if (!property) return;
-            
-            currentlyEditingProperty = property;
-            
-            document.getElementById('editPropertyTitle').value = property.title;
-            document.getElementById('editPropertyType').value = property.type;
-            document.getElementById('editPropertyDistrict').value = property.district;
-            document.getElementById('editPropertyPrice').value = property.price;
-            document.getElementById('editPropertyRooms').value = property.rooms;
-            document.getElementById('editPropertySize').value = property.size;
-            document.getElementById('editPropertyRental').value = property.rentalIncome;
-            document.getElementById('editPropertyDescription').value = property.description;
-            
-            const previewContainer = document.getElementById('propertyImagePreview');
-            previewContainer.innerHTML = '';
-            
-            if (property.photos && property.photos.length > 0) {
-                property.photos.forEach((photo, index) => {
-                    const imgWrapper = document.createElement('div');
-                    imgWrapper.style.marginBottom = '10px';
-                    imgWrapper.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                            <span style="color: var(--light-blue);">Фото ${index + 1}</span>
-                            <button class="btn btn-danger" style="padding: 3px 8px; font-size: 0.8rem;" onclick="removePropertyPhoto('${property.id}', ${index})">Удалить</button>
-                        </div>
-                        <img src="${photo}" style="max-width: 100%; max-height: 150px; border-radius: 4px;">
-                    `;
-                    previewContainer.appendChild(imgWrapper);
-                });
-                
-                const photoCount = document.createElement('div');
-                photoCount.style.color = 'var(--light-blue)';
-                photoCount.style.marginTop = '10px';
-                photoCount.textContent = `Всего фотографий: ${property.photos.length}`;
-                previewContainer.appendChild(photoCount);
-            } else {
-                previewContainer.innerHTML = '<div style="color: var(--light-blue); text-align: center; padding: 20px;">Фотографий нет</div>';
-            }
-            
-            document.getElementById('propertyFormFields').classList.remove('hidden');
-            document.getElementById('propertyFormEmpty').classList.add('hidden');
-            document.getElementById('propertyFormTitle').textContent = `Редактирование: ${property.title}`;
-        }
-
-        async function addNewProperty() {
-            const newPropertyId = "prop_" + Date.now().toString();
-            const newProperty = {
-                id: newPropertyId,
-                type: "apartment",
-                district: "poor",
-                title: "Новый объект недвижимости",
-                description: "Описание нового объекта недвижимости",
-                price: 50000,
-                rooms: "1 комната",
-                size: "30 м²",
-                imageColor: "#4682B4",
-                rentalIncome: 100,
-                photos: [],
-                hasCustomImage: false,
-                cellId: null
-            };
-            
-            properties.push(newProperty);
-            
-            if (syncMode === 'online' && firestore) {
-                await savePropertiesToFirebase();
-            }
-            saveLocalData();
-            
-            renderPropertiesManagement();
-            selectPropertyForEditing(newPropertyId);
-            
-            showNotification('Новый объект недвижимости добавлен', 'success');
-        }
-
-        async function deleteProperty() {
-            if (!currentlyEditingProperty) return;
-            
-            if (!confirm(`Удалить объект "${currentlyEditingProperty.title}"? Это действие нельзя отменить.`)) {
-                return;
-            }
-            
-            // Удаляем объект из массива
-            const propertyIndex = properties.findIndex(p => p.id === currentlyEditingProperty.id);
-            if (propertyIndex !== -1) {
-                properties.splice(propertyIndex, 1);
-            }
-            
-            // Удаляем объект у всех пользователей
-            users.forEach(user => {
-                if (user.properties) {
-                    const userPropertyIndex = user.properties.findIndex(p => p.id === currentlyEditingProperty.id);
-                    if (userPropertyIndex !== -1) {
-                        // Возвращаем деньги
-                        user.balance += currentlyEditingProperty.price;
-                        user.properties.splice(userPropertyIndex, 1);
-                    }
-                }
-            });
-            
-            // Удаляем из Firebase
-            if (syncMode === 'online' && firestore) {
-                try {
-                    await firestore.collection('properties').doc(currentlyEditingProperty.id).delete();
-                    
-                    // Обновляем всех пользователей
-                    for (const user of users) {
-                        await saveUserToFirebase(user);
-                    }
-                } catch (error) {
-                    console.error('Ошибка удаления из Firebase:', error);
-                }
-            }
-            
-            saveLocalData();
-            
-            // Обновляем интерфейс
-            renderPropertiesManagement();
-            document.getElementById('propertyFormFields').classList.add('hidden');
-            document.getElementById('propertyFormEmpty').classList.remove('hidden');
-            document.getElementById('propertyImagePreview').innerHTML = '';
-            document.getElementById('propertyFormTitle').textContent = 'Выберите объект';
-            
-            // Обновляем текущего пользователя если нужно
-            if (currentUser.properties && currentUser.properties.some(p => p.id === currentlyEditingProperty.id)) {
-                const userPropertyIndex = currentUser.properties.findIndex(p => p.id === currentlyEditingProperty.id);
-                if (userPropertyIndex !== -1) {
-                    currentUser.balance += currentlyEditingProperty.price;
-                    currentUser.properties.splice(userPropertyIndex, 1);
-                    updateUserInfo();
-                    
-                    if (!document.getElementById('myPropertiesPage').classList.contains('hidden')) {
-                        renderOwnedProperties();
-                    }
-                }
-            }
-            
-            // Обновляем основной список
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                renderProperties();
-            }
-            
-            showNotification(`Объект "${currentlyEditingProperty.title}" удалён`, 'success');
-            currentlyEditingProperty = null;
-        }
-
-        async function previewPropertyImage(event) {
-            if (!currentlyEditingProperty) {
-                showNotification('Сначала выберите объект недвижимости', 'error');
-                return;
-            }
-            
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (!file.type.match('image.*')) {
-                showNotification('Пожалуйста, выберите изображение', 'error');
-                return;
-            }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                showNotification('Изображение слишком большое. Максимальный размер: 5MB', 'error');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                if (!currentlyEditingProperty.photos) {
-                    currentlyEditingProperty.photos = [];
-                }
-                
-                currentlyEditingProperty.photos.push(e.target.result);
-                currentlyEditingProperty.hasCustomImage = true;
-                
-                // Сохраняем в облако
-                if (syncMode === 'online' && firestore) {
-                    await savePropertiesToFirebase();
-                }
-                saveLocalData();
-                
-                selectPropertyForEditing(currentlyEditingProperty.id);
-                
-                showNotification('Фотография успешно добавлена!', 'success');
-                updateAdminStats();
-                
-                if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                    applyFilters();
-                }
-            };
-            
-            reader.readAsDataURL(file);
-        }
-
-        async function removePropertyPhoto(propertyId, photoIndex) {
-            if (!confirm('Удалить эту фотографию?')) return;
-            
-            const property = properties.find(p => p.id == propertyId);
-            if (!property || !property.photos || !property.photos[photoIndex]) return;
-            
-            property.photos.splice(photoIndex, 1);
-            
-            if (property.photos.length === 0) {
-                property.hasCustomImage = false;
-            }
-            
-            // Сохраняем в облако
-            if (syncMode === 'online' && firestore) {
-                await savePropertiesToFirebase();
-            }
-            saveLocalData();
-            
-            selectPropertyForEditing(propertyId);
-            
-            showNotification('Фотография удалена', 'warning');
-            updateAdminStats();
-            
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                applyFilters();
-            }
-        }
-
-        async function resetPropertyImage() {
-            if (!currentlyEditingProperty) return;
-            
-            if (!confirm('Удалить все фотографии для этого объекта?')) return;
-            
-            currentlyEditingProperty.photos = [];
-            currentlyEditingProperty.hasCustomImage = false;
-            
-            // Сохраняем в облако
-            if (syncMode === 'online' && firestore) {
-                await savePropertiesToFirebase();
-            }
-            saveLocalData();
-            
-            selectPropertyForEditing(currentlyEditingProperty.id);
-            
-            showNotification('Все фотографии удалены', 'warning');
-            updateAdminStats();
-            
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                applyFilters();
-            }
-        }
-
-        async function savePropertyChanges() {
-            if (!currentlyEditingProperty) return;
-            
-            const title = document.getElementById('editPropertyTitle').value.trim();
-            const type = document.getElementById('editPropertyType').value;
-            const district = document.getElementById('editPropertyDistrict').value;
-            const price = parseInt(document.getElementById('editPropertyPrice').value);
-            const rooms = document.getElementById('editPropertyRooms').value.trim();
-            const size = document.getElementById('editPropertySize').value.trim();
-            const rental = parseInt(document.getElementById('editPropertyRental').value);
-            const description = document.getElementById('editPropertyDescription').value.trim();
-            
-            if (!title || !price || !rooms || !size || !rental || !description) {
-                showNotification('Заполните все обязательные поля', 'error');
-                return;
-            }
-            
-            if (price < 0 || rental < 0) {
-                showNotification('Цена и доход не могут быть отрицательными', 'error');
-                return;
-            }
-            
-            currentlyEditingProperty.title = title;
-            currentlyEditingProperty.type = type;
-            currentlyEditingProperty.district = district;
-            currentlyEditingProperty.price = price;
-            currentlyEditingProperty.rooms = rooms;
-            currentlyEditingProperty.size = size;
-            currentlyEditingProperty.rentalIncome = rental;
-            currentlyEditingProperty.description = description;
-            
-            // Сохраняем в облако
-            if (syncMode === 'online' && firestore) {
-                await savePropertiesToFirebase();
-            }
-            saveLocalData();
-            
-            renderPropertiesManagement();
-            selectPropertyForEditing(currentlyEditingProperty.id);
-            
-            showNotification('Изменения сохранены!', 'success');
-            
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                applyFilters();
-            }
-            
-            if (!document.getElementById('myPropertiesPage').classList.contains('hidden')) {
-                renderOwnedProperties();
-            }
-        }
-
-        // ==================== АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ АВТОМОБИЛЯМИ ====================
-        
-        let currentlyEditingCar = null;
-
-        function renderCarsManagement() {
-            const container = document.getElementById('adminCarsList');
-            container.innerHTML = '';
-            
-            cars.forEach(car => {
-                const item = document.createElement('div');
-                item.className = 'car-list-item';
-                item.id = `adminCar_${car.id}`;
-                item.onclick = () => selectCarForEditing(car.id);
-                
-                const classNames = {
-                    economy: "Эконом",
-                    comfort: "Комфорт",
-                    premium: "Премиум"
-                };
-                
-                item.innerHTML = `
-                    <div style="font-weight: bold; color: white; margin-bottom: 5px;">${car.title}</div>
-                    <div style="color: var(--light-blue); font-size: 0.9rem;">
-                        ${classNames[car.class]} • ${car.year}
-                    </div>
-                    <div style="color: var(--success); font-size: 0.9rem; margin-top: 5px;">
-                        $${car.price.toLocaleString()}
-                        ${car.photos && car.photos.length > 0 ? ` • 📷 ${car.photos.length} фото</div>` : ''}
-                    </div>
-                `;
-                
-                container.appendChild(item);
-            });
-            
-            document.getElementById('carFormFields').classList.add('hidden');
-            document.getElementById('carFormEmpty').classList.remove('hidden');
-            document.getElementById('carImagePreview').innerHTML = '';
-            document.getElementById('carFormTitle').textContent = 'Выберите автомобиль';
-        }
-
-        function selectCarForEditing(carId) {
-            document.querySelectorAll('.car-list-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.getElementById(`adminCar_${carId}`).classList.add('active');
-            
-            const car = cars.find(c => c.id == carId);
-            if (!car) return;
-            
-            currentlyEditingCar = car;
-            
-            document.getElementById('editCarTitle').value = car.title;
-            document.getElementById('editCarClass').value = car.class;
-            document.getElementById('editCarType').value = car.type;
-            document.getElementById('editCarPrice').value = car.price;
-            document.getElementById('editCarYear').value = car.year;
-            document.getElementById('editCarPower').value = car.power;
-            document.getElementById('editCarDescription').value = car.description;
-            
-            const previewContainer = document.getElementById('carImagePreview');
-            previewContainer.innerHTML = '';
-            
-            if (car.photos && car.photos.length > 0) {
-                car.photos.forEach((photo, index) => {
-                    const imgWrapper = document.createElement('div');
-                    imgWrapper.style.marginBottom = '10px';
-                    imgWrapper.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                            <span style="color: var(--light-blue);">Фото ${index + 1}</span>
-                            <button class="btn btn-danger" style="padding: 3px 8px; font-size: 0.8rem;" onclick="removeCarPhoto('${car.id}', ${index})">Удалить</button>
-                        </div>
-                        <img src="${photo}" style="max-width: 100%; max-height: 150px; border-radius: 4px;">
-                    `;
-                    previewContainer.appendChild(imgWrapper);
-                });
-                
-                const photoCount = document.createElement('div');
-                photoCount.style.color = 'var(--light-blue)';
-                photoCount.style.marginTop = '10px';
-                photoCount.textContent = `Всего фотографий: ${car.photos.length}`;
-                previewContainer.appendChild(photoCount);
-            } else {
-                previewContainer.innerHTML = '<div style="color: var(--light-blue); text-align: center; padding: 20px;">Фотографий нет</div>';
-            }
-            
-            document.getElementById('carFormFields').classList.remove('hidden');
-            document.getElementById('carFormEmpty').classList.add('hidden');
-            document.getElementById('carFormTitle').textContent = `Редактирование: ${car.title}`;
-        }
-
-        async function addNewCar() {
-            const newCarId = "car_" + Date.now().toString();
-            const newCar = {
-                id: newCarId,
-                class: "economy",
-                type: "sedan",
-                title: "Новый автомобиль",
-                description: "Описание нового автомобиля",
-                price: 25000,
-                year: "2023",
-                power: "150 л.с.",
-                imageColor: "#3498db",
-                photos: [],
-                hasCustomImage: false,
-                cellId: null
-            };
-            
-            cars.push(newCar);
-            
-            if (syncMode === 'online' && firestore) {
-                await saveCarsToFirebase();
-            }
-            saveLocalData();
-            
-            renderCarsManagement();
-            selectCarForEditing(newCarId);
-            
-            showNotification('Новый автомобиль добавлен', 'success');
-        }
-
-        async function deleteCar() {
-            if (!currentlyEditingCar) return;
-            
-            if (!confirm(`Удалить автомобиль "${currentlyEditingCar.title}"? Это действие нельзя отменить.`)) {
-                return;
-            }
-            
-            // Удаляем автомобиль из массива
-            const carIndex = cars.findIndex(c => c.id === currentlyEditingCar.id);
-            if (carIndex !== -1) {
-                cars.splice(carIndex, 1);
-            }
-            
-            // Удаляем автомобиль у всех пользователей
-            users.forEach(user => {
-                if (user.cars) {
-                    const userCarIndex = user.cars.findIndex(c => c.id === currentlyEditingCar.id);
-                    if (userCarIndex !== -1) {
-                        // Возвращаем деньги
-                        user.balance += currentlyEditingCar.price;
-                        user.cars.splice(userCarIndex, 1);
-                    }
-                }
-            });
-            
-            // Удаляем из Firebase
-            if (syncMode === 'online' && firestore) {
-                try {
-                    await firestore.collection('cars').doc(currentlyEditingCar.id).delete();
-                    
-                    // Обновляем всех пользователей
-                    for (const user of users) {
-                        await saveUserToFirebase(user);
-                    }
-                } catch (error) {
-                    console.error('Ошибка удаления из Firebase:', error);
-                }
-            }
-            
-            saveLocalData();
-            
-            // Обновляем интерфейс
-            renderCarsManagement();
-            document.getElementById('carFormFields').classList.add('hidden');
-            document.getElementById('carFormEmpty').classList.remove('hidden');
-            document.getElementById('carImagePreview').innerHTML = '';
-            document.getElementById('carFormTitle').textContent = 'Выберите автомобиль';
-            
-            // Обновляем текущего пользователя если нужно
-            if (currentUser.cars && currentUser.cars.some(c => c.id === currentlyEditingCar.id)) {
-                const userCarIndex = currentUser.cars.findIndex(c => c.id === currentlyEditingCar.id);
-                if (userCarIndex !== -1) {
-                    currentUser.balance += currentlyEditingCar.price;
-                    currentUser.cars.splice(userCarIndex, 1);
-                    updateUserInfo();
-                    
-                    if (!document.getElementById('myCarsPage').classList.contains('hidden')) {
-                        renderOwnedCars();
-                    }
-                }
-            }
-            
-            // Обновляем основной список
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                renderCars();
-            }
-            
-            showNotification(`Автомобиль "${currentlyEditingCar.title}" удалён`, 'success');
-            currentlyEditingCar = null;
-        }
-
-        async function previewCarImage(event) {
-            if (!currentlyEditingCar) {
-                showNotification('Сначала выберите автомобиль', 'error');
-                return;
-            }
-            
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (!file.type.match('image.*')) {
-                showNotification('Пожалуйста, выберите изображение', 'error');
-                return;
-            }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                showNotification('Изображение слишком большое. Максимальный размер: 5MB', 'error');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                if (!currentlyEditingCar.photos) {
-                    currentlyEditingCar.photos = [];
-                }
-                
-                currentlyEditingCar.photos.push(e.target.result);
-                currentlyEditingCar.hasCustomImage = true;
-                
-                // Сохраняем в облако
-                if (syncMode === 'online' && firestore) {
-                    await saveCarsToFirebase();
-                }
-                saveLocalData();
-                
-                selectCarForEditing(currentlyEditingCar.id);
-                
-                showNotification('Фотография успешно добавлена!', 'success');
-                updateAdminStats();
-                
-                if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                    applyCarFilters();
-                }
-            };
-            
-            reader.readAsDataURL(file);
-        }
-
-        async function removeCarPhoto(carId, photoIndex) {
-            if (!confirm('Удалить эту фотографию?')) return;
-            
-            const car = cars.find(c => c.id == carId);
-            if (!car || !car.photos || !car.photos[photoIndex]) return;
-            
-            car.photos.splice(photoIndex, 1);
-            
-            if (car.photos.length === 0) {
-                car.hasCustomImage = false;
-            }
-            
-            // Сохраняем в облако
-            if (syncMode === 'online' && firestore) {
-                await saveCarsToFirebase();
-            }
-            saveLocalData();
-            
-            selectCarForEditing(carId);
-            
-            showNotification('Фотография удалена', 'warning');
-            updateAdminStats();
-            
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                applyCarFilters();
-            }
-        }
-
-        async function resetCarImage() {
-            if (!currentlyEditingCar) return;
-            
-            if (!confirm('Удалить все фотографии для этого автомобиля?')) return;
-            
-            currentlyEditingCar.photos = [];
-            currentlyEditingCar.hasCustomImage = false;
-            
-            // Сохраняем в облако
-            if (syncMode === 'online' && firestore) {
-                await saveCarsToFirebase();
-            }
-            saveLocalData();
-            
-            selectCarForEditing(currentlyEditingCar.id);
-            
-            showNotification('Все фотографии удалены', 'warning');
-            updateAdminStats();
-            
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                applyCarFilters();
-            }
-        }
-
-        async function saveCarChanges() {
-            if (!currentlyEditingCar) return;
-            
-            const title = document.getElementById('editCarTitle').value.trim();
-            const carClass = document.getElementById('editCarClass').value;
-            const type = document.getElementById('editCarType').value;
-            const price = parseInt(document.getElementById('editCarPrice').value);
-            const year = document.getElementById('editCarYear').value.trim();
-            const power = document.getElementById('editCarPower').value.trim();
-            const description = document.getElementById('editCarDescription').value.trim();
-            
-            if (!title || !price || !year || !power || !description) {
-                showNotification('Заполните все обязательные поля', 'error');
-                return;
-            }
-            
-            if (price < 0) {
-                showNotification('Цена не может быть отрицательной', 'error');
-                return;
-            }
-            
-            currentlyEditingCar.title = title;
-            currentlyEditingCar.class = carClass;
-            currentlyEditingCar.type = type;
-            currentlyEditingCar.price = price;
-            currentlyEditingCar.year = year;
-            currentlyEditingCar.power = power;
-            currentlyEditingCar.description = description;
-            
-            // Сохраняем в облако
-            if (syncMode === 'online' && firestore) {
-                await saveCarsToFirebase();
-            }
-            saveLocalData();
-            
-            renderCarsManagement();
-            selectCarForEditing(currentlyEditingCar.id);
-            
-            showNotification('Изменения сохранены!', 'success');
-            
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                applyCarFilters();
-            }
-            
-            if (!document.getElementById('myCarsPage').classList.contains('hidden')) {
-                renderOwnedCars();
-            }
-        }
-
-        // ==================== АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ ЯЧЕЙКАМИ ====================
-        
-        function renderCellsManagement() {
-            const container = document.getElementById('cellsList');
-            container.innerHTML = '';
-            
-            cells.forEach(cell => {
-                const itemsCount = cell.type === 'property' 
-                    ? properties.filter(p => p.cellId === cell.id).length
-                    : cars.filter(c => c.cellId === cell.id).length;
-                
-                const item = document.createElement('div');
-                item.className = 'cell-item';
-                item.id = `adminCell_${cell.id}`;
-                item.onclick = () => selectCellForEditing(cell.id);
-                
-                item.innerHTML = `
-                    <div class="cell-icon">${cell.icon}</div>
-                    <div class="cell-name">${cell.name}</div>
-                    <div class="cell-status">
-                        ${cell.type === 'property' ? 'Недвижимость' : 'Автомобили'}<br>
-                        Объектов: ${itemsCount}/${cell.maxItems}
-                    </div>
-                `;
-                
-                container.appendChild(item);
-            });
-        }
-
-        function selectCellForEditing(cellId) {
-            document.querySelectorAll('.cell-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.getElementById(`adminCell_${cellId}`).classList.add('active');
-            
-            const cell = cells.find(c => c.id == cellId);
-            if (!cell) return;
-            
-            currentlyEditingCell = cell;
-            
-            // Показываем информацию о ячейке
-            const items = cell.type === 'property' 
-                ? properties.filter(p => p.cellId === cell.id)
-                : cars.filter(c => c.cellId === cell.id);
-            
-            let itemsHtml = '';
-            items.forEach(item => {
-                itemsHtml += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 5px;">
-                        <div>
-                            <strong>${item.title}</strong><br>
-                            <span style="color: var(--light-blue); font-size: 0.9rem;">$${item.price.toLocaleString()}</span>
-                        </div>
-                        <button class="btn btn-danger" onclick="removeFromCell('${cell.id}', '${item.id}', '${cell.type}')" style="padding: 5px 10px; font-size: 0.8rem;">Удалить</button>
-                    </div>
-                `;
-            });
-            
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'flex';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 600px;">
-                    <button class="close-modal" onclick="this.parentElement.parentElement.style.display='none'">&times;</button>
-                    <h2>Управление ячейкой: ${cell.name}</h2>
-                    
-                    <div style="margin: 20px 0;">
-                        <h3 style="color: var(--accent-blue); margin-bottom: 10px;">Объекты в ячейке (${items.length}/${cell.maxItems})</h3>
-                        <div style="max-height: 300px; overflow-y: auto;">
-                            ${items.length > 0 ? itemsHtml : '<div style="text-align: center; padding: 20px; color: var(--light-blue);">Объектов нет</div>'}
-                        </div>
-                    </div>
-                    
-                    <div style="margin: 20px 0;">
-                        <h3 style="color: var(--accent-blue); margin-bottom: 10px;">Добавить объект в ячейку</h3>
-                        <select id="addToCellSelect" style="margin-bottom: 10px;">
-                            <option value="">Выберите объект</option>
-                            ${cell.type === 'property' 
-                                ? properties.filter(p => !p.cellId).map(p => `<option value="${p.id}">${p.title} ($${p.price.toLocaleString()})</option>`).join('')
-                                : cars.filter(c => !c.cellId).map(c => `<option value="${c.id}">${c.title} ($${c.price.toLocaleString()})</option>`).join('')}
-                        </select>
-                        <button class="btn btn-primary" onclick="addToCell('${cell.id}', '${cell.type}')" style="width: 100%;">Добавить в ячейку</button>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button class="btn btn-danger" onclick="deleteCell('${cell.id}')" style="width: 100%;">Удалить ячейку</button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        async function addNewCell() {
-            const type = document.getElementById('newCellType').value;
-            const name = document.getElementById('newCellName').value.trim();
-            const maxItems = parseInt(document.getElementById('newCellMaxItems').value);
-            const icon = document.getElementById('newCellIcon').value;
-            
-            if (!name) {
-                showNotification('Введите название ячейки', 'error');
-                return;
-            }
-            
-            const newCellId = "cell_" + Date.now().toString();
-            const newCell = {
-                id: newCellId,
-                name,
-                type,
-                icon,
-                maxItems,
-                items: [],
-                createdAt: new Date().toISOString()
-            };
-            
-            cells.push(newCell);
-            
-            if (syncMode === 'online' && firestore) {
-                await saveCellsToFirebase();
-            }
-            saveLocalData();
-            
-            renderCellsManagement();
-            showNotification('Новая ячейка добавлена', 'success');
-            
-            // Очищаем форму
-            document.getElementById('newCellName').value = '';
-        }
-
-        async function addToCell(cellId, cellType) {
-            const select = document.getElementById('addToCellSelect');
-            const itemId = select.value;
-            
-            if (!itemId) {
-                showNotification('Выберите объект', 'error');
-                return;
-            }
-            
-            const cell = cells.find(c => c.id === cellId);
-            if (!cell) return;
-            
-            // Проверяем, не заполнена ли ячейка
-            const itemsInCell = cellType === 'property' 
-                ? properties.filter(p => p.cellId === cellId).length
-                : cars.filter(c => c.cellId === cellId).length;
-            
-            if (itemsInCell >= cell.maxItems) {
-                showNotification(`Ячейка заполнена! Максимум ${cell.maxItems} объектов.`, 'error');
-                return;
-            }
-            
-            // Добавляем объект в ячейку
-            if (cellType === 'property') {
-                const property = properties.find(p => p.id === itemId);
-                if (property) {
-                    property.cellId = cellId;
-                }
-            } else {
-                const car = cars.find(c => c.id === itemId);
-                if (car) {
-                    car.cellId = cellId;
-                }
-            }
-            
-            // Сохраняем изменения
-            if (cellType === 'property') {
-                if (syncMode === 'online' && firestore) {
-                    await savePropertiesToFirebase();
-                }
-            } else {
-                if (syncMode === 'online' && firestore) {
-                    await saveCarsToFirebase();
-                }
-            }
-            saveLocalData();
-            
-            // Обновляем отображение
-            selectCellForEditing(cellId);
-            
-            // Обновляем основные списки
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                renderProperties();
-            }
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                renderCars();
-            }
-            
-            showNotification('Объект добавлен в ячейку', 'success');
-        }
-
-        async function removeFromCell(cellId, itemId, cellType) {
-            if (!confirm('Удалить объект из ячейки?')) return;
-            
-            // Удаляем объект из ячейки
-            if (cellType === 'property') {
-                const property = properties.find(p => p.id === itemId);
-                if (property) {
-                    property.cellId = null;
-                }
-            } else {
-                const car = cars.find(c => c.id === itemId);
-                if (car) {
-                    car.cellId = null;
-                }
-            }
-            
-            // Сохраняем изменения
-            if (cellType === 'property') {
-                if (syncMode === 'online' && firestore) {
-                    await savePropertiesToFirebase();
-                }
-            } else {
-                if (syncMode === 'online' && firestore) {
-                    await saveCarsToFirebase();
-                }
-            }
-            saveLocalData();
-            
-            // Обновляем отображение
-            selectCellForEditing(cellId);
-            
-            // Обновляем основные списки
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                renderProperties();
-            }
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                renderCars();
-            }
-            
-            showNotification('Объект удалён из ячейки', 'warning');
-        }
-
-        async function deleteCell(cellId) {
-            if (!confirm('Удалить ячейку? Все объекты будут удалены из неё.')) return;
-            
-            const cell = cells.find(c => c.id === cellId);
-            if (!cell) return;
-            
-            // Удаляем ссылки на ячейку у объектов
-            if (cell.type === 'property') {
-                properties.forEach(property => {
-                    if (property.cellId === cellId) {
-                        property.cellId = null;
-                    }
-                });
-                if (syncMode === 'online' && firestore) {
-                    await savePropertiesToFirebase();
-                }
-            } else {
-                cars.forEach(car => {
-                    if (car.cellId === cellId) {
-                        car.cellId = null;
-                    }
-                });
-                if (syncMode === 'online' && firestore) {
-                    await saveCarsToFirebase();
-                }
-            }
-            
-            // Удаляем ячейку
-            const cellIndex = cells.findIndex(c => c.id === cellId);
-            if (cellIndex !== -1) {
-                cells.splice(cellIndex, 1);
-            }
-            
-            // Удаляем из Firebase
-            if (syncMode === 'online' && firestore) {
-                try {
-                    await firestore.collection('cells').doc(cellId).delete();
-                } catch (error) {
-                    console.error('Ошибка удаления из Firebase:', error);
-                }
-            }
-            
-            saveLocalData();
-            
-            // Закрываем модальное окно
-            document.querySelectorAll('.modal').forEach(modal => {
-                if (modal.style.display === 'flex') {
-                    modal.style.display = 'none';
-                }
-            });
-            
-            // Обновляем отображение
-            renderCellsManagement();
-            
-            // Обновляем основные списки
-            if (!document.getElementById('mainPage').classList.contains('hidden')) {
-                renderProperties();
-            }
-            if (!document.getElementById('carsPage').classList.contains('hidden')) {
-                renderCars();
-            }
-            
-            showNotification('Ячейка удалена', 'success');
-        }
-
         // ==================== МОЯ НЕДВИЖИМОСТЬ ====================
         
         function renderOwnedProperties() {
@@ -5109,6 +5335,10 @@
                     premium: "Премиум"
                 };
                 
+                const userCar = currentUser.cars.find(c => c.id === car.id);
+                const isUsed = userCar ? userCar.isUsed : false;
+                const durability = userCar ? userCar.durability : 0;
+                
                 const card = document.createElement('div');
                 card.className = 'car-card owned-card';
                 card.innerHTML = `
@@ -5120,6 +5350,20 @@
                         <div class="car-type">${car.type === 'sedan' ? 'СЕДАН' : car.type === 'suv' ? 'ВНЕДОРОЖНИК' : car.type === 'sport' ? 'СПОРТКАР' : 'ЛЮКС'}</div>
                         <h3 class="car-title">${car.title}</h3>
                         <p class="car-description">${car.description}</p>
+                        ${isUsed ? `
+                            <div style="margin: 10px 0; padding: 8px; background: rgba(243, 156, 18, 0.1); border-radius: 6px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span style="color: var(--light-blue); font-size: 0.9rem;">Прочность:</span>
+                                    <span style="color: ${durability >= 70 ? '#2ecc71' : durability >= 55 ? '#f39c12' : '#e74c3c'}; font-weight: bold; font-size: 0.9rem;">
+                                        ${durability}%
+                                    </span>
+                                </div>
+                                <div style="width: 100%; height: 6px; background: #2c3e50; border-radius: 3px; overflow: hidden;">
+                                    <div style="width: ${durability}%; height: 100%; background: ${durability >= 70 ? '#2ecc71' : durability >= 55 ? '#f39c12' : '#e74c3c'};"></div>
+                                </div>
+                                <div style="color: var(--warning); font-size: 0.8rem; margin-top: 5px;">🚗 БУ автомобиль</div>
+                            </div>
+                        ` : ''}
                         <div class="car-details">
                             <div class="detail">
                                 <div class="detail-value">${car.year}</div>
@@ -5261,6 +5505,9 @@
                 // Сохраняем все автомобили
                 await saveCarsToFirebase();
                 
+                // Сохраняем все бу автомобили
+                await saveUsedCarsToFirebase();
+                
                 // Сохраняем все транзакции
                 for (const transaction of transactions) {
                     await saveTransactionToFirebase(transaction);
@@ -5282,7 +5529,7 @@
                 updateSyncStatus('syncing', 'Очистка облачных данных...');
                 
                 // Удаляем все документы из всех коллекций
-                const collections = ['users', 'properties', 'cars', 'transactions', 'cells'];
+                const collections = ['users', 'properties', 'cars', 'usedCars', 'transactions', 'cells'];
                 
                 for (const collectionName of collections) {
                     const snapshot = await firestore.collection(collectionName).get();
@@ -5305,11 +5552,12 @@
 
         function downloadBackup() {
             const backupData = {
-                version: '2.1',
+                version: '2.2',
                 exportDate: new Date().toISOString(),
                 users: users,
                 properties: properties,
                 cars: cars,
+                usedCars: usedCars,
                 transactions: transactions,
                 cells: cells,
                 casinoStats: { wins: casinoWins, losses: casinoLosses }
@@ -5332,11 +5580,12 @@
             if (!currentUser) return;
             
             const userData = {
-                version: '2.1',
+                version: '2.2',
                 exportDate: new Date().toISOString(),
                 user: currentUser,
                 properties: properties.filter(p => currentUser.properties.some(up => up.id === p.id)),
-                cars: cars.filter(c => currentUser.cars && currentUser.cars.some(uc => uc.id === c.id))
+                cars: cars.filter(c => currentUser.cars && currentUser.cars.some(uc => uc.id === c.id)),
+                usedCars: usedCars.filter(c => currentUser.cars && currentUser.cars.some(uc => uc.id === c.id && uc.isUsed))
             };
             
             const dataStr = JSON.stringify(userData, null, 2);
@@ -5398,6 +5647,9 @@
                             }
                             if (!document.getElementById('carsPage').classList.contains('hidden')) {
                                 applyCarFilters();
+                            }
+                            if (!document.getElementById('usedCarsPage').classList.contains('hidden')) {
+                                applyUsedCarFilters();
                             }
                             if (!document.getElementById('casinoPage').classList.contains('hidden')) {
                                 updateCasinoUI();
@@ -5477,6 +5729,7 @@
                 transactions = [];
                 properties = JSON.parse(JSON.stringify(demoPropertiesData));
                 cars = JSON.parse(JSON.stringify(demoCarsData));
+                usedCars = JSON.parse(JSON.stringify(usedCarsData));
                 cells = [];
                 casinoWins = 0;
                 casinoLosses = 0;
@@ -5491,59 +5744,69 @@
             }
         }
 
+        // ==================== УПРАВЛЕНИЕ ЯЧЕЙКАМИ ====================
+        
+        function renderCellsManagement() {
+            const container = document.getElementById('cellsList');
+            container.innerHTML = '';
+            
+            cells.forEach(cell => {
+                const item = document.createElement('div');
+                item.className = 'cell-item';
+                item.innerHTML = `
+                    <div class="cell-icon">${cell.icon}</div>
+                    <div class="cell-name">${cell.name}</div>
+                    <div class="cell-status">${cell.type === 'property' ? 'Недвижимость' : 'Автомобили'}</div>
+                    <div class="cell-status">Макс: ${cell.maxItems} объектов</div>
+                `;
+                item.onclick = () => selectCellForEditing(cell.id);
+                container.appendChild(item);
+            });
+        }
+
+        function selectCellForEditing(cellId) {
+            const cell = cells.find(c => c.id === cellId);
+            if (!cell) return;
+
+            currentlyEditingCell = cellId;
+            
+            // Можно добавить форму редактирования ячейки здесь
+            showNotification(`Выбрана ячейка: ${cell.name}`, 'info');
+        }
+
+        function addNewCell() {
+            const type = document.getElementById('newCellType').value;
+            const name = document.getElementById('newCellName').value.trim();
+            const maxItems = parseInt(document.getElementById('newCellMaxItems').value) || 5;
+            const icon = document.getElementById('newCellIcon').value;
+            
+            if (!name) {
+                showNotification('Введите название ячейки', 'error');
+                return;
+            }
+            
+            const newCell = {
+                id: "cell_" + Date.now().toString(),
+                type: type,
+                name: name,
+                icon: icon,
+                maxItems: maxItems,
+                items: [],
+                createdAt: new Date().toISOString()
+            };
+            
+            cells.push(newCell);
+            saveLocalData();
+            
+            if (syncMode === 'online' && firestore) {
+                saveCellsToFirebase();
+            }
+            
+            showNotification('Новая ячейка добавлена', 'success');
+            renderCellsManagement();
+        }
+
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-        
-        document.getElementById('priceSlider').addEventListener('input', function() {
-            document.getElementById('maxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
-        });
-
-        document.getElementById('carPriceSlider').addEventListener('input', function() {
-            document.getElementById('carMaxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
-        });
-
-        // Секретные комбинации клавиш
-        let secretKeySequence = [];
-        const SECRET_KEY_COMBO = ['b', 'l', 'u', 'e', 'a', 'd', 'm', 'i', 'n'];
-        
-        document.addEventListener('keydown', function(event) {
-            if (!event || !event.key) return;
-            
-            secretKeySequence.push(event.key.toLowerCase());
-            
-            if (secretKeySequence.length > SECRET_KEY_COMBO.length) {
-                secretKeySequence.shift();
-            }
-            
-            if (secretKeySequence.join('') === SECRET_KEY_COMBO.join('')) {
-                if (currentUser && currentUser.isAdmin) {
-                    showAdminPanel();
-                    showNotification('Секретный доступ к админпанели активирован!', 'success');
-                }
-                secretKeySequence = [];
-            }
-            
-            if (window.location.hash === '#admin' && currentUser && currentUser.isAdmin) {
-                showAdminPanel();
-                window.location.hash = '';
-            }
-        });
-
-        // Отслеживаем онлайн/оффлайн статус
-        window.addEventListener('online', () => {
-            isOnline = true;
-            if (syncMode === 'online' && !firestore) {
-                initializeFirebase();
-            }
-            showNotification('Соединение восстановлено', 'success');
-        });
-        
-        window.addEventListener('offline', () => {
-            isOnline = false;
-            updateSyncStatus('error', 'Нет соединения');
-            showNotification('Вы в оффлайн режиме', 'warning');
-        });
-
-        // ==================== ЗАПУСК СИСТЕМЫ ====================
         
         document.addEventListener('DOMContentLoaded', () => {
             initializeSystem();
@@ -5551,12 +5814,16 @@
             window.addEventListener('click', (event) => {
                 const modal = document.getElementById('purchaseModal');
                 const carModal = document.getElementById('purchaseCarModal');
+                const usedCarModal = document.getElementById('purchaseUsedCarModal');
                 const assetsModal = document.getElementById('manageAssetsModal');
                 if (event.target === modal) {
                     closeModal();
                 }
                 if (event.target === carModal) {
                     closeCarModal();
+                }
+                if (event.target === usedCarModal) {
+                    closeUsedCarModal();
                 }
                 if (event.target === assetsModal) {
                     closeManageAssetsModal();
@@ -5590,6 +5857,23 @@
                     showAdminPanel();
                     logoClickCount = 0;
                 }
+            });
+            
+            // Обработчики для слайдеров
+            document.getElementById('priceSlider').addEventListener('input', function() {
+                document.getElementById('maxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
+            });
+
+            document.getElementById('carPriceSlider').addEventListener('input', function() {
+                document.getElementById('carMaxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
+            });
+
+            document.getElementById('durabilitySlider').addEventListener('input', function() {
+                document.getElementById('minDurability').textContent = `${this.value}%`;
+            });
+
+            document.getElementById('usedCarPriceSlider').addEventListener('input', function() {
+                document.getElementById('usedCarMaxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
             });
         });
     </script>
