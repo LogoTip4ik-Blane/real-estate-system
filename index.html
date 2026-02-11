@@ -1003,6 +1003,8 @@
             <button class="btn btn-primary" onclick="showPage('myProperties')">Моя недвижимость</button>
             <button class="btn btn-primary" onclick="showPage('myCars')">Мои автомобили</button>
             <button class="btn btn-gold" onclick="showPage('casino')">🎰 Казино</button>
+            <button class="btn btn-primary" onclick="showPage('investments')">📈 Инвестиции</button>
+<button class="btn btn-primary" onclick="showPage('myInvestments')">📊 Мои инвестиции</button>
             <button class="btn btn-danger" onclick="logout()">Выйти</button>
             <!-- Секретная кнопка админа -->
             <button class="btn btn-warning hidden" id="adminNavButton" onclick="showAdminPanel()">⚙️ Админ</button>
@@ -1344,6 +1346,74 @@
                 </div>
             </div>
         </div>
+        <!-- Страница Инвестиции -->
+<div id="investmentsPage" class="hidden">
+    <h1 style="color: var(--accent-blue); margin-bottom: 30px;">📈 Инвестиционные предложения</h1>
+
+    <div class="filters card">
+        <div class="filter-group">
+            <label>Уровень риска</label>
+            <select id="riskFilter">
+                <option value="all">Все риски</option>
+                <option value="low">Низкий</option>
+                <option value="medium">Средний</option>
+                <option value="high">Высокий</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Срок (дней)</label>
+            <select id="durationFilter">
+                <option value="all">Любой</option>
+                <option value="7">7 дней</option>
+                <option value="30">30 дней</option>
+                <option value="90">90 дней</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Мин. сумма, $</label>
+            <input type="range" id="investmentMinAmountSlider" min="0" max="50000" value="50000">
+            <div class="price-display">
+                <span>$0</span>
+                <span id="investmentMaxMinAmount">$50,000</span>
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="applyInvestmentFilters()">Применить фильтры</button>
+    </div>
+
+    <div class="properties-grid" id="investmentsContainer"></div>
+</div>
+
+<!-- Страница Мои инвестиции -->
+<div id="myInvestmentsPage" class="hidden">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+        <h1 style="color: var(--accent-blue);">📊 Мои инвестиции</h1>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-warning" onclick="exportUserData()">📤 Экспорт</button>
+            <button class="btn btn-primary" onclick="importUserData()">📥 Импорт</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 30px;">
+        <h2 style="color: var(--accent-blue); margin-bottom: 15px;">Инвестиционный портфель</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div>
+                <div style="color: var(--light-blue);">Общая сумма вложений</div>
+                <div style="font-size: 2rem; color: var(--success); font-weight: bold;" id="totalInvested">$0</div>
+            </div>
+            <div>
+                <div style="color: var(--light-blue);">Текущая прибыль</div>
+                <div style="font-size: 2rem; color: var(--success); font-weight: bold;" id="totalProfit">$0</div>
+            </div>
+            <div>
+                <div style="color: var(--light-blue);">Активных инвестиций</div>
+                <div style="font-size: 2rem; color: var(--accent-blue); font-weight: bold;" id="activeInvestmentsCount">0</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Активные вложения</h2>
+    <div class="owned-properties" id="myInvestmentsContainer"></div>
+</div>
 
         <!-- Админ-панель -->
         <div id="adminPage" class="hidden">
@@ -1361,6 +1431,7 @@
                 <button class="admin-tab" onclick="switchAdminTab('actions')">Действия</button>
                 <button class="admin-tab" onclick="switchAdminTab('sync')">Синхронизация</button>
                 <button class="admin-tab" onclick="switchAdminTab('cells')">Управление ячейками</button>
+                <button class="admin-tab" onclick="switchAdminTab('investments')">📈 Инвестиции</button>
             </div>
             
             <!-- Вкладка: Пользователи -->
@@ -1627,7 +1698,7 @@
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="forceSyncToFirebase()">🔄 Принудительная синхронизация</button>
                         <button class="btn btn-warning" onclick="downloadBackup()">📥 Скачать резервную копию</button>
-                        <button class="btn btn-danger" onclick="clearFirebaseData()">🗑️ Очистить облачные данные</button>
+                        <button class="btn btn-danger" onclick="clearFirebaseData()">🗑️ Очистить облачные данные</button> 
                     </div>
                 </div>
             </div>
@@ -1671,6 +1742,34 @@
                             </select>
                         </div>
                     </div>
+                    <!-- Вкладка: Управление инвестициями -->
+<div id="adminTabInvestments" class="admin-section hidden">
+    <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Управление инвестициями</h2>
+    
+    <div class="admin-tabs" style="margin-bottom: 20px;">
+        <button class="admin-tab active" onclick="switchInvestmentsAdminTab('products')">Инвест-продукты</button>
+        <button class="admin-tab" onclick="switchInvestmentsAdminTab('users')">Инвестиции игроков</button>
+    </div>
+
+    <!-- Подвкладка: Продукты -->
+    <div id="adminInvestmentsProductsTab">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <h3 style="color: var(--accent-blue);">Список инвестиционных продуктов</h3>
+            <button class="btn btn-success" onclick="addNewInvestmentProduct()">➕ Создать продукт</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;" id="investmentProductsList">
+            <!-- Карточки продуктов будут здесь -->
+        </div>
+    </div>
+
+    <!-- Подвкладка: Инвестиции пользователей -->
+    <div id="adminInvestmentsUsersTab" class="hidden">
+        <h3 style="color: var(--accent-blue); margin-bottom: 15px;">Все активные инвестиции</h3>
+        <input type="text" id="searchUserInvestments" placeholder="Поиск по имени игрока..." style="margin-bottom: 20px;" onkeyup="renderAllUsersInvestments()">
+        <div id="allUsersInvestmentsList" style="display: grid; gap: 15px;"></div>
+    </div>
+</div>
                     
                     <button class="btn btn-success" onclick="addNewCell()" style="width: 100%;">➕ Добавить ячейку</button>
                 </div>
@@ -1788,6 +1887,59 @@
                     Прочность автомобиля влияет на его надёжность и возможные затраты на ремонт.
                 </p>
             </div>
+            <!-- Модальное окно покупки инвестиций -->
+<div class="modal" id="purchaseInvestmentModal">
+    <div class="modal-content modal-wide">
+        <button class="close-modal" onclick="closeInvestmentModal()">&times;</button>
+        <h2>Подтверждение инвестиции</h2>
+        
+        <div id="modalInvestmentProductInfo"></div>
+        
+        <div style="margin: 20px 0;">
+            <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Сумма инвестиции ($)</label>
+            <input type="number" id="investmentAmount" min="0" step="100" value="1000" oninput="updateInvestmentCalc()">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn" onclick="setInvestmentAmount(1000)">+1k</button>
+                <button class="btn" onclick="setInvestmentAmount(5000)">+5k</button>
+                <button class="btn" onclick="setInvestmentAmount(10000)">+10k</button>
+                <button class="btn" onclick="setInvestmentAmount(25000)">+25k</button>
+                <button class="btn" onclick="setMaxInvestmentAmount()">Макс</button>
+            </div>
+        </div>
+
+        <div class="purchase-details" id="investmentCalcDetails">
+            <div class="detail-row">
+                <span>Минимальная сумма:</span>
+                <span id="modalMinInvestment" style="color:var(--warning);">$0</span>
+            </div>
+            <div class="detail-row">
+                <span>Срок:</span>
+                <span id="modalDuration" style="color:white;">0 дней</span>
+            </div>
+            <div class="detail-row">
+                <span>Доходность:</span>
+                <span id="modalReturnPercent" style="color:var(--success);">0%</span>
+            </div>
+            <div class="detail-row">
+                <span>Ожидаемая прибыль:</span>
+                <span id="modalExpectedProfit" style="color:var(--success); font-weight:bold;">$0</span>
+            </div>
+            <div class="detail-row">
+                <span>Итого к получению:</span>
+                <span id="modalTotalReturn" style="color:var(--success); font-weight:bold;">$0</span>
+            </div>
+            <div class="detail-row">
+                <span>Ваш баланс:</span>
+                <span id="modalInvestmentBalance" style="color:var(--success);">$0</span>
+            </div>
+            <div class="detail-row">
+                <span>Остаток после:</span>
+                <span id="modalInvestmentRemaining" style="color:var(--danger);">$0</span>
+            </div>
+        </div>
+        <button class="btn btn-success confirm-btn" onclick="confirmInvestmentPurchase()" style="width: 100%; padding: 15px;">📈 ИНВЕСТИРОВАТЬ</button>
+    </div>
+</div>
             
             <!-- Галерея фотографий -->
             <div class="car-gallery" id="usedCarGallery">
@@ -1928,6 +2080,61 @@
         let currentUser = null;
         let transactions = [];
         let cells = []; // Новые ячейки
+        // ==================== ИНВЕСТИЦИОННЫЕ ПРОДУКТЫ ====================
+let investmentProducts = [];
+let userInvestments = []; // вспомогательный массив, но основное хранится у пользователей
+
+// Демо-данные для инвестиций
+const demoInvestmentProducts = [
+    {
+        id: "inv1",
+        name: "Облигации BlueLine",
+        description: "Надёжные корпоративные облигации с фиксированной доходностью. Рекомендуется консервативным инвесторам.",
+        risk: "low",
+        returnPercent: 5,
+        durationDays: 30,
+        minInvestment: 1000,
+        icon: "📊",
+        color: "#3498db",
+        isActive: true
+    },
+    {
+        id: "inv2",
+        name: "Венчурный фонд",
+        description: "Инвестиции в портфель технологических стартапов. Потенциал выше среднего, умеренные риски.",
+        risk: "medium",
+        returnPercent: 15,
+        durationDays: 30,
+        minInvestment: 5000,
+        icon: "🚀",
+        color: "#e67e22",
+        isActive: true
+    },
+    {
+        id: "inv3",
+        name: "Стартап-акселератор",
+        description: "Высокорисковые вложения в компании на ранней стадии. Возможна сверхприбыль.",
+        risk: "high",
+        returnPercent: 30,
+        durationDays: 30,
+        minInvestment: 10000,
+        icon: "⚡",
+        color: "#e74c3c",
+        isActive: true
+    },
+    {
+        id: "inv4",
+        name: "Краткосрочные облигации",
+        description: "Быстрый доход. Срок всего 7 дней, низкий риск.",
+        risk: "low",
+        returnPercent: 1.5,
+        durationDays: 7,
+        minInvestment: 500,
+        icon: "🕐",
+        color: "#2ecc71",
+        isActive: true
+    }
+];
         
         // Казино переменные
         let currentBet = 100;
@@ -1962,6 +2169,7 @@
             LAST_SYNC: 'real_estate_last_sync',
             CASINO_STATS: 'real_estate_casino_stats',
             CELLS: 'real_estate_cells_cloud'
+            INVESTMENT_PRODUCTS: 'real_estate_investment_products_cloud',
         };
 
         // Демо-данные недвижимости
@@ -2434,6 +2642,7 @@
                 showNotification('Firebase не подключен. Работаем локально.', 'warning');
                 
                 // Загружаем локальные данные
+                loadInvestmentProductsFromLocal();
                 loadLocalData();
                 return false;
             }
@@ -2524,7 +2733,10 @@
                 
                 if (firebaseCells.length > 0) {
                     cells = firebaseCells;
+                    // Загружаем инвестиционные продукты
+                   await loadInvestmentProductsFromFirebase();
                 }
+              
                 
                 // Загружаем статистику казино
                 const casinoStats = JSON.parse(localStorage.getItem(STORAGE_KEYS.CASINO_STATS)) || { wins: 0, losses: 0 };
@@ -3152,6 +3364,9 @@
             
             // Показываем первую вкладку
             switchAdminTab('users');
+            case 'investments':
+    renderInvestmentProductsAdmin();
+    break;
         }
 
         function switchAdminTab(tabName) {
@@ -3218,6 +3433,12 @@
             }
             
             showPage('main');
+            case 'investments':
+    renderInvestmentProducts();
+    break;
+case 'myInvestments':
+    renderMyInvestments();
+    break;
         }
 
         function showPage(page) {
@@ -5977,6 +6198,579 @@
             showNotification('Новая ячейка добавлена', 'success');
             renderCellsManagement();
         }
+        // ==================== ИНВЕСТИЦИИ ====================
+
+// ---------- Загрузка/сохранение продуктов ----------
+function loadInvestmentProductsFromLocal() {
+    const stored = localStorage.getItem(STORAGE_KEYS.INVESTMENT_PRODUCTS);
+    if (stored) {
+        investmentProducts = JSON.parse(stored);
+    } else {
+        investmentProducts = JSON.parse(JSON.stringify(demoInvestmentProducts));
+        saveInvestmentProductsLocal();
+    }
+}
+
+function saveInvestmentProductsLocal() {
+    localStorage.setItem(STORAGE_KEYS.INVESTMENT_PRODUCTS, JSON.stringify(investmentProducts));
+}
+
+async function saveInvestmentProductsToFirebase() {
+    if (syncMode !== 'online' || !firestore) return;
+    try {
+        for (const prod of investmentProducts) {
+            await firestore.collection('investmentProducts').doc(String(prod.id)).set(prod, { merge: true });
+        }
+    } catch (e) { console.error('Ошибка сохранения инвест-продуктов:', e); }
+}
+
+async function loadInvestmentProductsFromFirebase() {
+    if (syncMode !== 'online' || !firestore) return;
+    try {
+        const snap = await firestore.collection('investmentProducts').get();
+        if (!snap.empty) {
+            investmentProducts = [];
+            snap.forEach(doc => investmentProducts.push(doc.data()));
+        } else {
+            investmentProducts = JSON.parse(JSON.stringify(demoInvestmentProducts));
+            await saveInvestmentProductsToFirebase();
+        }
+        saveInvestmentProductsLocal();
+    } catch (e) { console.error('Ошибка загрузки инвест-продуктов:', e); }
+}
+
+// ---------- Рендер страницы инвестиций ----------
+function renderInvestmentProducts(filtered = investmentProducts) {
+    const container = document.getElementById('investmentsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const activeProducts = filtered.filter(p => p.isActive !== false);
+
+    if (activeProducts.length === 0) {
+        container.innerHTML = '<div class="card" style="grid-column:1/-1; text-align:center; padding:40px;"><p style="color:var(--light-blue);">Нет доступных инвестиционных предложений</p></div>';
+        return;
+    }
+
+    activeProducts.forEach(prod => {
+        const riskColor = prod.risk === 'low' ? '#2ecc71' : (prod.risk === 'medium' ? '#f39c12' : '#e74c3c');
+        const riskLabel = prod.risk === 'low' ? 'Низкий' : (prod.risk === 'medium' ? 'Средний' : 'Высокий');
+
+        const card = document.createElement('div');
+        card.className = 'property-card';
+        card.innerHTML = `
+            <div class="property-image" style="background: linear-gradient(135deg, ${prod.color}, #152642);">
+                <div style="position:absolute; top:15px; left:15px; background:${riskColor}; padding:5px 15px; border-radius:20px; font-size:0.8rem; font-weight:bold;">${riskLabel} риск</div>
+                <div style="position:absolute; top:15px; right:15px; font-size:3rem;">${prod.icon}</div>
+                ${prod.durationDays <= 7 ? '<div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.7); color:white; padding:3px 8px; border-radius:12px;">🔥 Горячее предложение</div>' : ''}
+            </div>
+            <div class="property-info">
+                <div class="property-type" style="color:${prod.color};">${prod.name}</div>
+                <p class="property-description" style="min-height:80px;">${prod.description}</p>
+                <div class="property-details">
+                    <div class="detail">
+                        <div class="detail-value">${prod.returnPercent}%</div>
+                        <div class="detail-label">Доходность</div>
+                    </div>
+                    <div class="detail">
+                        <div class="detail-value">${prod.durationDays} дн.</div>
+                        <div class="detail-label">Срок</div>
+                    </div>
+                    <div class="detail">
+                        <div class="detail-value">$${prod.minInvestment.toLocaleString()}</div>
+                        <div class="detail-label">Мин. сумма</div>
+                    </div>
+                </div>
+                <div class="property-footer">
+                    <div class="property-price" style="color:${riskColor};">от $${prod.minInvestment.toLocaleString()}</div>
+                    <button class="buy-btn" onclick="openInvestmentModal('${prod.id}')">Инвестировать</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function applyInvestmentFilters() {
+    const risk = document.getElementById('riskFilter').value;
+    const duration = document.getElementById('durationFilter').value;
+    const maxMinAmount = parseInt(document.getElementById('investmentMinAmountSlider').value);
+
+    let filtered = investmentProducts.filter(p => p.isActive !== false);
+    if (risk !== 'all') filtered = filtered.filter(p => p.risk === risk);
+    if (duration !== 'all') filtered = filtered.filter(p => p.durationDays == duration);
+    filtered = filtered.filter(p => p.minInvestment <= maxMinAmount);
+    renderInvestmentProducts(filtered);
+}
+
+// ---------- Модальное окно покупки ----------
+let selectedInvestmentProduct = null;
+
+function openInvestmentModal(productId) {
+    selectedInvestmentProduct = investmentProducts.find(p => p.id == productId);
+    if (!selectedInvestmentProduct) return;
+
+    const modal = document.getElementById('purchaseInvestmentModal');
+    document.getElementById('modalInvestmentProductInfo').innerHTML = `
+        <h3 style="margin-bottom:10px; color:white;">${selectedInvestmentProduct.name}</h3>
+        <p style="color:#b0b0b0; margin-bottom:15px;">${selectedInvestmentProduct.description}</p>
+    `;
+
+    document.getElementById('modalMinInvestment').textContent = `$${selectedInvestmentProduct.minInvestment.toLocaleString()}`;
+    document.getElementById('modalDuration').textContent = `${selectedInvestmentProduct.durationDays} дней`;
+    document.getElementById('modalReturnPercent').textContent = `${selectedInvestmentProduct.returnPercent}%`;
+    document.getElementById('modalInvestmentBalance').textContent = `$${currentUser.balance.toLocaleString()}`;
+
+    const amountInput = document.getElementById('investmentAmount');
+    amountInput.min = selectedInvestmentProduct.minInvestment;
+    amountInput.value = selectedInvestmentProduct.minInvestment;
+    amountInput.max = currentUser.balance;
+    updateInvestmentCalc();
+
+    modal.style.display = 'flex';
+}
+
+function updateInvestmentCalc() {
+    if (!selectedInvestmentProduct) return;
+    const amount = parseInt(document.getElementById('investmentAmount').value) || selectedInvestmentProduct.minInvestment;
+    const min = selectedInvestmentProduct.minInvestment;
+    if (amount < min) {
+        document.getElementById('investmentAmount').value = min;
+        return updateInvestmentCalc();
+    }
+    const max = currentUser.balance;
+    if (amount > max) {
+        document.getElementById('investmentAmount').value = max;
+        return updateInvestmentCalc();
+    }
+
+    const profit = amount * (selectedInvestmentProduct.returnPercent / 100);
+    const total = amount + profit;
+    document.getElementById('modalExpectedProfit').textContent = `$${profit.toLocaleString(undefined, {maximumFractionDigits:2})}`;
+    document.getElementById('modalTotalReturn').textContent = `$${total.toLocaleString(undefined, {maximumFractionDigits:2})}`;
+    document.getElementById('modalInvestmentRemaining').textContent = `$${(currentUser.balance - amount).toLocaleString()}`;
+    document.getElementById('modalInvestmentRemaining').style.color = (currentUser.balance - amount >= 0) ? 'var(--success)' : 'var(--danger)';
+}
+
+function setInvestmentAmount(inc) {
+    const input = document.getElementById('investmentAmount');
+    let val = parseInt(input.value) + inc;
+    if (val < selectedInvestmentProduct.minInvestment) val = selectedInvestmentProduct.minInvestment;
+    if (val > currentUser.balance) val = currentUser.balance;
+    input.value = val;
+    updateInvestmentCalc();
+}
+
+function setMaxInvestmentAmount() {
+    const input = document.getElementById('investmentAmount');
+    input.value = Math.min(currentUser.balance, Math.floor(currentUser.balance / 1000) * 1000);
+    if (input.value < selectedInvestmentProduct.minInvestment) input.value = selectedInvestmentProduct.minInvestment;
+    updateInvestmentCalc();
+}
+
+function closeInvestmentModal() {
+    document.getElementById('purchaseInvestmentModal').style.display = 'none';
+    selectedInvestmentProduct = null;
+}
+
+async function confirmInvestmentPurchase() {
+    if (!selectedInvestmentProduct) return;
+    const amount = parseInt(document.getElementById('investmentAmount').value);
+    if (amount < selectedInvestmentProduct.minInvestment) {
+        showNotification(`Минимальная сумма инвестиции $${selectedInvestmentProduct.minInvestment}`, 'error');
+        return;
+    }
+    if (amount > currentUser.balance) {
+        showNotification('Недостаточно средств', 'error');
+        return;
+    }
+
+    // Списание денег
+    currentUser.balance -= amount;
+
+    // Создаём запись об инвестиции
+    const now = new Date();
+    const maturityDate = new Date(now);
+    maturityDate.setDate(maturityDate.getDate() + selectedInvestmentProduct.durationDays);
+
+    const investmentRecord = {
+        id: `inv_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        productId: selectedInvestmentProduct.id,
+        productName: selectedInvestmentProduct.name,
+        amount: amount,
+        purchaseDate: now.toISOString(),
+        maturityDate: maturityDate.toISOString(),
+        returnPercent: selectedInvestmentProduct.returnPercent,
+        expectedProfit: amount * (selectedInvestmentProduct.returnPercent / 100),
+        status: 'active', // active, matured, withdrawn
+        risk: selectedInvestmentProduct.risk
+    };
+
+    if (!currentUser.investments) currentUser.investments = [];
+    currentUser.investments.push(investmentRecord);
+
+    // Транзакция
+    const transaction = {
+        id: "trans_" + Date.now().toString(),
+        userId: currentUser.id,
+        type: 'investment_purchase',
+        amount: -amount,
+        description: `Инвестиция в "${selectedInvestmentProduct.name}" на сумму $${amount.toLocaleString()}`,
+        date: now.toISOString(),
+        investmentId: investmentRecord.id
+    };
+    transactions.push(transaction);
+
+    // Сохраняем изменения
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    if (userIndex !== -1) users[userIndex] = currentUser;
+    saveLocalData();
+    if (syncMode === 'online' && firestore) {
+        await saveUserToFirebase(currentUser);
+        await saveTransactionToFirebase(transaction);
+        localStorage.setItem(STORAGE_KEYS.INVESTMENT_PRODUCTS, JSON.stringify(investmentProducts));
+    }
+
+    updateUserInfo();
+    showNotification(`Инвестиция оформлена! Через ${selectedInvestmentProduct.durationDays} дней вы получите $${(amount + investmentRecord.expectedProfit).toLocaleString()}`, 'success');
+    closeInvestmentModal();
+
+    // Обновить страницу инвестиций, если открыта
+    if (!document.getElementById('investmentsPage').classList.contains('hidden')) {
+        renderInvestmentProducts();
+    }
+    if (!document.getElementById('myInvestmentsPage').classList.contains('hidden')) {
+        renderMyInvestments();
+    }
+}
+
+// ---------- Мои инвестиции ----------
+function renderMyInvestments() {
+    const container = document.getElementById('myInvestmentsContainer');
+    if (!container) return;
+
+    const userInvestments = currentUser.investments || [];
+    const now = new Date();
+
+    let totalInvested = 0;
+    let totalProfit = 0;
+    let activeCount = 0;
+
+    container.innerHTML = '';
+
+    if (userInvestments.length === 0) {
+        container.innerHTML = '<div class="card" style="grid-column:1/-1; text-align:center; padding:40px;"><p style="font-size:1.2rem;">У вас пока нет инвестиций</p><button class="btn btn-primary" onclick="showPage(\'investments\')" style="margin-top:20px;">Смотреть предложения</button></div>';
+        document.getElementById('totalInvested').textContent = '$0';
+        document.getElementById('totalProfit').textContent = '$0';
+        document.getElementById('activeInvestmentsCount').textContent = '0';
+        return;
+    }
+
+    userInvestments.forEach(inv => {
+        if (inv.status === 'active' || inv.status === 'matured') {
+            totalInvested += inv.amount;
+            if (inv.status === 'matured') {
+                totalProfit += inv.expectedProfit;
+            } else {
+                // Для активных считаем пропорционально прошедшему времени
+                const start = new Date(inv.purchaseDate);
+                const end = new Date(inv.maturityDate);
+                const elapsed = now - start;
+                const total = end - start;
+                let earned = 0;
+                if (elapsed >= total) {
+                    earned = inv.expectedProfit;
+                    inv.status = 'matured'; // обновим статус
+                } else {
+                    earned = (elapsed / total) * inv.expectedProfit;
+                }
+                totalProfit += earned;
+            }
+            activeCount++;
+        }
+    });
+
+    // Сохраняем возможное обновление статусов
+    saveLocalData();
+
+    document.getElementById('totalInvested').textContent = `$${totalInvested.toLocaleString()}`;
+    document.getElementById('totalProfit').textContent = `$${totalProfit.toLocaleString(undefined, {maximumFractionDigits:2})}`;
+    document.getElementById('activeInvestmentsCount').textContent = activeCount;
+
+    // Рендерим карточки
+    userInvestments.filter(inv => inv.status !== 'withdrawn').forEach(inv => {
+        const start = new Date(inv.purchaseDate);
+        const maturity = new Date(inv.maturityDate);
+        const now = new Date();
+
+        const totalDuration = maturity - start;
+        const elapsed = now - start;
+        const remainingDays = Math.ceil((maturity - now) / (1000 * 60 * 60 * 24));
+        const progress = Math.min(100, (elapsed / totalDuration) * 100);
+
+        const isMatured = now >= maturity || inv.status === 'matured';
+        const earned = isMatured ? inv.expectedProfit : (elapsed / totalDuration) * inv.expectedProfit;
+
+        const riskColor = inv.risk === 'low' ? '#2ecc71' : (inv.risk === 'medium' ? '#f39c12' : '#e74c3c');
+
+        const card = document.createElement('div');
+        card.className = 'property-card owned-card';
+        card.innerHTML = `
+            <div class="property-info">
+                <div class="property-type" style="color:${riskColor};">${inv.productName}</div>
+                <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                    <span style="color:var(--light-blue);">Сумма:</span>
+                    <span style="color:white; font-weight:bold;">$${inv.amount.toLocaleString()}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--light-blue);">Прибыль:</span>
+                    <span style="color:var(--success);">+$${earned.toLocaleString(undefined, {maximumFractionDigits:2})} / $${inv.expectedProfit.toLocaleString()}</span>
+                </div>
+                <div style="margin:15px 0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <span style="color:var(--light-blue);">Прогресс:</span>
+                        <span style="color:white;">${progress.toFixed(0)}%</span>
+                    </div>
+                    <div style="width:100%; height:8px; background:#2c3e50; border-radius:4px;">
+                        <div style="width:${progress}%; height:8px; background:${riskColor}; border-radius:4px;"></div>
+                    </div>
+                    <div style="margin-top:8px; font-size:0.9rem;">
+                        ${isMatured ? '<span style="color:var(--success);">✅ Созрело</span>' : `<span style="color:var(--light-blue);">Осталось дней: ${remainingDays}</span>`}
+                    </div>
+                </div>
+                <div class="property-footer">
+                    <div>
+                        <div style="font-size:0.9rem; color:var(--light-blue);">Окончание:</div>
+                        <div style="color:white;">${maturity.toLocaleDateString()}</div>
+                    </div>
+                    ${isMatured ? `<button class="btn btn-success" onclick="withdrawInvestment('${inv.id}')">💰 Забрать</button>` : 
+                                  `<button class="btn btn-warning" onclick="earlyWithdrawInvestment('${inv.id}')" style="background:var(--warning);">⚠️ Досрочно</button>`}
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+async function withdrawInvestment(investmentId) {
+    if (!currentUser.investments) return;
+    const idx = currentUser.investments.findIndex(i => i.id === investmentId);
+    if (idx === -1) return;
+    const inv = currentUser.investments[idx];
+    if (inv.status === 'withdrawn') {
+        showNotification('Инвестиция уже выведена', 'error');
+        return;
+    }
+
+    const now = new Date();
+    const maturity = new Date(inv.maturityDate);
+    let payout = inv.amount;
+    let profit = inv.expectedProfit;
+
+    if (now < maturity) {
+        // Досрочно – только сумма без прибыли
+        profit = 0;
+        showNotification('Досрочное изъятие: вы получаете только вложенную сумму без прибыли.', 'warning');
+    } else {
+        profit = inv.expectedProfit;
+    }
+
+    payout += profit;
+    currentUser.balance += payout;
+
+    // Меняем статус
+    inv.status = 'withdrawn';
+    inv.withdrawnDate = now.toISOString();
+
+    const transaction = {
+        id: "trans_" + Date.now().toString(),
+        userId: currentUser.id,
+        type: 'investment_withdraw',
+        amount: payout,
+        description: `Вывод инвестиции "${inv.productName}" – сумма $${payout.toLocaleString()}`,
+        date: now.toISOString(),
+        investmentId: inv.id
+    };
+    transactions.push(transaction);
+
+    // Сохраняем
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    if (userIndex !== -1) users[userIndex] = currentUser;
+    saveLocalData();
+    if (syncMode === 'online' && firestore) await saveUserToFirebase(currentUser);
+
+    updateUserInfo();
+    showNotification(`Инвестиция закрыта. Получено $${payout.toLocaleString()}`, 'success');
+    renderMyInvestments();
+}
+
+function earlyWithdrawInvestment(id) {
+    if (confirm('Вы уверены? Вы получите только вложенную сумму без прибыли.')) {
+        withdrawInvestment(id);
+    }
+}
+
+// ---------- Админка: управление продуктами ----------
+function renderInvestmentProductsAdmin() {
+    const container = document.getElementById('investmentProductsList');
+    if (!container) return;
+    container.innerHTML = '';
+
+    investmentProducts.forEach(prod => {
+        const riskColor = prod.risk === 'low' ? '#2ecc71' : (prod.risk === 'medium' ? '#f39c12' : '#e74c3c');
+        const card = document.createElement('div');
+        card.className = 'property-list-item';
+        card.style.cssText = 'display:block; margin-bottom:15px;';
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <div style="flex:3;">
+                    <strong style="color:white;">${prod.name}</strong><br>
+                    <span style="color:var(--light-blue);">${prod.returnPercent}% за ${prod.durationDays} дн. / мин. $${prod.minInvestment}</span>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-primary" onclick="editInvestmentProduct('${prod.id}')" style="padding:5px 10px;">✏️</button>
+                    <button class="btn btn-danger" onclick="deleteInvestmentProduct('${prod.id}')" style="padding:5px 10px;">🗑️</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function switchInvestmentsAdminTab(tab) {
+    document.getElementById('adminInvestmentsProductsTab').classList.toggle('hidden', tab !== 'products');
+    document.getElementById('adminInvestmentsUsersTab').classList.toggle('hidden', tab !== 'users');
+    document.querySelectorAll('#adminTabInvestments .admin-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    if (tab === 'products') renderInvestmentProductsAdmin();
+    if (tab === 'users') renderAllUsersInvestments();
+}
+
+function addNewInvestmentProduct() {
+    const newProd = {
+        id: `inv_${Date.now()}`,
+        name: "Новый продукт",
+        description: "Описание инвестиционного продукта",
+        risk: "low",
+        returnPercent: 5,
+        durationDays: 30,
+        minInvestment: 1000,
+        icon: "📈",
+        color: "#3498db",
+        isActive: true
+    };
+    investmentProducts.push(newProd);
+    saveInvestmentProductsLocal();
+    if (syncMode === 'online' && firestore) saveInvestmentProductsToFirebase();
+    showNotification('Продукт создан', 'success');
+    renderInvestmentProductsAdmin();
+}
+
+function editInvestmentProduct(productId) {
+    const prod = investmentProducts.find(p => p.id === productId);
+    if (!prod) return;
+
+    // Простая форма через prompt (можно сделать модалку, но для демо достаточно)
+    const newName = prompt('Название продукта:', prod.name);
+    if (newName === null) return;
+    prod.name = newName;
+    const newDesc = prompt('Описание:', prod.description);
+    if (newDesc) prod.description = newDesc;
+    const newReturn = parseFloat(prompt('Доходность (%):', prod.returnPercent));
+    if (!isNaN(newReturn)) prod.returnPercent = newReturn;
+    const newDays = parseInt(prompt('Срок (дней):', prod.durationDays));
+    if (!isNaN(newDays)) prod.durationDays = newDays;
+    const newMin = parseInt(prompt('Минимальная сумма:', prod.minInvestment));
+    if (!isNaN(newMin)) prod.minInvestment = newMin;
+
+    saveInvestmentProductsLocal();
+    if (syncMode === 'online' && firestore) saveInvestmentProductsToFirebase();
+    showNotification('Продукт обновлён', 'success');
+    renderInvestmentProductsAdmin();
+}
+
+async function deleteInvestmentProduct(productId) {
+    if (!confirm('Удалить инвестиционный продукт? Инвестиции игроков останутся.')) return;
+    investmentProducts = investmentProducts.filter(p => p.id !== productId);
+    saveInvestmentProductsLocal();
+    if (syncMode === 'online' && firestore) {
+        try { await firestore.collection('investmentProducts').doc(productId).delete(); } catch (e) { console.error(e); }
+    }
+    showNotification('Продукт удалён', 'warning');
+    renderInvestmentProductsAdmin();
+}
+
+// ---------- Админка: просмотр инвестиций всех пользователей ----------
+function renderAllUsersInvestments() {
+    const container = document.getElementById('allUsersInvestmentsList');
+    if (!container) return;
+    container.innerHTML = '';
+    const search = document.getElementById('searchUserInvestments')?.value.toLowerCase() || '';
+
+    users.forEach(user => {
+        if (user.isHiddenAdmin) return;
+        const userInvestments = user.investments || [];
+        if (userInvestments.length === 0) return;
+
+        // фильтр по имени
+        if (search && !`${user.firstName} ${user.lastName} ${user.username}`.toLowerCase().includes(search)) return;
+
+        userInvestments.filter(inv => inv.status !== 'withdrawn').forEach(inv => {
+            const item = document.createElement('div');
+            item.className = 'user-item';
+            item.innerHTML = `
+                <div style="flex:2;">
+                    <div><strong style="color:white;">${user.firstName} ${user.lastName}</strong> (${user.username})</div>
+                    <div style="color:var(--accent-blue);">${inv.productName}</div>
+                    <div style="display:flex; gap:15px; margin-top:5px;">
+                        <span style="color:var(--light-blue);">$${inv.amount.toLocaleString()}</span>
+                        <span style="color:${inv.risk === 'low' ? '#2ecc71' : (inv.risk==='medium'?'#f39c12':'#e74c3c')};">${inv.expectedProfit}%</span>
+                        <span style="color:var(--light-blue);">до ${new Date(inv.maturityDate).toLocaleDateString()}</span>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button class="btn btn-danger" onclick="adminForceWithdrawInvestment('${user.id}', '${inv.id}')">🗑️ Закрыть</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    });
+    if (container.children.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--light-blue);">Активных инвестиций не найдено</div>';
+    }
+}
+
+async function adminForceWithdrawInvestment(userId, investmentId) {
+    if (!confirm('Принудительно закрыть инвестицию (деньги вернутся пользователю)?')) return;
+    const user = users.find(u => u.id === userId);
+    if (!user || !user.investments) return;
+
+    const invIdx = user.investments.findIndex(i => i.id === investmentId);
+    if (invIdx === -1) return;
+    const inv = user.investments[invIdx];
+    if (inv.status === 'withdrawn') {
+        showNotification('Уже выведена', 'error');
+        return;
+    }
+
+    // Возвращаем вложенную сумму (без прибыли, как административное действие)
+    user.balance += inv.amount;
+    inv.status = 'withdrawn';
+    inv.withdrawnDate = new Date().toISOString();
+
+    const userIndex = users.findIndex(u => u.id === userId);
+    if (userIndex !== -1) users[userIndex] = user;
+    saveLocalData();
+    if (syncMode === 'online' && firestore) await saveUserToFirebase(user);
+
+    showNotification(`Инвестиция принудительно закрыта, ${user.firstName} получил $${inv.amount.toLocaleString()}`, 'warning');
+    renderAllUsersInvestments();
+}
+
+// ---------- Интеграция в инициализацию ----------
+// Добавьте вызов loadInvestmentProductsFromLocal() в loadLocalData()
+// и loadInvestmentProductsFromFirebase() в loadDataFromFirebase()
+// (см. инструкцию ниже)
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         
@@ -6028,6 +6822,9 @@
                 if (logoClickCount === 5 && currentUser && currentUser.isAdmin) {
                     showAdminPanel();
                     logoClickCount = 0;
+                    document.getElementById('investmentMinAmountSlider')?.addEventListener('input', function() {
+    document.getElementById('investmentMaxMinAmount').textContent = `$${parseInt(this.value).toLocaleString()}`;
+});
                 }
             });
             
