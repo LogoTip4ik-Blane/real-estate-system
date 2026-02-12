@@ -2574,29 +2574,28 @@
             unsubscribeUsers = firestore.collection('users').onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'modified' || change.type === 'added') {
-                         = { id: change.doc.id, ...change.doc.data() };
-                        const index = users.findIndex(u => u.id === userData.id);
-                        
-                        if (index !== -1) {
-                            users[index] = userData;
-                        } else {
-                            users.push(userData);
-                        }
-                        
-                        // Если это текущий пользователь, обновляем
-                        if (currentUser && currentUser.id === userData.id) {
-                            currentUser = userData;
-                            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
-                            updateUserInfo();
-                        }
-                        
-                        // Обновляем список пользователей в админке если открыта
-                        if (!document.getElementById('adminTabUsers').classList.contains('hidden')) {
-                            renderUsersList();
-                        }
-                    }
-                });
-            });
+                         const userData = { id: change.doc.id, ...change.doc.data() };
+
+            const index = users.findIndex(u => u.id === userData.id);
+
+            if (index !== -1) {
+                users[index] = userData;
+            } else {
+                users.push(userData);
+            }
+
+            if (currentUser && currentUser.id === userData.id) {
+                currentUser = userData;
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+                updateUserInfo();
+            }
+
+            if (!document.getElementById('adminTabUsers').classList.contains('hidden')) {
+                renderUsersList();
+            }
+        }
+    });
+});
             
             // Слушаем обновления недвижимости
             unsubscribeProperties = firestore.collection('properties').onSnapshot((snapshot) => {
