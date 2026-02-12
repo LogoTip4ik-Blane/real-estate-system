@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlueLine Estates | Система недвижимости</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -6051,8 +6052,6 @@
         });
         <!-- ===================== INVEST MODULE ===================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 
 let investments = [
@@ -6253,9 +6252,11 @@ function renderInvestments() {
 // ===================== СТАРТ =====================
 
 loadInvestments();
+if (typeof currentUser !== "undefined" && currentUser) {
 renderInvestments();
 payWeeklyIncome();
-
+}
+        
 </script>
 </body>
 </html>
