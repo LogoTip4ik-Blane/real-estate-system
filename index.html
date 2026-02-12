@@ -2574,7 +2574,7 @@
             unsubscribeUsers = firestore.collection('users').onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'modified' || change.type === 'added') {
-                        const userData = { id: change.doc.id, ...change.doc.data() };
+                         = { id: change.doc.id, ...change.doc.data() };
                         const index = users.findIndex(u => u.id === userData.id);
                         
                         if (index !== -1) {
@@ -6050,9 +6050,8 @@
                 document.getElementById('usedCarMaxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
             });
         });
-        <!-- ===================== INVEST MODULE ===================== -->
-
-<script>
+        
+        // ===================== INVEST MODULE =====================
 
 let investments = [
     { id: "inv1", name: "Tech фонд", price: 1000, income: 25 },
