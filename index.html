@@ -6048,6 +6048,215 @@
                 document.getElementById('usedCarMaxPrice').textContent = `$${parseInt(this.value).toLocaleString()}`;
             });
         });
+        <!-- ===================== INVEST MODULE ===================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+let investments = [
+    { id: "inv1", name: "Tech фонд", price: 1000, income: 25 },
+    { id: "inv2", name: "Нефть", price: 500, income: 10 },
+    { id: "inv3", name: "Крипто индекс", price: 200, income: 5 }
+];
+
+let investmentHistory = {};
+
+// ===================== ЗАГРУЗКА / СОХРАНЕНИЕ =====================
+
+function loadInvestments() {
+    const saved = JSON.parse(localStorage.getItem("investments_v4"));
+    if (saved) investments = saved;
+
+    const hist = JSON.parse(localStorage.getItem("invest_hist_v4"));
+    if (hist) investmentHistory = hist;
+}
+
+function saveInvestments() {
+    localStorage.setItem("investments_v4", JSON.stringify(investments));
+    localStorage.setItem("invest_hist_v4", JSON.stringify(investmentHistory));
+}
+
+// ===================== РЫНОК 🔥 =====================
+
+function updateMarket() {
+    investments.forEach(inv => {
+        const change = Math.random() * 0.2 - 0.1;
+        inv.price = Math.max(1, Math.floor(inv.price * (1 + change)));
+
+        if (!investmentHistory[inv.id]) investmentHistory[inv.id] = [];
+        investmentHistory[inv.id].push(inv.price);
+
+        if (investmentHistory[inv.id].length > 40)
+            investmentHistory[inv.id].shift();
+    });
+
+    saveInvestments();
+    renderInvestments();
+}
+
+setInterval(updateMarket, 15000);
+
+// ===================== НЕДЕЛЬНЫЙ ДОХОД 📈 =====================
+
+function payWeeklyIncome() {
+    if (!currentUser) return;
+
+    const now = Date.now();
+    const week = 7 * 24 * 60 * 60 * 1000;
+
+    let lastPay = localStorage.getItem("lastWeeklyIncome");
+    lastPay = lastPay ? parseInt(lastPay) : 0;
+
+    if (now - lastPay < week) return;
+
+    if (!currentUser.investments) return;
+
+    let total = 0;
+
+    currentUser.investments.forEach(item => {
+        const inv = investments.find(i => i.id === item.id);
+        if (inv) total += inv.income * item.amount;
+    });
+
+    if (total > 0) {
+        currentUser.balance += total;
+        showNotification(`📈 Доход за неделю: +$${total}`, "success");
+    }
+
+    localStorage.setItem("lastWeeklyIncome", now);
+
+    saveLocalData();
+    updateUserInfo();
+}
+
+// ===================== ПОКУПКА =====================
+
+function buyInvestment(id) {
+    const inv = investments.find(i => i.id === id);
+    if (!inv) return;
+
+    if (currentUser.balance < inv.price) {
+        showNotification("Недостаточно денег", "error");
+        return;
+    }
+
+    currentUser.balance -= inv.price;
+
+    if (!currentUser.investments) currentUser.investments = [];
+
+    const owned = currentUser.investments.find(i => i.id === id);
+
+    if (owned) owned.amount++;
+    else currentUser.investments.push({ id, amount: 1 });
+
+    saveLocalData();
+    updateUserInfo();
+    renderInvestments();
+}
+
+// ===================== ПРОДАЖА =====================
+
+function sellInvestment(id) {
+    const inv = investments.find(i => i.id === id);
+    if (!inv) return;
+
+    const owned = currentUser.investments.find(i => i.id === id);
+    if (!owned) return;
+
+    currentUser.balance += inv.price;
+    owned.amount--;
+
+    if (owned.amount <= 0)
+        currentUser.investments =
+            currentUser.investments.filter(i => i.id !== id);
+
+    saveLocalData();
+    updateUserInfo();
+    renderInvestments();
+}
+
+// ===================== АДМИН 👑 =====================
+
+function adminEditInvestment(id) {
+    if (!currentUser?.isAdmin) return;
+
+    const inv = investments.find(i => i.id === id);
+
+    const name = prompt("Новое название:", inv.name);
+    const price = prompt("Новая цена:", inv.price);
+
+    if (name) inv.name = name;
+    if (price) inv.price = parseInt(price);
+
+    saveInvestments();
+    renderInvestments();
+}
+
+// ===================== ГРАФИК 📊 =====================
+
+function drawChart(id) {
+    const ctx = document.getElementById("chart_" + id);
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: investmentHistory[id] || [],
+            datasets: [{
+                data: investmentHistory[id] || [],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            animation: false,
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+// ===================== UI =====================
+
+function renderInvestments() {
+    const container = document.getElementById("stocksContainer");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    investments.forEach(inv => {
+        const owned =
+            currentUser?.investments?.find(i => i.id === inv.id)?.amount || 0;
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <h3>${inv.name}</h3>
+            <p>Цена: $${inv.price}</p>
+            <p>Доход/неделя: +$${inv.income}</p>
+            <p>У вас: ${owned}</p>
+
+            <button class="btn btn-success" onclick="buyInvestment('${inv.id}')">Купить</button>
+            <button class="btn btn-danger" onclick="sellInvestment('${inv.id}')">Продать</button>
+
+            ${currentUser?.isAdmin ?
+                `<button class="btn" onclick="adminEditInvestment('${inv.id}')">👑 Редактировать</button>` : ""}
+
+            <canvas id="chart_${inv.id}" height="90"></canvas>
+        `;
+
+        container.appendChild(card);
+        drawChart(inv.id);
+    });
+}
+
+// ===================== СТАРТ =====================
+
+loadInvestments();
+renderInvestments();
+payWeeklyIncome();
+
+</script>
+
     </script>
 </body>
 </html>
