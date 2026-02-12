@@ -6100,8 +6100,7 @@ setInterval(updateMarket, 15000);
 // ===================== НЕДЕЛЬНЫЙ ДОХОД 📈 =====================
 
 function payWeeklyIncome() {
-    if (!currentUser) return;
-
+    if (typeof currentUser === "undefined" || !currentUser) return;
     const now = Date.now();
     const week = 7 * 24 * 60 * 60 * 1000;
 
