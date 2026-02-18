@@ -582,7 +582,79 @@
             padding: 25px;
             border-radius: 8px;
         }
-        
+
+        /* ========== INVESTMENT MANAGEMENT (ADMIN) ========== */
+        .investment-management {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .investment-list {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+        .investment-list-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: 1px solid transparent;
+        }
+        .investment-list-item:hover { background: rgba(255,255,255,0.15); border-color: var(--accent-blue); }
+        .investment-list-item.active { background: rgba(74,144,226,0.2); border-color: var(--accent-blue); }
+        .investment-form {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        /* ========== INVEST PAGE CARDS ========== */
+        .investments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .invest-card {
+            background: linear-gradient(135deg, #152642, #0f1e35);
+            border: 1px solid var(--primary-blue);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .invest-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .invest-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+        .invest-card-name { font-size: 1.1rem; font-weight: bold; color: var(--light-blue); }
+        .invest-card-price { font-size: 1.5rem; font-weight: bold; color: var(--success); text-align: right; }
+        .invest-card-income { color: #a0e8a0; font-size: 0.9rem; margin-bottom: 8px; }
+        .invest-card-owned { font-size: 0.88rem; color: var(--light-blue); margin-bottom: 14px; min-height: 20px; }
+        .invest-card-actions { display: flex; gap: 10px; }
+        .invest-chart-wrap {
+            margin-top: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 6px;
+            border-top: 2px solid #333;
+        }
+        .invest-trend-up { border-top-color: var(--success); }
+        .invest-trend-down { border-top-color: var(--danger); }
+        @media (max-width: 768px) {
+            .investment-management { grid-template-columns: 1fr; }
+            .investments-grid { grid-template-columns: 1fr; }
+        }
+
         .image-upload {
             border: 2px dashed #4a90e2;
             border-radius: 8px;
@@ -643,6 +715,195 @@
             border: 1px solid var(--accent-blue);
         }
         
+        /* ========== АНИМАЦИИ СТРАНИЦ ========== */
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .page:not(.hidden) {
+            animation: pageFadeIn 0.28s ease;
+        }
+
+        /* Ripple-эффект на кнопках */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.18);
+            opacity: 0;
+            transition: opacity 0.25s;
+            border-radius: inherit;
+        }
+        .btn:active::after {
+            opacity: 1;
+            transition: 0s;
+        }
+
+        /* Анимация изменения баланса */
+        @keyframes balancePop {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.18); color: #4cd964; }
+            100% { transform: scale(1); }
+        }
+        .balance-pop {
+            animation: balancePop 0.4s ease;
+        }
+
+        /* ========== УРОВНИ ИГРОКА ========== */
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+        .level-progress-bar {
+            height: 5px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+            min-width: 80px;
+        }
+        .level-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        /* ========== ПРОФИЛЬ ИГРОКА ========== */
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 0 auto 16px;
+            border: 3px solid var(--accent-blue);
+            box-shadow: 0 0 20px rgba(74,144,226,0.4);
+        }
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .profile-stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(74,144,226,0.2);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .profile-stat-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--success);
+        }
+        .profile-stat-label {
+            font-size: 0.82rem;
+            color: var(--light-blue);
+            margin-top: 4px;
+        }
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+        .transaction-item:hover { background: rgba(255,255,255,0.09); }
+        .transaction-plus  { color: var(--success); font-weight: bold; }
+        .transaction-minus { color: var(--danger); font-weight: bold; }
+
+        /* ========== РЕЙТИНГ ========== */
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(74,144,226,0.15);
+            transition: background 0.2s, transform 0.15s;
+        }
+        .leaderboard-row:hover { background: rgba(255,255,255,0.09); transform: translateX(3px); }
+        .leaderboard-row.top1 { background: linear-gradient(90deg,rgba(255,215,0,0.12),rgba(255,215,0,0.03)); border-color: rgba(255,215,0,0.35); }
+        .leaderboard-row.top2 { background: linear-gradient(90deg,rgba(192,192,192,0.12),rgba(192,192,192,0.03)); border-color: rgba(192,192,192,0.3); }
+        .leaderboard-row.top3 { background: linear-gradient(90deg,rgba(205,127,50,0.12),rgba(205,127,50,0.03)); border-color: rgba(205,127,50,0.25); }
+        .leaderboard-row.is-me  { border-color: var(--accent-blue); box-shadow: 0 0 10px rgba(74,144,226,0.2); }
+        .lb-rank { font-size: 1.4rem; font-weight: bold; text-align: center; color: #6a8aaa; }
+        .lb-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; font-weight: bold;
+            background: linear-gradient(135deg,#1a3a5f,#4a90e2);
+            color: white; flex-shrink: 0;
+        }
+        .lb-networth { font-size: 1.3rem; font-weight: bold; color: var(--success); white-space: nowrap; }
+
+        /* ========== ADMIN QUICK GIVE ========== */
+        .quick-give-panel {
+            background: rgba(74,144,226,0.08);
+            border: 1px solid rgba(74,144,226,0.25);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .preset-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .preset-btn {
+            padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(76,217,100,0.4);
+            background: rgba(76,217,100,0.1); color: #4cd964; cursor: pointer; font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover { background: rgba(76,217,100,0.25); }
+        .preset-btn.minus { border-color: rgba(231,76,60,0.4); background: rgba(231,76,60,0.1); color: #e74c3c; }
+        .preset-btn.minus:hover { background: rgba(231,76,60,0.25); }
+
+        /* ========== AVATAR PICKER ========== */
+        .avatar-picker-overlay {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .avatar-picker-overlay.open { display: flex; }
+        .avatar-picker-box {
+            background: #0d2137; border: 1px solid rgba(74,144,226,0.3);
+            border-radius: 18px; padding: 28px; width: 380px; max-width: 95vw;
+            animation: popIn 0.22s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+        .avatar-picker-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            gap: 10px; margin: 18px 0;
+        }
+        .avatar-emoji-btn {
+            font-size: 1.6rem; padding: 8px; border-radius: 10px;
+            border: 2px solid transparent; background: rgba(255,255,255,0.05);
+            cursor: pointer; text-align: center; transition: all 0.15s;
+        }
+        .avatar-emoji-btn:hover { background: rgba(74,144,226,0.2); border-color: var(--accent-blue); transform: scale(1.15); }
+        .avatar-emoji-btn.selected { border-color: #ffd700; background: rgba(255,215,0,0.15); }
+
+
         /* Казино */
         .casino-container {
             max-width: 800px;
@@ -992,10 +1253,14 @@
                 <p>Эксклюзивная недвижимость для сотрудников</p>
             </div>
         </div>
-        <div class="user-info hidden" id="userInfo">
-            <div class="badge" id="userBadge">Офицер</div>
+        <div class="user-info hidden" id="userInfo" onclick="showPage('profile')" style="cursor:pointer;" title="Открыть профиль">
+            <div class="badge" id="userBadge">Игрок</div>
             <div class="cash" id="userCash">$0</div>
-            <div>Ваш баланс</div>
+            <div style="font-size:0.78rem; color:var(--light-blue);">Ваш баланс</div>
+            <div id="userLevelBadge" class="level-badge" style="background:rgba(142,158,181,0.2);color:#8e9eb5;">🐣 Новичок</div>
+            <div class="level-progress-bar" id="userLevelBar" style="width:90px;">
+                <div class="level-progress-fill" id="userLevelFill" style="width:0%;background:#8e9eb5;"></div>
+            </div>
         </div>
         <div class="nav-links hidden" id="navLinks">
             <button class="btn btn-primary" onclick="showPage('main')">Недвижимость</button>
@@ -1005,6 +1270,8 @@
             <button class="btn btn-primary" onclick="showPage('myCars')">Мои автомобили</button>
             <button class="btn btn-gold" onclick="showPage('casino')">🎰 Казино</button>
             <button class="nav-btn" onclick="showPage('invest')">📈 Инвестиции</button>
+            <button class="btn btn-primary" onclick="showPage('leaderboard')" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.4);color:#ffd700;">🏆 Рейтинг</button>
+            <button class="btn btn-primary" onclick="showPage('profile')" style="background:rgba(74,144,226,0.25);border:1px solid var(--accent-blue);">👤 Профиль</button>
             <button class="btn btn-danger" onclick="logout()">Выйти</button>
             <!-- Секретная кнопка админа -->
             <button class="btn btn-warning hidden" id="adminNavButton" onclick="showAdminPanel()">⚙️ Админ</button>
@@ -1198,10 +1465,6 @@
         <div id="myPropertiesPage" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
                 <h1 style="color: var(--accent-blue);">Моя недвижимость</h1>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-warning" onclick="exportUserData()">📤 Экспорт данных</button>
-                    <button class="btn btn-primary" onclick="importUserData()">📥 Импорт данных</button>
-                </div>
             </div>
             
             <div class="card" style="margin-bottom: 30px;">
@@ -1237,10 +1500,6 @@
         <div id="myCarsPage" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
                 <h1 style="color: var(--accent-blue);">Мои автомобили</h1>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-warning" onclick="exportUserData()">📤 Экспорт данных</button>
-                    <button class="btn btn-primary" onclick="importUserData()">📥 Импорт данных</button>
-                </div>
             </div>
             
             <div class="card" style="margin-bottom: 30px;">
@@ -1275,7 +1534,10 @@
         <!-- Страница Казино -->
         <div id="casinoPage" class="page hidden">
             <div class="casino-container">
-                <h1 style="color: var(--casino-gold); margin-bottom: 20px; text-align: center;">🎰 BlueLine Казино</h1>
+                <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;">
+                    <h1 style="color: var(--casino-gold); margin:0;">🎰 BlueLine Казино</h1>
+                    <button id="casinoMuteBtn" onclick="toggleCasinoSound()" title="Звук" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:1.1rem;color:var(--casino-gold);">🔊</button>
+                </div>
                 <p style="color: var(--light-blue); text-align: center; margin-bottom: 30px;">
                     Испытайте удачу! Сделайте ставку и крутите слоты. Если выпадут три одинаковых символа - вы выиграете джекпот!
                 </p>
@@ -1306,8 +1568,11 @@
                             <button class="btn bet-btn" onclick="setBet(100)" style="background: var(--casino-gold); color: #333;">$100</button>
                             <button class="btn bet-btn" onclick="setBet(500)" style="background: #e74c3c;">$500</button>
                             <button class="btn bet-btn" onclick="setBet(1000)" style="background: #9b59b6;">$1000</button>
+                            <button class="btn bet-btn" onclick="setBetAllIn()" style="background: linear-gradient(135deg,#e74c3c,#9b59b6);font-weight:bold;">🎲 Ва-банк</button>
                         </div>
                     </div>
+                    <!-- Серия -->
+                    <div id="casinoStreak" style="text-align:center;min-height:22px;margin-bottom:4px;font-size:0.92rem;"></div>
                     
                     <div class="slot-machine">
                         <div class="slot" id="slot1">?</div>
@@ -1348,15 +1613,109 @@
         </div>
 
     <div id="investPage" class="page hidden">
-    <div style="padding:20px">
-        <h1 style="color: var(--accent-blue); margin-bottom: 20px;">
-            📈 Инвестиции
-        </h1>
+        <div style="padding:20px">
+            <h1 style="color: var(--accent-blue); margin-bottom: 8px;">📈 Инвестиции</h1>
+            <p style="color: var(--light-blue); margin-bottom: 20px;">Покупайте активы — каждую неделю они приносят доход на ваш счёт.</p>
 
-        <div id="investmentsContainer"></div>
+            <div class="card" style="margin-bottom: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
+                    <div>
+                        <div style="color: var(--light-blue); font-size: 0.85rem;">Акций в портфеле</div>
+                        <div style="font-size: 2rem; color: var(--accent-blue); font-weight: bold;" id="investPortfolioCount">0</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--light-blue); font-size: 0.85rem;">Стоимость портфеля</div>
+                        <div style="font-size: 2rem; color: var(--success); font-weight: bold;" id="investPortfolioValue">$0</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--light-blue); font-size: 0.85rem;">Доход в неделю</div>
+                        <div style="font-size: 2rem; color: var(--success); font-weight: bold;" id="investWeeklyTotal">$0/нед</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--light-blue); font-size: 0.85rem;">Следующая выплата</div>
+                        <div style="font-size: 1.3rem; color: var(--warning); font-weight: bold;" id="investNextPayout">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="investments-grid" id="investmentsContainer">
+                <!-- Карточки инвестиций рендерятся через JS -->
+            </div>
+        </div>
     </div>
-</div>
  
+    <!-- Страница профиля -->
+    <div id="profilePage" class="page hidden">
+        <div style="padding:20px; max-width: 900px; margin: 0 auto;">
+            <h1 style="color:var(--accent-blue); margin-bottom:20px;">👤 Мой профиль</h1>
+
+            <!-- Карточка игрока -->
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                        <div class="profile-avatar" id="profileAvatar" onclick="openAvatarPicker()" title="Изменить аватарку" style="background: linear-gradient(135deg,#1a3a5f,#4a90e2); cursor:pointer; transition: box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 18px rgba(74,144,226,0.5)'" onmouseout="this.style.boxShadow=''">?</div>
+                        <div onclick="openAvatarPicker()" style="font-size:0.72rem;color:#6a8aaa;cursor:pointer;user-select:none;">✏️ Изменить</div>
+                    </div>
+                    <div style="flex:1; min-width:200px;">
+                        <div id="profileName" style="font-size:1.5rem;font-weight:bold;color:var(--light-blue);">—</div>
+                        <div id="profileUsername" style="color:#6a8aaa; margin-bottom:8px;">@—</div>
+                        <div id="profileLevelBadge" class="level-badge" style="font-size:1rem;padding:5px 14px;background:rgba(142,158,181,0.15);color:#8e9eb5;display:inline-flex;">🐣 Новичок</div>
+                        <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+                            <div class="level-progress-bar" style="width:180px; height:8px;">
+                                <div class="level-progress-fill" id="profileLevelFill" style="width:0%;background:#8e9eb5;"></div>
+                            </div>
+                            <span id="profileLevelPct" style="font-size:0.8rem;color:var(--light-blue);">0%</span>
+                        </div>
+                        <div id="profileNextLevel" style="font-size:0.8rem;color:#6a8aaa;margin-top:4px;"></div>
+                        <div id="profileRegDate" style="font-size:0.8rem;color:#6a8aaa;margin-top:6px;">📅 —</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="color:var(--light-blue);font-size:0.85rem;">Чистый капитал</div>
+                        <div id="profileNetWorth" style="font-size:2.2rem;font-weight:bold;color:var(--success);">$0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <h2 style="color:var(--accent-blue);margin-bottom:14px;">Статистика</h2>
+            <div class="profile-stats-grid" id="profileStatsGrid">
+                <!-- Рендерится через JS -->
+            </div>
+
+            <!-- Все уровни -->
+            <h2 style="color:var(--accent-blue);margin:24px 0 14px;">Уровни игрока</h2>
+            <div id="profileLevelsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;"></div>
+
+            <!-- История транзакций -->
+            <h2 style="color:var(--accent-blue);margin:24px 0 14px;">История операций</h2>
+            <div id="profileTransactions">
+                <div style="text-align:center;padding:30px;color:var(--light-blue);">Нет операций</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница рейтинга -->
+    <div id="leaderboardPage" class="page hidden">
+        <div style="padding:20px; max-width: 860px; margin: 0 auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                <h1 style="color:var(--accent-blue);">🏆 Рейтинг игроков</h1>
+                <button class="btn btn-primary" onclick="renderLeaderboard()" style="background:rgba(74,144,226,0.2);border:1px solid var(--accent-blue);">🔄 Обновить</button>
+            </div>
+
+            <!-- Подиум Топ-3 -->
+            <div id="lbPodium" style="display:flex; justify-content:center; align-items:flex-end; gap:16px; margin-bottom:32px; flex-wrap:wrap;"></div>
+
+            <!-- Остальные игроки -->
+            <div id="lbList"></div>
+
+            <!-- Пусто / загрузка -->
+            <div id="lbEmpty" style="text-align:center;padding:60px;color:#6a8aaa;display:none;">
+                <div style="font-size:3rem;margin-bottom:12px;">🏜️</div>
+                <div>Нет данных для отображения</div>
+            </div>
+        </div>
+    </div>
+
         <!-- Админ-панель -->
         <div id="adminPage" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -1373,16 +1732,35 @@
                 <button class="admin-tab" onclick="switchAdminTab('actions')">Действия</button>
                 <button class="admin-tab" onclick="switchAdminTab('sync')">Синхронизация</button>
                 <button class="admin-tab" onclick="switchAdminTab('cells')">Управление ячейками</button>
+                <button class="admin-tab" onclick="switchAdminTab('investments')">📈 Инвестиции</button>
             </div>
             
             <!-- Вкладка: Пользователи -->
             <div id="adminTabUsers" class="admin-section">
-                <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Управление пользователей</h2>
-                
-                <div class="balance-control" style="margin-bottom: 20px;">
-                    <input type="text" id="searchUser" placeholder="Поиск по имени или логину" onkeyup="searchUsers()">
+                <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Управление пользователями</h2>
+
+                <!-- Быстрая выдача всем -->
+                <div class="quick-give-panel">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <span style="color:var(--light-blue);font-weight:bold;">💸 Выдать всем игрокам:</span>
+                        <div class="preset-btns" style="margin-top:0;">
+                            <button class="preset-btn" onclick="giveMoneyToAll(1000)">+$1 000</button>
+                            <button class="preset-btn" onclick="giveMoneyToAll(5000)">+$5 000</button>
+                            <button class="preset-btn" onclick="giveMoneyToAll(10000)">+$10 000</button>
+                            <button class="preset-btn" onclick="giveMoneyToAll(50000)">+$50 000</button>
+                            <button class="preset-btn" onclick="giveMoneyToAll(100000)">+$100 000</button>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;margin-left:auto;">
+                            <input type="number" id="allCustomAmount" placeholder="Своя сумма" style="width:130px;padding:7px 10px;font-size:0.9rem;">
+                            <button class="btn btn-success" onclick="giveMoneyToAllCustom()" style="padding:8px 14px;white-space:nowrap;">Выдать всем</button>
+                        </div>
+                    </div>
                 </div>
-                
+
+                <div class="balance-control" style="margin-bottom: 16px;">
+                    <input type="text" id="searchUser" placeholder="🔍 Поиск по имени или логину" onkeyup="searchUsers()">
+                </div>
+
                 <div class="users-list" id="usersList">
                     <!-- Список пользователей будет здесь -->
                 </div>
@@ -1692,6 +2070,59 @@
                     <!-- Список ячеек будет здесь -->
                 </div>
             </div>
+
+            <!-- Вкладка: Инвестиции -->
+            <div id="adminTabInvestments" class="admin-section hidden">
+                <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Управление инвестициями</h2>
+                <p style="color: var(--light-blue); margin-bottom: 20px;">Изменяйте названия, цены и доходность инструментов. Изменения применяются глобально для всех игроков.</p>
+
+                <div class="investment-management">
+                    <div class="investment-list">
+                        <h3 style="color: var(--accent-blue); margin-bottom: 15px;">Список инструментов</h3>
+                        <div id="adminInvestmentsList"></div>
+                        <button class="btn btn-primary" onclick="addNewInvestment()" style="width:100%; margin-top:10px;">➕ Добавить инструмент</button>
+                    </div>
+
+                    <div class="investment-form">
+                        <h3 style="color: var(--accent-blue); margin-bottom: 20px;" id="investmentFormTitle">Выберите инструмент</h3>
+
+                        <div id="investmentFormFields" class="hidden">
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color:var(--light-blue);display:block;margin-bottom:8px;">Название</label>
+                                    <input type="text" id="editInvestmentName" placeholder="Название инструмента">
+                                </div>
+                                <div>
+                                    <label style="color:var(--light-blue);display:block;margin-bottom:8px;">Цена ($)</label>
+                                    <input type="number" id="editInvestmentPrice" placeholder="Текущая цена">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color:var(--light-blue);display:block;margin-bottom:8px;">Базовая цена ($)</label>
+                                    <input type="number" id="editInvestmentBasePrice" placeholder="Стартовая цена">
+                                </div>
+                                <div>
+                                    <label style="color:var(--light-blue);display:block;margin-bottom:8px;">Доход в неделю ($)</label>
+                                    <input type="number" id="editInvestmentIncome" placeholder="Доход на 1 акцию">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="color:var(--light-blue);display:block;margin-bottom:8px;">Иконка (эмодзи)</label>
+                                <input type="text" id="editInvestmentIcon" placeholder="Например: 📈">
+                            </div>
+                            <div class="form-actions" style="margin-top:20px;">
+                                <button class="btn btn-success" onclick="saveInvestmentChanges()">💾 Сохранить</button>
+                                <button class="btn btn-danger" onclick="deleteSelectedInvestment()">🗑️ Удалить</button>
+                            </div>
+                        </div>
+
+                        <div id="investmentFormEmpty" style="text-align:center;padding:40px;color:var(--light-blue);">
+                            <p>Выберите инструмент из списка слева для редактирования</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1929,6 +2360,7 @@
         let unsubscribeUsers = null;
         let unsubscribeProperties = null;
         let unsubscribeCars = null;
+        let unsubscribeInvestments = null;
         let syncMode = localStorage.getItem('real_estate_sync_mode') || 'online';
         let isOnline = navigator.onLine;
         
@@ -1962,6 +2394,7 @@
         // Для редактирования в админке
         let currentlyEditingPropertyId = null;
         let currentlyEditingCarId = null;
+        let currentlyEditingInvestmentId = null;
         
         // Ключи для LocalStorage (резервное копирование)
         const STORAGE_KEYS = {
@@ -1973,7 +2406,8 @@
             USED_CARS: 'real_estate_used_cars_cloud',
             LAST_SYNC: 'real_estate_last_sync',
             CASINO_STATS: 'real_estate_casino_stats',
-            CELLS: 'real_estate_cells_cloud'
+            CELLS: 'real_estate_cells_cloud',
+            INVESTMENTS: 'real_estate_investments_cloud'
         };
 
         // Демо-данные недвижимости
@@ -2579,6 +3013,7 @@
             if (unsubscribeUsers) unsubscribeUsers();
             if (unsubscribeProperties) unsubscribeProperties();
             if (unsubscribeCars) unsubscribeCars();
+            if (unsubscribeInvestments) unsubscribeInvestments();
             
             // Слушаем обновления пользователей
             unsubscribeUsers = firestore.collection('users').onSnapshot((snapshot) => {
@@ -2657,6 +3092,30 @@
                     }
                 });
             });
+
+            // Слушаем обновления инвестиций
+            unsubscribeInvestments = firestore.collection('investments').onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'modified' || change.type === 'added') {
+                        const invData = { id: change.doc.id, ...change.doc.data() };
+                        const index = investments.findIndex(i => i.id === invData.id);
+                        if (index !== -1) {
+                            investments[index] = invData;
+                        } else {
+                            investments.push(invData);
+                        }
+                        if (!document.getElementById('investPage').classList.contains('hidden')) {
+                            renderInvestments();
+                        }
+                    }
+                    if (change.type === 'removed') {
+                        investments = investments.filter(i => i.id !== change.doc.id);
+                        if (!document.getElementById('investPage').classList.contains('hidden')) {
+                            renderInvestments();
+                        }
+                    }
+                });
+            });
         }
 
         async function saveUserToFirebase(user) {
@@ -2681,6 +3140,9 @@
                     balance: Number(user.balance) || 0,
                     properties: Array.isArray(user.properties) ? user.properties : [],
                     cars: Array.isArray(user.cars) ? user.cars : [],
+                    investments: Array.isArray(user.investments) ? user.investments : [],
+                    lastInvestmentPayout: user.lastInvestmentPayout ? Number(user.lastInvestmentPayout) : 0,
+                    avatar: user.avatar || null,
                     isAdmin: Boolean(user.isAdmin),
                     isHiddenAdmin: Boolean(user.isHiddenAdmin),
                     registrationDate: user.registrationDate || new Date().toISOString()
@@ -2864,8 +3326,33 @@
             }
         }
 
+        async function saveInvestmentsToFirebase() {
+            if (syncMode !== 'online' || !firestore) return;
+            try {
+                updateSyncStatus('syncing', 'Сохранение инвестиций...');
+                for (const inv of investments) {
+                    const invToSave = {
+                        id: String(inv.id),
+                        name: inv.name || '',
+                        icon: inv.icon || '📈',
+                        price: Number(inv.price) || 0,
+                        basePrice: Number(inv.basePrice) || Number(inv.price) || 0,
+                        income: Number(inv.income) || 0
+                    };
+                    await firestore.collection('investments').doc(String(inv.id)).set(invToSave, { merge: true });
+                }
+                localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
+                updateSyncStatus('synced', 'Инвестиции сохранены');
+                return true;
+            } catch (error) {
+                console.error('Ошибка сохранения инвестиций:', error);
+                updateSyncStatus('error', 'Ошибка сохранения');
+                return false;
+            }
+        }
+
         // ==================== ЛОКАЛЬНОЕ ХРАНИЛИЩЕ ====================
-        
+
         function loadLocalData() {
             // Загружаем из LocalStorage
             const localUsers = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || [];
@@ -2889,6 +3376,8 @@
             if (localCurrentUser) currentUser = localCurrentUser;
             if (localTransactions.length > 0) transactions = localTransactions;
             if (localCells.length > 0) cells = localCells;
+            const localInvestments = JSON.parse(localStorage.getItem(STORAGE_KEYS.INVESTMENTS));
+            if (localInvestments && localInvestments.length > 0) investments = localInvestments;
             
             // Если нет недвижимости, загружаем демо
             if (!properties || properties.length === 0) {
@@ -2923,8 +3412,355 @@
             }
         }
 
+        // ==================== ПРОФИЛЬ ИГРОКА ====================
+
+        function renderProfile() {
+            if (!currentUser) return;
+
+            const netWorth = getNetWorth(currentUser);
+            const { level, index } = getLevel(netWorth);
+            const progress = getLevelProgress(netWorth);
+            const nextLevel = LEVELS[index + 1];
+
+            // Аватар — emoji или инициалы
+            const initials = ((currentUser.firstName || '?')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+            const avatarEl = document.getElementById('profileAvatar');
+            if (avatarEl) {
+                if (currentUser.avatar) {
+                    avatarEl.textContent = currentUser.avatar;
+                    avatarEl.style.fontSize = '2.4rem';
+                    avatarEl.style.background = 'linear-gradient(135deg,#1a3a5f,#0d2137)';
+                } else {
+                    avatarEl.textContent = initials;
+                    avatarEl.style.fontSize = '';
+                    avatarEl.style.background = 'linear-gradient(135deg,#1a3a5f,#4a90e2)';
+                }
+            }
+
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            const setStyle = (id, prop, val) => { const el = document.getElementById(id); if (el) el.style[prop] = val; };
+
+            set('profileName', `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Игрок');
+            set('profileUsername', '@' + (currentUser.username || '—'));
+            set('profileNetWorth', '$' + netWorth.toLocaleString());
+
+            const levelBadge = document.getElementById('profileLevelBadge');
+            if (levelBadge) {
+                levelBadge.textContent = `${level.icon} ${level.name}`;
+                levelBadge.style.background = level.color + '22';
+                levelBadge.style.color = level.color;
+                levelBadge.style.border = `1px solid ${level.color}55`;
+            }
+            const fillEl = document.getElementById('profileLevelFill');
+            if (fillEl) { fillEl.style.width = progress + '%'; fillEl.style.background = level.color; }
+            set('profileLevelPct', progress + '%');
+            set('profileNextLevel', nextLevel ? `До уровня "${nextLevel.name}": $${(nextLevel.min - netWorth).toLocaleString()}` : '🏆 Максимальный уровень достигнут!');
+
+            const regDate = currentUser.registrationDate
+                ? new Date(currentUser.registrationDate).toLocaleDateString('ru-RU', { day:'2-digit', month:'long', year:'numeric' })
+                : '—';
+            set('profileRegDate', '📅 Зарегистрирован: ' + regDate);
+
+            // Статистика
+            const propCount = (currentUser.properties || []).length;
+            const carCount  = (currentUser.cars || []).length;
+            const invCount  = (currentUser.investments || []).reduce((s, i) => s + i.amount, 0);
+            const weeklyRent = (currentUser.properties || []).reduce((s, up) => {
+                const p = properties.find(pr => pr.id === up.id);
+                return s + (up.purpose === 'rent' && p ? p.rentalIncome : 0);
+            }, 0);
+            const weeklyInv = (currentUser.investments || []).reduce((s, ui) => {
+                const inv = investments.find(i => i.id === ui.id);
+                return s + (inv ? inv.income * ui.amount : 0);
+            }, 0);
+            const casinoSt = JSON.parse(localStorage.getItem('real_estate_casino_stats')) || { wins: 0, losses: 0 };
+
+            const stats = [
+                { label: 'Баланс', value: '$' + (currentUser.balance || 0).toLocaleString(), icon: '💵' },
+                { label: 'Объектов недвижимости', value: propCount, icon: '🏠' },
+                { label: 'Автомобилей', value: carCount, icon: '🚗' },
+                { label: 'Акций в портфеле', value: invCount, icon: '📊' },
+                { label: 'Доход от аренды/нед', value: weeklyRent > 0 ? '+$' + weeklyRent.toLocaleString() : '—', icon: '🏡' },
+                { label: 'Доход от инвестиций/нед', value: weeklyInv > 0 ? '+$' + weeklyInv.toLocaleString() : '—', icon: '📈' },
+                { label: 'Побед в казино', value: casinoSt.wins || 0, icon: '🎰' },
+                { label: 'Поражений в казино', value: casinoSt.losses || 0, icon: '😅' }
+            ];
+
+            const statsGrid = document.getElementById('profileStatsGrid');
+            if (statsGrid) {
+                statsGrid.innerHTML = stats.map(s => `
+                    <div class="profile-stat-card">
+                        <div style="font-size:1.5rem;">${s.icon}</div>
+                        <div class="profile-stat-value">${s.value}</div>
+                        <div class="profile-stat-label">${s.label}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Таблица уровней
+            const levelsGrid = document.getElementById('profileLevelsGrid');
+            if (levelsGrid) {
+                levelsGrid.innerHTML = LEVELS.map((lv, i) => {
+                    const isActive = (index === i);
+                    const isDone = (netWorth >= lv.min);
+                    return `
+                        <div style="padding:12px;border-radius:10px;text-align:center;border:2px solid ${isDone ? lv.color : 'rgba(255,255,255,0.08)'};background:${isDone ? lv.color + '18' : 'rgba(255,255,255,0.03)'};${isActive ? `box-shadow:0 0 12px ${lv.color}55;` : ''}">
+                            <div style="font-size:1.6rem;">${lv.icon}</div>
+                            <div style="font-weight:bold;color:${isDone ? lv.color : '#555'};font-size:0.85rem;margin-top:4px;">${lv.name}</div>
+                            <div style="font-size:0.75rem;color:#6a8aaa;margin-top:2px;">от $${lv.min.toLocaleString()}</div>
+                            ${isActive ? `<div style="font-size:0.7rem;margin-top:4px;color:${lv.color};font-weight:bold;">← Сейчас</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // История транзакций (последние 15)
+            const txContainer = document.getElementById('profileTransactions');
+            if (txContainer) {
+                const myTx = transactions
+                    .filter(t => t.userId === currentUser.id)
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 15);
+
+                if (myTx.length === 0) {
+                    txContainer.innerHTML = '<div style="text-align:center;padding:30px;color:var(--light-blue);">Нет операций</div>';
+                } else {
+                    txContainer.innerHTML = myTx.map(t => {
+                        const isPlus = t.amount >= 0;
+                        const amtStr = (isPlus ? '+' : '') + '$' + Math.abs(t.amount).toLocaleString();
+                        const date = new Date(t.date).toLocaleDateString('ru-RU', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+                        return `
+                            <div class="transaction-item">
+                                <div>
+                                    <div style="color:var(--light-blue);font-size:0.95rem;">${t.description || t.type}</div>
+                                    <div style="font-size:0.78rem;color:#6a8aaa;">${date}</div>
+                                </div>
+                                <div class="${isPlus ? 'transaction-plus' : 'transaction-minus'}">${amtStr}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+        }
+
+        // ==================== АВАТАРКА ПРОФИЛЯ ====================
+
+        const AVATAR_EMOJIS = ['🦁','🐯','🐻','🦊','🐺','🦅','🦋','🐉','🦄','🤖','👾','🎭','🎩','💎','🌟','🔥','⚡','🎮','🏆','👑','🚀','🎯','💀','🧠'];
+
+        function openAvatarPicker() {
+            const modal = document.getElementById('avatarPickerModal');
+            if (!modal) return;
+            const grid = document.getElementById('avatarPickerGrid');
+            const current = currentUser ? currentUser.avatar : null;
+            grid.innerHTML = AVATAR_EMOJIS.map(em => `
+                <button class="avatar-emoji-btn ${em === current ? 'selected' : ''}" onclick="selectAvatar('${em}')">${em}</button>
+            `).join('');
+            modal.classList.add('open');
+        }
+
+        function closeAvatarPicker(e) {
+            if (e && e.target !== document.getElementById('avatarPickerModal')) return;
+            document.getElementById('avatarPickerModal').classList.remove('open');
+        }
+
+        async function selectAvatar(emoji) {
+            if (!currentUser) return;
+            currentUser.avatar = emoji;
+            // Обновить в массиве users
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) users[idx].avatar = emoji;
+            // Сохранить
+            saveLocalData();
+            if (syncMode === 'online' && firestore) await saveUserToFirebase(currentUser);
+            // Перерисовать пикер + профиль
+            document.getElementById('avatarPickerModal').classList.remove('open');
+            renderProfile();
+            showNotification('Аватарка обновлена!', 'success');
+        }
+
+        async function resetAvatar() {
+            if (!currentUser) return;
+            currentUser.avatar = null;
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) users[idx].avatar = null;
+            saveLocalData();
+            if (syncMode === 'online' && firestore) await saveUserToFirebase(currentUser);
+            document.getElementById('avatarPickerModal').classList.remove('open');
+            renderProfile();
+            showNotification('Аватарка сброшена', 'info');
+        }
+
+        // ==================== РЕЙТИНГ ИГРОКОВ ====================
+
+        async function renderLeaderboard() {
+            const podiumEl = document.getElementById('lbPodium');
+            const listEl   = document.getElementById('lbList');
+            const emptyEl  = document.getElementById('lbEmpty');
+            if (!podiumEl || !listEl) return;
+
+            podiumEl.innerHTML = '<div style="color:#6a8aaa;padding:20px;">⏳ Загрузка...</div>';
+            listEl.innerHTML = '';
+            emptyEl.style.display = 'none';
+
+            try {
+                // Читаем всех пользователей из Firebase или используем локальные данные
+                let allUsers = [];
+                if (firestore) {
+                    const snap = await firestore.collection('users').get();
+                    snap.forEach(doc => {
+                        const u = doc.data();
+                        if (!u.isHiddenAdmin) allUsers.push({ id: doc.id, ...u });
+                    });
+                } else {
+                    // offline fallback
+                    allUsers = users.filter(u => !u.isHiddenAdmin);
+                }
+
+                // Считаем net worth каждого и сортируем
+                const ranked = allUsers
+                    .map(u => ({ ...u, netWorth: getNetWorth(u) }))
+                    .sort((a, b) => b.netWorth - a.netWorth);
+
+                if (ranked.length === 0) {
+                    podiumEl.innerHTML = '';
+                    emptyEl.style.display = 'block';
+                    return;
+                }
+
+                const myId = currentUser ? currentUser.id : null;
+
+                // --- Подиум (топ 1-3) ---
+                const podiumOrder = [ranked[1], ranked[0], ranked[2]].filter(Boolean); // 2-1-3 для визуального подиума
+                const podiumHeights = ranked[1] ? ['180px', '220px', '160px'] : ['220px'];
+                const podiumRanks   = ranked[1] ? [2, 1, 3] : [1];
+                const podiumMedals  = ['🥈','🥇','🥉'];
+
+                podiumEl.innerHTML = podiumOrder.map((u, pi) => {
+                    const rank    = podiumRanks[pi];
+                    const height  = podiumHeights[pi];
+                    const medal   = podiumMedals[pi];
+                    const { level } = getLevel(u.netWorth);
+                    const initials = ((u.firstName || '?')[0] + (u.lastName || '')[0]).toUpperCase();
+                    const avatarContent = u.avatar || initials;
+                    const avatarFontSize = u.avatar ? '1.8rem' : '1.2rem';
+                    const isMe = (u.id === myId);
+                    const rankColors = { 1:'#ffd700', 2:'#c0c0c0', 3:'#cd7f32' };
+                    const color = rankColors[rank] || '#6a8aaa';
+                    return `
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                            <div class="lb-avatar" style="width:54px;height:54px;font-size:${avatarFontSize};border:2px solid ${color};${isMe?'box-shadow:0 0 14px '+color+'88;':''}">
+                                ${avatarContent}
+                            </div>
+                            <div style="font-size:1.6rem;">${medal}</div>
+                            <div style="font-weight:bold;color:${isMe ? 'var(--accent-blue)' : 'var(--light-blue)'};font-size:0.9rem;max-width:100px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                ${u.firstName || ''} ${u.lastName || ''}${isMe ? ' 👈' : ''}
+                            </div>
+                            <div style="font-size:0.8rem;">${level.icon} ${level.name}</div>
+                            <div style="background:${color}22;border:1px solid ${color}55;border-radius:8px;padding:4px 10px;width:100%;height:${height};display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;">
+                                <div style="color:${color};font-weight:bold;font-size:0.95rem;">$${u.netWorth.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // --- Полная таблица (все места) ---
+                const medals = ['🥇','🥈','🥉'];
+                const topClasses = ['top1','top2','top3'];
+
+                const allRows = ranked.map((u, i) => {
+                    const rank = i + 1;
+                    const { level } = getLevel(u.netWorth);
+                    const initials = ((u.firstName || '?')[0] + (u.lastName || '')[0]).toUpperCase();
+                    const avatarContent = u.avatar || initials;
+                    const avatarFontSize = u.avatar ? '1.4rem' : '';
+                    const isMe = (u.id === myId);
+                    const propCount = (u.properties || []).length;
+                    const carCount  = (u.cars || []).length;
+                    const invCount  = (u.investments || []).reduce((s, x) => s + x.amount, 0);
+                    const topClass  = topClasses[i] || '';
+                    const rankLabel = medals[i] || `#${rank}`;
+                    return `
+                        <div class="leaderboard-row ${topClass} ${isMe ? 'is-me' : ''}">
+                            <div class="lb-rank">${rankLabel}</div>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="lb-avatar" style="${avatarFontSize ? 'font-size:'+avatarFontSize+';' : ''}">${avatarContent}</div>
+                                <div>
+                                    <div style="font-weight:bold;color:${isMe ? 'var(--accent-blue)' : 'var(--light-blue)'};">
+                                        ${u.firstName || ''} ${u.lastName || ''}${isMe ? ' 👈 Это вы' : ''}
+                                    </div>
+                                    <div style="font-size:0.8rem;color:#6a8aaa;margin-top:3px;">
+                                        <span class="level-badge" style="font-size:0.72rem;padding:2px 8px;background:${level.color}22;color:${level.color};border:1px solid ${level.color}44;">${level.icon} ${level.name}</span>
+                                        &nbsp;🏠${propCount} &nbsp;🚗${carCount} &nbsp;📊${invCount}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lb-networth">$${u.netWorth.toLocaleString()}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                listEl.innerHTML = '<h2 style="color:var(--accent-blue);margin:16px 0 12px;">Таблица лидеров</h2>' + allRows;
+
+            } catch(e) {
+                console.error('Leaderboard error:', e);
+                podiumEl.innerHTML = '';
+                listEl.innerHTML = '<div style="text-align:center;padding:30px;color:#e74c3c;">Ошибка загрузки рейтинга</div>';
+            }
+        }
+
+        // ==================== СИСТЕМА УРОВНЕЙ ====================
+
+        const LEVELS = [
+            { name: "Новичок",         icon: "🐣", min: 0,          color: "#8e9eb5" },
+            { name: "Стажёр",          icon: "📋", min: 10000,       color: "#4cd964" },
+            { name: "Менеджер",        icon: "💼", min: 50000,       color: "#4a90e2" },
+            { name: "Инвестор",        icon: "📊", min: 200000,      color: "#9b59b6" },
+            { name: "Предприниматель", icon: "🏢", min: 500000,      color: "#f39c12" },
+            { name: "Миллионер",       icon: "💰", min: 1000000,     color: "#ffd700" },
+            { name: "Магнат",          icon: "👑", min: 5000000,     color: "#e74c3c" }
+        ];
+
+        function getNetWorth(user) {
+            if (!user) return 0;
+            let total = user.balance || 0;
+            if (Array.isArray(user.properties)) {
+                user.properties.forEach(up => {
+                    const prop = properties.find(p => p.id === up.id);
+                    if (prop) total += prop.price;
+                });
+            }
+            if (Array.isArray(user.cars)) {
+                user.cars.forEach(uc => {
+                    const car = [...cars, ...usedCars].find(c => c.id === uc.id);
+                    if (car) total += car.price;
+                });
+            }
+            if (Array.isArray(user.investments)) {
+                user.investments.forEach(ui => {
+                    const inv = investments.find(i => i.id === ui.id);
+                    if (inv) total += inv.price * ui.amount;
+                });
+            }
+            return total;
+        }
+
+        function getLevel(netWorth) {
+            for (let i = LEVELS.length - 1; i >= 0; i--) {
+                if (netWorth >= LEVELS[i].min) return { level: LEVELS[i], index: i };
+            }
+            return { level: LEVELS[0], index: 0 };
+        }
+
+        function getLevelProgress(netWorth) {
+            const { index } = getLevel(netWorth);
+            const current = LEVELS[index];
+            const next = LEVELS[index + 1];
+            if (!next) return 100;
+            return Math.min(100, Math.round(((netWorth - current.min) / (next.min - current.min)) * 100));
+        }
+
         // ==================== ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ====================
-        
+
         async function initializeSystem() {
             // Устанавливаем режим синхронизации
             document.getElementById('syncMode').value = syncMode;
@@ -3106,6 +3942,7 @@
             if (unsubscribeUsers) unsubscribeUsers();
             if (unsubscribeProperties) unsubscribeProperties();
             if (unsubscribeCars) unsubscribeCars();
+            if (unsubscribeInvestments) unsubscribeInvestments();
             
             currentUser = null;
             localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
@@ -3173,7 +4010,8 @@
             document.getElementById('adminTabActions').classList.add('hidden');
             document.getElementById('adminTabSync').classList.add('hidden');
             document.getElementById('adminTabCells').classList.add('hidden');
-            
+            document.getElementById('adminTabInvestments').classList.add('hidden');
+
             document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
             
             document.getElementById('adminTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.remove('hidden');
@@ -3196,6 +4034,9 @@
                 case 'cells':
                     renderCellsManagement();
                     break;
+                case 'investments':
+                    renderInvestmentsManagement();
+                    break;
             }
         }
 
@@ -3210,6 +4051,9 @@
             document.getElementById('myCarsPage').classList.add('hidden');
             document.getElementById('casinoPage').classList.add('hidden');
             document.getElementById('adminPage').classList.add('hidden');
+            document.getElementById('investPage').classList.add('hidden');
+            document.getElementById('profilePage').classList.add('hidden');
+            document.getElementById('leaderboardPage').classList.add('hidden');
             document.getElementById('navbar').classList.add('hidden');
         }
 
@@ -3244,9 +4088,12 @@
             document.getElementById('myCarsPage').classList.add('hidden');
             document.getElementById('casinoPage').classList.add('hidden');
             document.getElementById('adminPage').classList.add('hidden');
-            
+            document.getElementById('investPage').classList.add('hidden');
+            document.getElementById('profilePage').classList.add('hidden');
+            document.getElementById('leaderboardPage').classList.add('hidden');
+
             document.getElementById(page + 'Page').classList.remove('hidden');
-            
+
             switch(page) {
                 case 'main':
                     renderProperties();
@@ -3266,29 +4113,72 @@
                 case 'casino':
                     updateCasinoUI();
                     break;
+                case 'invest':
+                    renderInvestments();
+                    payWeeklyIncome();
+                    break;
+                case 'profile':
+                    renderProfile();
+                    break;
+                case 'leaderboard':
+                    renderLeaderboard();
+                    break;
                 case 'admin':
                     showAdminPanel();
                     break;
             }
         }
 
+        let _lastDisplayedBalance = null;
+
         function updateUserInfo() {
             if (!currentUser) return;
-            
+
             if (currentUser.isHiddenAdmin) {
                 document.getElementById('userBadge').textContent = 'АДМИНИСТРАТОР';
                 document.getElementById('userBadge').style.background = '#9b59b6';
             } else {
-                document.getElementById('userBadge').textContent = 
-                    currentUser.isAdmin ? 'АДМИНИСТРАТОР' : 
+                document.getElementById('userBadge').textContent =
+                    currentUser.isAdmin ? 'АДМИНИСТРАТОР' :
                     `${currentUser.firstName} ${currentUser.lastName}`;
             }
-            
-            document.getElementById('userCash').textContent = `$${currentUser.balance.toLocaleString()}`;
-            
+
+            // Анимация изменения баланса
+            const cashEl = document.getElementById('userCash');
+            const newBalance = `$${currentUser.balance.toLocaleString()}`;
+            if (_lastDisplayedBalance !== null && _lastDisplayedBalance !== newBalance) {
+                cashEl.classList.remove('balance-pop');
+                void cashEl.offsetWidth; // reflow
+                cashEl.classList.add('balance-pop');
+                setTimeout(() => cashEl.classList.remove('balance-pop'), 450);
+            }
+            cashEl.textContent = newBalance;
+            _lastDisplayedBalance = newBalance;
+
+            // Уровень
+            const netWorth = getNetWorth(currentUser);
+            const { level } = getLevel(netWorth);
+            const progress = getLevelProgress(netWorth);
+            const levelBadgeEl = document.getElementById('userLevelBadge');
+            const levelFillEl  = document.getElementById('userLevelFill');
+            if (levelBadgeEl) {
+                levelBadgeEl.textContent = `${level.icon} ${level.name}`;
+                levelBadgeEl.style.background = level.color + '33';
+                levelBadgeEl.style.color = level.color;
+            }
+            if (levelFillEl) {
+                levelFillEl.style.width = progress + '%';
+                levelFillEl.style.background = level.color;
+            }
+
             // Обновляем баланс в казино если открыта страница
             if (!document.getElementById('casinoPage').classList.contains('hidden')) {
                 updateCasinoUI();
+            }
+
+            // Обновляем профиль если открыт
+            if (!document.getElementById('profilePage').classList.contains('hidden')) {
+                renderProfile();
             }
         }
 
@@ -4750,8 +5640,98 @@
             }
         }
 
+        // ==================== CASINO AUDIO (WEB AUDIO API) ====================
+
+        const CasinoAudio = {
+            ctx: null,
+            muted: localStorage.getItem('casino_muted') === '1',
+
+            init() {
+                if (!this.ctx) {
+                    try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+                }
+                // Resume after user gesture
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            },
+
+            _tone(freq, duration, type = 'sine', vol = 0.25, delay = 0) {
+                if (this.muted || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + delay);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + delay + duration);
+                    osc.start(this.ctx.currentTime + delay);
+                    osc.stop(this.ctx.currentTime + delay + duration);
+                } catch(e) {}
+            },
+
+            playTick() {
+                this._tone(700, 0.04, 'square', 0.12);
+            },
+
+            playWin() {
+                // До → Ми → Соль (мажорный аккорд)
+                this._tone(523, 0.15, 'sine', 0.3, 0);
+                this._tone(659, 0.15, 'sine', 0.3, 0.12);
+                this._tone(784, 0.25, 'sine', 0.35, 0.24);
+            },
+
+            playBigWin() {
+                // Фанфара + sparkle
+                const notes = [523, 659, 784, 1047, 784, 1047, 1319];
+                notes.forEach((f, i) => this._tone(f, 0.18, 'sine', 0.35, i * 0.1));
+                // Дополнительный shimmer
+                [1047, 1319, 1568].forEach((f, i) => this._tone(f, 0.12, 'triangle', 0.15, 0.5 + i * 0.08));
+            },
+
+            playLose() {
+                // Нисходящий "вахвах"
+                if (this.muted || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(350, this.ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(160, this.ctx.currentTime + 0.4);
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+                    osc.start(this.ctx.currentTime);
+                    osc.stop(this.ctx.currentTime + 0.4);
+                } catch(e) {}
+            },
+
+            toggle() {
+                this.muted = !this.muted;
+                localStorage.setItem('casino_muted', this.muted ? '1' : '0');
+                return this.muted;
+            }
+        };
+
+        let casinoStreak = 0;
+        let casinoStreakType = ''; // 'win' or 'lose'
+
+        function toggleCasinoSound() {
+            const muted = CasinoAudio.toggle();
+            const btn = document.getElementById('casinoMuteBtn');
+            if (btn) btn.textContent = muted ? '🔇' : '🔊';
+        }
+
+        function setBetAllIn() {
+            if (!currentUser) return;
+            const allIn = Math.min(10000, Math.floor(currentUser.balance));
+            setBet(allIn);
+            showNotification(`🎲 Ва-банк! Ставка: $${allIn.toLocaleString()}`, 'warning');
+        }
+
         // ==================== КАЗИНО (С ЗВУКОМ) ====================
-        
+
         function updateCasinoUI() {
             if (!currentUser) return;
             
@@ -4767,6 +5747,10 @@
             
             // Обновляем максимальное значение в поле ввода
             customBetInput.max = maxBet;
+
+            // Синхронизируем кнопку mute
+            const muteBtn = document.getElementById('casinoMuteBtn');
+            if (muteBtn) muteBtn.textContent = CasinoAudio.muted ? '🔇' : '🔊';
         }
 
         function setBet(amount) {
@@ -4812,26 +5796,24 @@
                 return;
             }
             
-            // Воспроизводим звук рулетки
-            const slotSound = document.getElementById('slotSound');
-            slotSound.currentTime = 0;
-            slotSound.play();
-            
+            // Инициализируем и воспроизводим звук
+            CasinoAudio.init();
+
             // Блокируем кнопку на время анимации
             const spinButton = document.getElementById('spinButton');
             spinButton.disabled = true;
             spinButton.textContent = '🎰 КРУТИТСЯ... 🎰';
-            
-            // Анимация вращения
+
+            // Анимация вращения с тиками
             const slots = ['🍒', '7️⃣', '💰', '🔔', '⭐'];
             const slotElements = [document.getElementById('slot1'), document.getElementById('slot2'), document.getElementById('slot3')];
-            
-            // Анимация вращения
+
             for (let i = 0; i < 10; i++) {
                 slotElements.forEach(slot => {
                     slot.textContent = slots[Math.floor(Math.random() * slots.length)];
                     slot.classList.add('slot-animating');
                 });
+                CasinoAudio.playTick();
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
@@ -4899,32 +5881,44 @@
             };
             transactions.push(transaction);
             
-            // Обновляем статистику
+            // Обновляем статистику + серию + звук
+            const isBigWin = multiplier >= 8;
             if (netChange > 0) {
                 casinoWins++;
+                casinoStreak = (casinoStreakType === 'win') ? casinoStreak + 1 : 1;
+                casinoStreakType = 'win';
                 document.getElementById('lastWin').textContent = `+$${winAmount.toLocaleString()}`;
                 document.getElementById('lastWin').classList.add('win-animation');
                 setTimeout(() => document.getElementById('lastWin').classList.remove('win-animation'), 1500);
-                
-                // Воспроизводим звук выигрыша
-                const winSound = document.getElementById('winSound');
-                winSound.currentTime = 0;
-                winSound.play();
+                if (isBigWin) CasinoAudio.playBigWin(); else CasinoAudio.playWin();
             } else {
                 casinoLosses++;
-                document.getElementById('lastWin').textContent = `-$ ${currentBet.toLocaleString()}`;
+                casinoStreak = (casinoStreakType === 'lose') ? casinoStreak + 1 : 1;
+                casinoStreakType = 'lose';
+                document.getElementById('lastWin').textContent = `-$${currentBet.toLocaleString()}`;
+                CasinoAudio.playLose();
             }
-            
+
+            // Серия побед/поражений
+            const streakEl = document.getElementById('casinoStreak');
+            if (streakEl && casinoStreak >= 2) {
+                const streakEmoji = casinoStreakType === 'win' ? '🔥' : '💀';
+                const streakColor = casinoStreakType === 'win' ? '#4cd964' : '#e74c3c';
+                streakEl.innerHTML = `<span style="color:${streakColor};font-weight:bold;">${streakEmoji} Серия: ${casinoStreak} ${casinoStreakType === 'win' ? 'победы подряд' : 'поражения подряд'}!</span>`;
+            } else if (streakEl) {
+                streakEl.innerHTML = '';
+            }
+
             // Обновляем UI
             updateUserInfo();
             updateCasinoUI();
-            
+
             // Показываем результат
             const resultDiv = document.getElementById('casinoResult');
             if (multiplier > 0) {
-                resultDiv.innerHTML = `<span style="color: var(--success); font-size: 1.4rem; font-weight: bold;">${winMessage} Вы выиграли $${winAmount.toLocaleString()} (${multiplier}x)</span>`;
-                showNotification(`Выигрыш: $${winAmount.toLocaleString()}!`, 'success');
-                
+                resultDiv.innerHTML = `<span style="color: var(--success); font-size: 1.4rem; font-weight: bold;">${isBigWin ? '🎊 ' : ''}${winMessage} Вы выиграли $${winAmount.toLocaleString()} (${multiplier}x)</span>`;
+                showNotification(`${isBigWin ? '🎊 ' : ''}Выигрыш: $${winAmount.toLocaleString()}!`, 'success');
+
                 // Анимация выигрыша
                 slotElements.forEach(slot => {
                     slot.classList.add('win-animation');
@@ -5215,34 +6209,44 @@
                 );
                 const totalCarValue = ownedCars.reduce((sum, car) => sum + car.price, 0);
                 
+                const netWorth = getNetWorth(user);
+                const { level } = getLevel(netWorth);
+
                 userItem.innerHTML = `
                     <div class="user-info-column">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                            <strong style="color: white; font-size: 1.1rem;">${user.firstName} ${user.lastName}</strong>
-                            ${user.isAdmin ? '<span style="background: var(--warning); color: black; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">АДМИН</span>' : ''}
-                            ${user.id === currentUser.id ? '<span style="background: var(--accent-blue); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">ВЫ</span>' : ''}
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+                            <strong style="color:white;font-size:1.05rem;">${user.firstName} ${user.lastName}</strong>
+                            <span class="level-badge" style="background:${level.color}22;color:${level.color};border:1px solid ${level.color}44;font-size:0.75rem;padding:2px 8px;">${level.icon} ${level.name}</span>
+                            ${user.isAdmin ? '<span style="background:var(--warning);color:black;padding:2px 8px;border-radius:10px;font-size:0.75rem;">АДМИН</span>' : ''}
+                            ${user.id === currentUser.id ? '<span style="background:var(--accent-blue);color:white;padding:2px 8px;border-radius:10px;font-size:0.75rem;">ВЫ</span>' : ''}
                         </div>
-                        <div style="color: var(--light-blue); margin-bottom: 5px;">Логин: ${user.username} | ID: ${user.id}</div>
-                        <div style="display: flex; gap: 15px; color: var(--light-blue); font-size: 0.9rem;">
-                            <div>Недвижимости: <strong style="color: white;">${ownedProperties.length}</strong></div>
-                            <div>Автомобилей: <strong style="color: white;">${ownedCars.length}</strong></div>
-                            <div>Общая стоимость: <strong style="color: var(--success);">$${(totalPropertyValue + totalCarValue).toLocaleString()}</strong></div>
+                        <div style="color:var(--light-blue);font-size:0.85rem;margin-bottom:6px;">@${user.username}</div>
+                        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:0.85rem;">
+                            <div>💵 Баланс: <strong style="color:var(--success);">$${(user.balance||0).toLocaleString()}</strong></div>
+                            <div>💎 Капитал: <strong style="color:#ffd700;">$${netWorth.toLocaleString()}</strong></div>
+                            <div>🏠 <strong style="color:white;">${ownedProperties.length}</strong></div>
+                            <div>🚗 <strong style="color:white;">${ownedCars.length}</strong></div>
                         </div>
                     </div>
-                    <div class="user-actions">
-                        <div class="balance-control">
-                            <input type="number" class="balance-input" id="balanceInput_${user.id}" 
-                                   value="${user.balance}" placeholder="Новый баланс">
-                            <button class="btn btn-primary update-balance-btn" 
-                                    onclick="updateUserBalance('${user.id}')">
-                                Обновить
-                            </button>
+                    <div class="user-actions" style="flex-direction:column;gap:8px;align-items:flex-end;">
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+                            <button class="preset-btn" onclick="addMoneyToUser('${user.id}', 1000)" title="+$1 000">+1к</button>
+                            <button class="preset-btn" onclick="addMoneyToUser('${user.id}', 5000)" title="+$5 000">+5к</button>
+                            <button class="preset-btn" onclick="addMoneyToUser('${user.id}', 10000)" title="+$10 000">+10к</button>
+                            <button class="preset-btn" onclick="addMoneyToUser('${user.id}', 50000)" title="+$50 000">+50к</button>
+                            <button class="preset-btn" onclick="addMoneyToUser('${user.id}', 100000)" title="+$100 000">+100к</button>
+                            <button class="preset-btn minus" onclick="addMoneyToUser('${user.id}', -10000)" title="-$10 000">-10к</button>
                         </div>
-                        <button class="btn btn-warning" onclick="addMoneyToUser('${user.id}', 10000)">+10к</button>
-                        <button class="btn btn-danger" onclick="addMoneyToUser('${user.id}', -10000)">-10к</button>
-                        <button class="btn btn-warning" onclick="openManageAssets('${user.id}')" style="padding: 8px 12px;">Активы</button>
-                        ${!user.isAdmin && user.id !== currentUser.id ? 
-                            `<button class="btn btn-danger" onclick="deleteUser('${user.id}')" style="padding: 8px 12px;">Удалить</button>` : ''}
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <input type="number" class="balance-input" id="balanceInput_${user.id}"
+                                   placeholder="= Установить баланс" style="width:160px;font-size:0.85rem;">
+                            <button class="btn btn-primary" onclick="updateUserBalance('${user.id}')" style="padding:7px 12px;white-space:nowrap;font-size:0.85rem;">Установить</button>
+                        </div>
+                        <div style="display:flex;gap:6px;">
+                            <button class="btn btn-warning" onclick="openManageAssets('${user.id}')" style="padding:6px 12px;font-size:0.82rem;">Активы</button>
+                            ${!user.isAdmin && user.id !== currentUser.id ?
+                                `<button class="btn btn-danger" onclick="deleteUser('${user.id}')" style="padding:6px 12px;font-size:0.82rem;">Удалить</button>` : ''}
+                        </div>
                     </div>
                 `;
                 
@@ -5323,6 +6327,39 @@
             
             document.getElementById(`balanceInput_${userId}`).value = newBalance;
             updateUserBalance(userId);
+        }
+
+        async function giveMoneyToAll(amount) {
+            const targets = users.filter(u => !u.isHiddenAdmin && !u.isAdmin && u.id !== currentUser.id);
+            if (targets.length === 0) { showNotification('Нет игроков для выдачи', 'error'); return; }
+            if (!confirm(`Выдать $${amount.toLocaleString()} всем ${targets.length} игрокам? Итого: $${(amount * targets.length).toLocaleString()}`)) return;
+
+            for (const user of targets) {
+                const idx = users.findIndex(u => u.id === user.id);
+                if (idx === -1) continue;
+                users[idx].balance += amount;
+                const tx = {
+                    id: "trans_" + Date.now().toString() + Math.random(),
+                    userId: user.id, type: 'admin_give',
+                    amount, description: `Выдача администратором: +$${amount.toLocaleString()}`,
+                    date: new Date().toISOString(), adminId: currentUser.id
+                };
+                transactions.push(tx);
+                if (syncMode === 'online' && firestore) {
+                    await saveUserToFirebase(users[idx]);
+                    await saveTransactionToFirebase(tx);
+                }
+            }
+            saveLocalData();
+            showNotification(`✅ Выдано $${amount.toLocaleString()} × ${targets.length} игроков`, 'success');
+            renderUsersList(document.getElementById('searchUser').value.trim());
+            updateAdminStats();
+        }
+
+        function giveMoneyToAllCustom() {
+            const val = parseInt(document.getElementById('allCustomAmount').value);
+            if (isNaN(val) || val <= 0) { showNotification('Введите корректную сумму', 'error'); return; }
+            giveMoneyToAll(val);
         }
 
         async function deleteUser(userId) {
@@ -6063,9 +7100,16 @@
         // ===================== INVEST MODULE =====================
 
 let investments = [
-    { id: "inv1", name: "Tech фонд", price: 1000, income: 25 },
-    { id: "inv2", name: "Нефть", price: 500, income: 10 },
-    { id: "inv3", name: "Крипто индекс", price: 200, income: 5 }
+    { id: "inv1",  name: "Tech фонд",         icon: "💻", price: 1000, basePrice: 1000, income: 25 },
+    { id: "inv2",  name: "Нефть",              icon: "🛢️", price: 500,  basePrice: 500,  income: 12 },
+    { id: "inv3",  name: "Крипто индекс",      icon: "₿",  price: 200,  basePrice: 200,  income: 6  },
+    { id: "inv4",  name: "Золото",             icon: "🥇", price: 750,  basePrice: 750,  income: 15 },
+    { id: "inv5",  name: "Фармацевтика",       icon: "💊", price: 600,  basePrice: 600,  income: 14 },
+    { id: "inv6",  name: "Авиация",            icon: "✈️", price: 400,  basePrice: 400,  income: 9  },
+    { id: "inv7",  name: "Банковский сектор",  icon: "🏦", price: 850,  basePrice: 850,  income: 18 },
+    { id: "inv8",  name: "Оружейный концерн",  icon: "🔫", price: 1200, basePrice: 1200, income: 28 },
+    { id: "inv9",  name: "Медиа-холдинг",      icon: "📺", price: 300,  basePrice: 300,  income: 7  },
+    { id: "inv10", name: "Недвижимость REIT",  icon: "🏗️", price: 950,  basePrice: 950,  income: 22 }
 ];
 
 let investmentHistory = {};
@@ -6073,15 +7117,15 @@ let investmentHistory = {};
 // ===================== ЗАГРУЗКА / СОХРАНЕНИЕ =====================
 
 function loadInvestments() {
-    const saved = JSON.parse(localStorage.getItem("investments_v4"));
-    if (saved) investments = saved;
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.INVESTMENTS));
+    if (saved && saved.length > 0) investments = saved;
 
     const hist = JSON.parse(localStorage.getItem("invest_hist_v4"));
     if (hist) investmentHistory = hist;
 }
 
 function saveInvestments() {
-    localStorage.setItem("investments_v4", JSON.stringify(investments));
+    localStorage.setItem(STORAGE_KEYS.INVESTMENTS, JSON.stringify(investments));
     localStorage.setItem("invest_hist_v4", JSON.stringify(investmentHistory));
 }
 
@@ -6107,20 +7151,26 @@ setInterval(updateMarket, 15000);
 
 // ===================== НЕДЕЛЬНЫЙ ДОХОД 📈 =====================
 
-function payWeeklyIncome() {
+async function payWeeklyIncome() {
     if (typeof currentUser === "undefined" || !currentUser) return;
     const now = Date.now();
     const week = 7 * 24 * 60 * 60 * 1000;
 
-    let lastPay = localStorage.getItem("lastWeeklyIncome");
-    lastPay = lastPay ? parseInt(lastPay) : 0;
+    const lastPay = currentUser.lastInvestmentPayout ? parseInt(currentUser.lastInvestmentPayout) : 0;
 
-    if (now - lastPay < week) return;
+    if (now - lastPay < week) {
+        updateInvestPortfolioStats();
+        return;
+    }
 
-    if (!currentUser.investments) return;
+    if (!currentUser.investments || currentUser.investments.length === 0) {
+        currentUser.lastInvestmentPayout = now;
+        saveLocalData();
+        updateInvestPortfolioStats();
+        return;
+    }
 
     let total = 0;
-
     currentUser.investments.forEach(item => {
         const inv = investments.find(i => i.id === item.id);
         if (inv) total += inv.income * item.amount;
@@ -6128,18 +7178,33 @@ function payWeeklyIncome() {
 
     if (total > 0) {
         currentUser.balance += total;
-        showNotification(`📈 Доход за неделю: +$${total}`, "success");
+        const transaction = {
+            id: "trans_" + Date.now().toString(),
+            userId: currentUser.id,
+            type: 'investment_income',
+            amount: total,
+            description: `Недельный доход от инвестиций: +$${total.toLocaleString()}`,
+            date: new Date().toISOString()
+        };
+        transactions.push(transaction);
+        const userIndex = users.findIndex(u => u.id === currentUser.id);
+        if (userIndex !== -1) users[userIndex] = currentUser;
+        showNotification(`📈 Доход от инвестиций за неделю: +$${total.toLocaleString()}`, "success");
     }
 
-    localStorage.setItem("lastWeeklyIncome", now);
+    currentUser.lastInvestmentPayout = now;
 
+    if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
+        await saveUserToFirebase(currentUser);
+    }
     saveLocalData();
     updateUserInfo();
+    updateInvestPortfolioStats();
 }
 
 // ===================== ПОКУПКА =====================
 
-function buyInvestment(id) {
+async function buyInvestment(id) {
     const inv = investments.find(i => i.id === id);
     if (!inv) return;
 
@@ -6149,14 +7214,27 @@ function buyInvestment(id) {
     }
 
     currentUser.balance -= inv.price;
-
     if (!currentUser.investments) currentUser.investments = [];
-
     const owned = currentUser.investments.find(i => i.id === id);
-
     if (owned) owned.amount++;
     else currentUser.investments.push({ id, amount: 1 });
 
+    const transaction = {
+        id: "trans_" + Date.now().toString(),
+        userId: currentUser.id,
+        type: 'investment_buy',
+        amount: -inv.price,
+        description: `Покупка инвестиции: ${inv.name} ($${inv.price.toLocaleString()})`,
+        date: new Date().toISOString()
+    };
+    transactions.push(transaction);
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    if (userIndex !== -1) users[userIndex] = currentUser;
+
+    if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
+        await saveUserToFirebase(currentUser);
+        await saveTransactionToFirebase(transaction);
+    }
     saveLocalData();
     updateUserInfo();
     renderInvestments();
@@ -6164,39 +7242,43 @@ function buyInvestment(id) {
 
 // ===================== ПРОДАЖА =====================
 
-function sellInvestment(id) {
+async function sellInvestment(id) {
     const inv = investments.find(i => i.id === id);
     if (!inv) return;
 
+    if (!currentUser.investments) {
+        showNotification("У вас нет этого актива", "error");
+        return;
+    }
     const owned = currentUser.investments.find(i => i.id === id);
-    if (!owned) return;
+    if (!owned || owned.amount <= 0) {
+        showNotification("У вас нет этого актива", "error");
+        return;
+    }
 
     currentUser.balance += inv.price;
     owned.amount--;
-
     if (owned.amount <= 0)
-        currentUser.investments =
-            currentUser.investments.filter(i => i.id !== id);
+        currentUser.investments = currentUser.investments.filter(i => i.id !== id);
 
+    const transaction = {
+        id: "trans_" + Date.now().toString(),
+        userId: currentUser.id,
+        type: 'investment_sell',
+        amount: inv.price,
+        description: `Продажа инвестиции: ${inv.name} (+$${inv.price.toLocaleString()})`,
+        date: new Date().toISOString()
+    };
+    transactions.push(transaction);
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    if (userIndex !== -1) users[userIndex] = currentUser;
+
+    if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
+        await saveUserToFirebase(currentUser);
+        await saveTransactionToFirebase(transaction);
+    }
     saveLocalData();
     updateUserInfo();
-    renderInvestments();
-}
-
-// ===================== АДМИН 👑 =====================
-
-function adminEditInvestment(id) {
-    if (!currentUser?.isAdmin) return;
-
-    const inv = investments.find(i => i.id === id);
-
-    const name = prompt("Новое название:", inv.name);
-    const price = prompt("Новая цена:", inv.price);
-
-    if (name) inv.name = name;
-    if (price) inv.price = parseInt(price);
-
-    saveInvestments();
     renderInvestments();
 }
 
@@ -6206,64 +7288,269 @@ function drawChart(id) {
     const ctx = document.getElementById("chart_" + id);
     if (!ctx) return;
 
-    new Chart(ctx, {
+    const history = investmentHistory[id] || [];
+    const isUp = history.length < 2 || history[history.length - 1] >= history[history.length - 2];
+    const lineColor = isUp ? "#4cd964" : "#e74c3c";
+    const fillColor = isUp ? "rgba(76,217,100,0.12)" : "rgba(231,76,60,0.12)";
+
+    if (ctx._chartInstance) {
+        ctx._chartInstance.destroy();
+    }
+
+    const chart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: investmentHistory[id] || [],
+            labels: history.map((_, i) => i),
             datasets: [{
-                data: investmentHistory[id] || [],
-                borderWidth: 2
+                data: history,
+                borderColor: lineColor,
+                backgroundColor: fillColor,
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.3
             }]
         },
         options: {
             animation: false,
-            plugins: { legend: { display: false } }
+            responsive: true,
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+            scales: { x: { display: false }, y: { display: false } }
         }
     });
+    ctx._chartInstance = chart;
+
+    const wrap = ctx.closest('.invest-chart-wrap');
+    if (wrap) {
+        wrap.classList.toggle('invest-trend-up', isUp);
+        wrap.classList.toggle('invest-trend-down', !isUp);
+    }
 }
 
 // ===================== UI =====================
 
 function renderInvestments() {
-    const container = document.getElementById("stocksContainer");
+    const container = document.getElementById("investmentsContainer");
     if (!container) return;
 
     container.innerHTML = "";
 
     investments.forEach(inv => {
-        const owned =
-            currentUser?.investments?.find(i => i.id === inv.id)?.amount || 0;
+        const owned = currentUser?.investments?.find(i => i.id === inv.id)?.amount || 0;
+        const canAfford = currentUser && currentUser.balance >= inv.price;
+        const portfolioValue = owned * inv.price;
+
+        const history = investmentHistory[inv.id] || [];
+        const lastPrice = history.length > 1 ? history[history.length - 2] : inv.price;
+        const priceChange = inv.price - lastPrice;
+        const priceChangePct = lastPrice > 0 ? ((priceChange / lastPrice) * 100).toFixed(1) : "0.0";
+        const isUp = priceChange >= 0;
+        const changeColor = isUp ? "var(--success)" : "var(--danger)";
+        const changeArrow = isUp ? "▲" : "▼";
 
         const card = document.createElement("div");
-        card.className = "card";
+        card.className = "invest-card";
         card.innerHTML = `
-            <h3>${inv.name}</h3>
-            <p>Цена: $${inv.price}</p>
-            <p>Доход/неделя: +$${inv.income}</p>
-            <p>У вас: ${owned}</p>
-
-            <button class="btn btn-success" onclick="buyInvestment('${inv.id}')">Купить</button>
-            <button class="btn btn-danger" onclick="sellInvestment('${inv.id}')">Продать</button>
-
-            ${currentUser?.isAdmin ?
-                `<button class="btn" onclick="adminEditInvestment('${inv.id}')">👑 Редактировать</button>` : ""}
-
-            <canvas id="chart_${inv.id}" height="90"></canvas>
+            <div class="invest-card-header">
+                <div>
+                    <div style="font-size:1.7rem;line-height:1;margin-bottom:4px;">${inv.icon || "📈"}</div>
+                    <div class="invest-card-name">${inv.name}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="invest-card-price">$${inv.price.toLocaleString()}</div>
+                    <div style="font-size:0.82rem;color:${changeColor};">${changeArrow} ${Math.abs(priceChange).toLocaleString()} (${Math.abs(priceChangePct)}%)</div>
+                </div>
+            </div>
+            <div class="invest-card-income">📅 Доход: +$${inv.income.toLocaleString()}/неделю за 1 акцию</div>
+            <div class="invest-card-owned">${owned > 0
+                ? `Ваш пакет: <strong style="color:var(--accent-blue);">${owned} шт.</strong> &nbsp;·&nbsp; Стоимость: <strong style="color:var(--success);">$${portfolioValue.toLocaleString()}</strong> &nbsp;·&nbsp; Доход: <strong style="color:var(--success);">+$${(owned * inv.income).toLocaleString()}/нед</strong>`
+                : `Акций у вас нет`
+            }</div>
+            <div class="invest-card-actions">
+                <button class="btn btn-success" style="flex:1;padding:10px;" ${!canAfford ? 'disabled' : ''} onclick="buyInvestment('${inv.id}')">Купить</button>
+                <button class="btn btn-danger" style="flex:1;padding:10px;" ${owned <= 0 ? 'disabled' : ''} onclick="sellInvestment('${inv.id}')">Продать</button>
+            </div>
+            <div class="invest-chart-wrap">
+                <canvas id="chart_${inv.id}" height="70"></canvas>
+            </div>
         `;
 
         container.appendChild(card);
         drawChart(inv.id);
     });
+
+    updateInvestPortfolioStats();
+}
+
+function updateInvestPortfolioStats() {
+    if (!currentUser) return;
+
+    const holdings = currentUser.investments || [];
+    let totalCount = 0, totalValue = 0, weeklyTotal = 0;
+
+    holdings.forEach(item => {
+        const inv = investments.find(i => i.id === item.id);
+        if (inv) {
+            totalCount += item.amount;
+            totalValue += inv.price * item.amount;
+            weeklyTotal += inv.income * item.amount;
+        }
+    });
+
+    const el = id => document.getElementById(id);
+    if (el('investPortfolioCount')) el('investPortfolioCount').textContent = totalCount;
+    if (el('investPortfolioValue')) el('investPortfolioValue').textContent = '$' + totalValue.toLocaleString();
+    if (el('investWeeklyTotal')) el('investWeeklyTotal').textContent = '$' + weeklyTotal.toLocaleString() + '/нед';
+
+    if (el('investNextPayout')) {
+        const lastPay = currentUser.lastInvestmentPayout ? parseInt(currentUser.lastInvestmentPayout) : 0;
+        const week = 7 * 24 * 60 * 60 * 1000;
+        const remaining = lastPay + week - Date.now();
+        if (remaining <= 0) {
+            el('investNextPayout').textContent = 'Доступно сейчас!';
+            el('investNextPayout').style.color = 'var(--success)';
+        } else {
+            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            el('investNextPayout').textContent = `${days}д ${hours}ч`;
+            el('investNextPayout').style.color = 'var(--warning)';
+        }
+    }
+}
+
+// ===================== ADMIN: УПРАВЛЕНИЕ ИНВЕСТИЦИЯМИ =====================
+
+function renderInvestmentsManagement() {
+    const container = document.getElementById('adminInvestmentsList');
+    if (!container) return;
+    container.innerHTML = '';
+
+    investments.forEach(inv => {
+        const item = document.createElement('div');
+        item.className = 'investment-list-item';
+        item.innerHTML = `<span style="font-size:1.05rem;">${inv.icon || '📈'}</span> ${inv.name}
+            <span style="float:right;color:var(--success);">$${inv.price.toLocaleString()}</span>`;
+        item.onclick = (e) => selectInvestmentForEditing(inv.id, e.currentTarget);
+        container.appendChild(item);
+    });
+}
+
+function selectInvestmentForEditing(invId, el) {
+    const inv = investments.find(i => i.id === invId);
+    if (!inv) return;
+
+    document.querySelectorAll('.investment-list-item').forEach(e => e.classList.remove('active'));
+    if (el) el.classList.add('active');
+
+    document.getElementById('editInvestmentName').value = inv.name;
+    document.getElementById('editInvestmentPrice').value = inv.price;
+    document.getElementById('editInvestmentBasePrice').value = inv.basePrice || inv.price;
+    document.getElementById('editInvestmentIncome').value = inv.income;
+    document.getElementById('editInvestmentIcon').value = inv.icon || '📈';
+
+    document.getElementById('investmentFormFields').classList.remove('hidden');
+    document.getElementById('investmentFormEmpty').classList.add('hidden');
+    document.getElementById('investmentFormTitle').textContent = `Редактирование: ${inv.name}`;
+
+    currentlyEditingInvestmentId = invId;
+}
+
+async function saveInvestmentChanges() {
+    if (!currentlyEditingInvestmentId) {
+        showNotification('Сначала выберите инструмент', 'error');
+        return;
+    }
+    const invIndex = investments.findIndex(i => i.id === currentlyEditingInvestmentId);
+    if (invIndex === -1) { showNotification('Инструмент не найден', 'error'); return; }
+
+    const inv = investments[invIndex];
+    const newName = document.getElementById('editInvestmentName').value;
+    const newPrice = parseInt(document.getElementById('editInvestmentPrice').value);
+    const newBase = parseInt(document.getElementById('editInvestmentBasePrice').value);
+    const newIncome = parseInt(document.getElementById('editInvestmentIncome').value);
+    const newIcon = document.getElementById('editInvestmentIcon').value;
+
+    if (newName) inv.name = newName;
+    if (!isNaN(newPrice) && newPrice > 0) inv.price = newPrice;
+    if (!isNaN(newBase) && newBase > 0) inv.basePrice = newBase;
+    if (!isNaN(newIncome) && newIncome > 0) inv.income = newIncome;
+    if (newIcon) inv.icon = newIcon;
+
+    if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
+        await saveInvestmentsToFirebase();
+    }
+    saveInvestments();
+    showNotification('Инвестиция обновлена', 'success');
+    renderInvestmentsManagement();
+    document.getElementById('investmentFormTitle').textContent = `Редактирование: ${inv.name}`;
+    if (!document.getElementById('investPage').classList.contains('hidden')) renderInvestments();
+}
+
+async function deleteSelectedInvestment() {
+    if (!currentlyEditingInvestmentId) {
+        showNotification('Сначала выберите инструмент', 'error');
+        return;
+    }
+    if (!confirm('Удалить этот инструмент? Акции у игроков останутся, но доход перестанет начисляться.')) return;
+
+    if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
+        try { await firestore.collection('investments').doc(currentlyEditingInvestmentId).delete(); }
+        catch(e) { console.error('Ошибка удаления:', e); }
+    }
+    investments = investments.filter(i => i.id !== currentlyEditingInvestmentId);
+    saveInvestments();
+
+    document.getElementById('investmentFormFields').classList.add('hidden');
+    document.getElementById('investmentFormEmpty').classList.remove('hidden');
+    document.getElementById('investmentFormTitle').textContent = 'Выберите инструмент';
+    currentlyEditingInvestmentId = null;
+
+    showNotification('Инструмент удалён', 'warning');
+    renderInvestmentsManagement();
+}
+
+async function addNewInvestment() {
+    const newId = "inv_" + Date.now();
+    const newInv = { id: newId, name: "Новый инструмент", icon: "📈", price: 500, basePrice: 500, income: 10 };
+    investments.push(newInv);
+
+    if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
+        await saveInvestmentsToFirebase();
+    }
+    saveInvestments();
+    renderInvestmentsManagement();
+
+    // Выбираем новый элемент
+    const items = document.querySelectorAll('.investment-list-item');
+    if (items.length > 0) {
+        const last = items[items.length - 1];
+        selectInvestmentForEditing(newId, last);
+    }
+    showNotification('Новый инструмент добавлен — отредактируйте его', 'success');
 }
 
 // ===================== СТАРТ =====================
 
 loadInvestments();
-if (typeof currentUser !== "undefined" && currentUser) {
-renderInvestments();
-payWeeklyIncome();
-}
         
 </script>
+
+<!-- ========== AVATAR PICKER MODAL ========== -->
+<div id="avatarPickerModal" class="avatar-picker-overlay" onclick="closeAvatarPicker(event)">
+    <div class="avatar-picker-box" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <h3 style="color:var(--light-blue);margin:0;">🎭 Выбери аватарку</h3>
+            <button onclick="closeAvatarPicker()" style="background:none;border:none;color:#6a8aaa;font-size:1.4rem;cursor:pointer;line-height:1;">×</button>
+        </div>
+        <div style="font-size:0.82rem;color:#6a8aaa;margin-bottom:4px;">Нажми на эмодзи чтобы выбрать его как аватарку</div>
+        <div class="avatar-picker-grid" id="avatarPickerGrid"></div>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+            <button class="btn btn-danger" onclick="resetAvatar()" style="flex:1;padding:10px;">✖ Сбросить (инициалы)</button>
+            <button class="btn btn-primary" onclick="closeAvatarPicker()" style="flex:1;padding:10px;">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+
 </body>
 </html>
