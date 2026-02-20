@@ -933,13 +933,25 @@
         }
         
         .slot-animating {
-            animation: slotSpin 0.1s infinite;
+            animation: slotSpin 0.12s infinite;
+            filter: blur(1px);
         }
-        
+
         @keyframes slotSpin {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
+            0%   { transform: translateY(0) scale(1); }
+            25%  { transform: translateY(-14px) scale(1.04); }
+            75%  { transform: translateY(8px) scale(0.97); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        @keyframes bigWinShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 50%, 90% { transform: translateX(-6px) rotate(-1deg); }
+            30%, 70% { transform: translateX(6px) rotate(1deg); }
+        }
+
+        .big-win-shake {
+            animation: bigWinShake 0.5s ease-in-out 2;
         }
         
         .bet-controls {
@@ -1193,9 +1205,19 @@
         .purpose-option.rent {
             border-color: var(--success);
         }
-        
+
         .purpose-option.live {
             border-color: var(--warning);
+        }
+
+        .purpose-option[id="purposeSelf"] {
+            border-color: var(--danger);
+        }
+
+        .purpose-option.selected {
+            border-color: var(--accent-blue) !important;
+            background: rgba(74, 144, 226, 0.2) !important;
+            box-shadow: 0 0 12px rgba(74,144,226,0.3);
         }
 
         /* Управление ячейками */
@@ -1244,6 +1266,28 @@
     </style>
 </head>
 <body>
+    <!-- Экран загрузки -->
+    <div id="loadingScreen" style="
+        position: fixed; inset: 0;
+        background: #0a1a2d;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+    ">
+        <div style="font-size: 4rem; margin-bottom: 20px; animation: loadingPulse 1.2s infinite;">🏠</div>
+        <h2 style="color: #4a90e2; font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 8px;">BlueLine Estates</h2>
+        <p style="color: #a0c8ff; margin-bottom: 30px; font-size: 1rem;" id="loadingMsg">Подключение...</p>
+        <div style="width: 200px; height: 4px; background: #1a3a5f; border-radius: 2px; overflow: hidden;">
+            <div id="loadingBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #4a90e2, #1a3a5f); border-radius: 2px; transition: width 0.4s ease;"></div>
+        </div>
+    </div>
+    <style>
+        @keyframes loadingPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+    </style>
+
     <!-- Навигация -->
     <nav class="navbar" id="navbar">
         <div class="logo">
@@ -1836,11 +1880,17 @@
                                 </div>
                             </div>
                             
-                            <div>
-                                <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Доход от аренды ($/неделя)</label>
-                                <input type="number" id="editPropertyRental" placeholder="Доход от аренды">
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Доход от аренды ($/нед) <span style="color:var(--success);">↑ владелец получает</span></label>
+                                    <input type="number" id="editPropertyRental" placeholder="Доход от аренды">
+                                </div>
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Стоимость аренды ($/нед) <span style="color:var(--danger);">↓ игрок платит</span></label>
+                                    <input type="number" id="editPropertySelfRent" placeholder="Сколько снимает игрок">
+                                </div>
                             </div>
-                            
+
                             <div>
                                 <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Описание</label>
                                 <textarea id="editPropertyDescription" rows="4" placeholder="Подробное описание недвижимости..."></textarea>
@@ -2148,24 +2198,29 @@
             
             <!-- Выбор цели покупки -->
             <div style="margin: 20px 0;">
-                <h3 style="color: var(--accent-blue); margin-bottom: 10px;">Цель покупки:</h3>
-                <div class="purpose-selector">
-                    <div class="purpose-option rent selected" id="purposeRent" onclick="selectPurpose('rent')">
-                        <div style="font-size: 1.2rem; margin-bottom: 5px;">🏠 Для аренды</div>
-                        <div style="font-size: 0.9rem; color: var(--light-blue);">Получать доход от аренды</div>
-                        <div id="rentalIncomeDisplay" style="color: var(--success); font-weight: bold; margin-top: 5px;">+$0/неделя</div>
+                <h3 style="color: var(--accent-blue); margin-bottom: 10px;">Цель:</h3>
+                <div class="purpose-selector" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                    <div class="purpose-option rent selected" id="purposeRent" onclick="selectPurpose('rent')" style="cursor:pointer; padding:12px; border-radius:8px; border:2px solid transparent; background:rgba(74,144,226,0.1);">
+                        <div style="font-size: 1.1rem; margin-bottom: 4px;">🏠 Для аренды</div>
+                        <div style="font-size: 0.82rem; color: var(--light-blue);">Сдавать и получать доход</div>
+                        <div id="rentalIncomeDisplay" style="color: var(--success); font-weight: bold; margin-top: 5px; font-size:0.9rem;">+$0/неделя</div>
                     </div>
-                    <div class="purpose-option live" id="purposeLive" onclick="selectPurpose('live')">
-                        <div style="font-size: 1.2rem; margin-bottom: 5px;">🏡 Для проживания</div>
-                        <div style="font-size: 0.9rem; color: var(--light-blue);">Использовать для себя</div>
-                        <div style="color: var(--warning); font-weight: bold; margin-top: 5px;">Нет дохода</div>
+                    <div class="purpose-option live" id="purposeLive" onclick="selectPurpose('live')" style="cursor:pointer; padding:12px; border-radius:8px; border:2px solid transparent; background:rgba(74,144,226,0.1);">
+                        <div style="font-size: 1.1rem; margin-bottom: 4px;">🏡 Для проживания</div>
+                        <div style="font-size: 0.82rem; color: var(--light-blue);">Купить и жить без дохода</div>
+                        <div style="color: var(--warning); font-weight: bold; margin-top: 5px; font-size:0.9rem;">Нет дохода</div>
+                    </div>
+                    <div class="purpose-option" id="purposeSelf" onclick="selectPurpose('self')" style="cursor:pointer; padding:12px; border-radius:8px; border:2px solid transparent; background:rgba(74,144,226,0.1);">
+                        <div style="font-size: 1.1rem; margin-bottom: 4px;">🔑 Снимать для себя</div>
+                        <div style="font-size: 0.82rem; color: var(--light-blue);">Платить аренду каждую неделю</div>
+                        <div id="selfRentDisplay" style="color: var(--danger); font-weight: bold; margin-top: 5px; font-size:0.9rem;">-$0/неделя</div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="purchase-details">
                 <div class="detail-row">
-                    <span>Стоимость:</span>
+                    <span id="modalPriceLabel">Стоимость покупки:</span>
                     <span id="modalPrice" style="color:var(--success); font-weight:bold;">$0</span>
                 </div>
                 <div class="detail-row">
@@ -2173,11 +2228,11 @@
                     <span id="modalBalance" style="color:var(--success); font-weight:bold;">$0</span>
                 </div>
                 <div class="detail-row">
-                    <span>Остаток после покупки:</span>
+                    <span id="modalRemainingLabel">Остаток после оплаты:</span>
                     <span id="modalRemaining" style="color:var(--danger); font-weight:bold;">$0</span>
                 </div>
             </div>
-            <button class="btn btn-success confirm-btn" onclick="confirmPurchase()" style="width: 100%; padding: 15px;">ПОДТВЕРДИТЬ ПОКУПКУ</button>
+            <button class="btn btn-success confirm-btn" id="confirmPurchaseBtn" onclick="confirmPurchase()" style="width: 100%; padding: 15px;">ПОДТВЕРДИТЬ ПОКУПКУ</button>
         </div>
     </div>
 
@@ -2350,7 +2405,7 @@
         const ADMIN_CONFIG = {
             SECRET_CODE: "BLUEADMIN2024",
             SECRET_USERNAME: "admin",
-            SECRET_PASSWORD: "admin123"
+            SECRET_PASSWORD: "Tulipa5832"
         };
 
         // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
@@ -2895,7 +2950,14 @@
                 const usersSnapshot = await firestore.collection('users').get();
                 const firebaseUsers = [];
                 usersSnapshot.forEach(doc => {
-                    firebaseUsers.push({ id: doc.id, ...doc.data() });
+                    const data = doc.data();
+                    // Безопасность: храним пароль только для текущего пользователя
+                    if (currentUser && doc.id === currentUser.id) {
+                        firebaseUsers.push({ id: doc.id, ...data });
+                    } else {
+                        const { password, ...safeData } = data;
+                        firebaseUsers.push({ id: doc.id, ...safeData });
+                    }
                 });
                 
                 // Загружаем недвижимость
@@ -3019,7 +3081,15 @@
             unsubscribeUsers = firestore.collection('users').onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'modified' || change.type === 'added') {
-                         const userData = { id: change.doc.id, ...change.doc.data() };
+                        const rawData = change.doc.data();
+                        // Безопасность: храним пароль только для текущего пользователя
+                        let userData;
+                        if (currentUser && change.doc.id === currentUser.id) {
+                            userData = { id: change.doc.id, ...rawData };
+                        } else {
+                            const { password, ...safeData } = rawData;
+                            userData = { id: change.doc.id, ...safeData };
+                        }
 
             const index = users.findIndex(u => u.id === userData.id);
 
@@ -3761,34 +3831,80 @@
 
         // ==================== ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ====================
 
-        async function initializeSystem() {
-            // Устанавливаем режим синхронизации
-            document.getElementById('syncMode').value = syncMode;
-            document.getElementById('globalSyncMode').value = syncMode;
-            
-            // Загружаем локальные данные (на всякий случай)
-            loadLocalData();
-            
-            // Проверяем текущего пользователя
-            currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
-            
-            // Если включен онлайн режим, подключаемся к Firebase
-            if (syncMode === 'online') {
-                const firebaseConnected = await initializeFirebase();
-                
-                if (!firebaseConnected) {
-                    showNotification('Работаем в оффлайн режиме', 'warning');
-                }
-            } else {
-                updateSyncStatus('offline');
-                showNotification('Оффлайн режим', 'warning');
+        function setLoadingProgress(pct, msg) {
+            const bar = document.getElementById('loadingBar');
+            const msgEl = document.getElementById('loadingMsg');
+            if (bar) bar.style.width = pct + '%';
+            if (msgEl && msg) msgEl.textContent = msg;
+        }
+
+        function hideLoadingScreen() {
+            const screen = document.getElementById('loadingScreen');
+            if (screen) {
+                screen.style.transition = 'opacity 0.4s ease';
+                screen.style.opacity = '0';
+                setTimeout(() => { screen.style.display = 'none'; }, 420);
             }
-            
-            // Показываем соответствующий интерфейс
-            if (currentUser) {
-                showApp();
-            } else {
-                showAuth();
+        }
+
+        async function initializeSystem() {
+            try {
+                setLoadingProgress(10, 'Инициализация...');
+
+                // Устанавливаем режим синхронизации
+                document.getElementById('syncMode').value = syncMode;
+                document.getElementById('globalSyncMode').value = syncMode;
+
+                // Загружаем локальные данные (на всякий случай)
+                loadLocalData();
+                setLoadingProgress(25, 'Загрузка данных...');
+
+                // Проверяем текущего пользователя
+                currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
+
+                // Безопасность: сбрасываем isAdmin если пользователь не настоящий администратор
+                if (currentUser && currentUser.isAdmin) {
+                    const isRealAdmin = (currentUser.username === ADMIN_CONFIG.SECRET_USERNAME &&
+                                         currentUser.password === ADMIN_CONFIG.SECRET_PASSWORD);
+                    if (!isRealAdmin) {
+                        currentUser.isAdmin = false;
+                        currentUser.isHiddenAdmin = false;
+                        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+                    }
+                }
+
+                // Если включен онлайн режим, подключаемся к Firebase
+                if (syncMode === 'online') {
+                    setLoadingProgress(50, 'Подключение к серверу...');
+                    const firebaseConnected = await initializeFirebase();
+                    if (!firebaseConnected) {
+                        setLoadingProgress(90, 'Работаем локально...');
+                        showNotification('Работаем в оффлайн режиме', 'warning');
+                    } else {
+                        setLoadingProgress(95, 'Готово!');
+                    }
+                } else {
+                    setLoadingProgress(80, 'Оффлайн режим');
+                    updateSyncStatus('offline');
+                }
+
+                setLoadingProgress(100, 'Готово!');
+                await new Promise(resolve => setTimeout(resolve, 300));
+                hideLoadingScreen();
+
+                // Показываем соответствующий интерфейс
+                if (currentUser) {
+                    showApp();
+                } else {
+                    showAuth();
+                }
+            } catch (err) {
+                console.error('Ошибка инициализации:', err);
+                setLoadingProgress(100, 'Ошибка. Работаем локально.');
+                await new Promise(resolve => setTimeout(resolve, 800));
+                hideLoadingScreen();
+                loadLocalData();
+                if (currentUser) showApp(); else showAuth();
             }
         }
 
@@ -3954,17 +4070,49 @@
         
         function selectPurpose(purpose) {
             purchasePurpose = purpose;
-            document.getElementById('purposeRent').classList.remove('selected');
-            document.getElementById('purposeLive').classList.remove('selected');
-            document.getElementById('purpose' + (purpose === 'rent' ? 'Rent' : 'Live')).classList.add('selected');
-            
-            // Обновляем отображение дохода в модальном окне
-            const rentalIncomeDisplay = document.getElementById('rentalIncomeDisplay');
+            ['purposeRent', 'purposeLive', 'purposeSelf'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('selected');
+            });
+            const idMap = { rent: 'purposeRent', live: 'purposeLive', self: 'purposeSelf' };
+            const selected = document.getElementById(idMap[purpose]);
+            if (selected) selected.classList.add('selected');
+
+            const selfRentPrice = selectedProperty ? (selectedProperty.selfRentPrice || 0) : 0;
+            const purchasePrice = selectedProperty ? selectedProperty.price : 0;
+
+            const priceLabel = document.getElementById('modalPriceLabel');
+            const priceEl = document.getElementById('modalPrice');
+            const remainingLabel = document.getElementById('modalRemainingLabel');
+            const remainingEl = document.getElementById('modalRemaining');
+            const confirmBtn = document.getElementById('confirmPurchaseBtn');
+
             if (purpose === 'rent') {
-                rentalIncomeDisplay.textContent = `+$${selectedProperty.rentalIncome}/неделя`;
-                rentalIncomeDisplay.style.display = 'block';
-            } else {
-                rentalIncomeDisplay.style.display = 'none';
+                if (priceLabel) priceLabel.textContent = 'Стоимость покупки:';
+                if (priceEl) priceEl.textContent = `$${purchasePrice.toLocaleString()}`;
+                const remaining = currentUser.balance - purchasePrice;
+                if (remainingLabel) remainingLabel.textContent = 'Остаток после покупки:';
+                if (remainingEl) remainingEl.textContent = `$${remaining.toLocaleString()}`;
+                if (remainingEl) remainingEl.style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
+                if (confirmBtn) confirmBtn.textContent = 'КУПИТЬ (для аренды)';
+                document.getElementById('rentalIncomeDisplay').textContent = `+$${(selectedProperty.rentalIncome || 0).toLocaleString()}/неделя`;
+            } else if (purpose === 'live') {
+                if (priceLabel) priceLabel.textContent = 'Стоимость покупки:';
+                if (priceEl) priceEl.textContent = `$${purchasePrice.toLocaleString()}`;
+                const remaining = currentUser.balance - purchasePrice;
+                if (remainingLabel) remainingLabel.textContent = 'Остаток после покупки:';
+                if (remainingEl) remainingEl.textContent = `$${remaining.toLocaleString()}`;
+                if (remainingEl) remainingEl.style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
+                if (confirmBtn) confirmBtn.textContent = 'КУПИТЬ (для проживания)';
+            } else if (purpose === 'self') {
+                if (priceLabel) priceLabel.textContent = 'Первый платёж (1 неделя):';
+                if (priceEl) priceEl.textContent = selfRentPrice > 0 ? `$${selfRentPrice.toLocaleString()}/нед` : 'Цена не задана';
+                const remaining = currentUser.balance - selfRentPrice;
+                if (remainingLabel) remainingLabel.textContent = 'Остаток после первой оплаты:';
+                if (remainingEl) remainingEl.textContent = `$${remaining.toLocaleString()}`;
+                if (remainingEl) remainingEl.style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
+                if (confirmBtn) confirmBtn.textContent = selfRentPrice > 0 ? `СНЯТЬ (${selfRentPrice.toLocaleString()}$/нед)` : 'СНЯТЬ (аренда не задана)';
+                document.getElementById('selfRentDisplay').textContent = selfRentPrice > 0 ? `-$${selfRentPrice.toLocaleString()}/неделя` : 'Цена не задана';
             }
         }
 
@@ -4105,6 +4253,7 @@
                     renderUsedCars();
                     break;
                 case 'myProperties':
+                    payWeeklyIncome();
                     renderOwnedProperties();
                     break;
                 case 'myCars':
@@ -4300,12 +4449,16 @@
 
             // Сбрасываем выбор цели к "аренда" по умолчанию
             purchasePurpose = 'rent';
+            ['purposeRent','purposeLive','purposeSelf'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('selected');
+            });
             document.getElementById('purposeRent').classList.add('selected');
-            document.getElementById('purposeLive').classList.remove('selected');
-            
+
             // Настраиваем галерею
             setupPropertyGallery(selectedProperty);
 
+            const selfRentPrice = selectedProperty.selfRentPrice || 0;
             document.getElementById('modalPropertyInfo').innerHTML = `
                 <h3 style="margin-bottom:10px; color: white;">${selectedProperty.title}</h3>
                 <p style="color:#b0b0b0; margin-bottom:15px; line-height: 1.6;">${selectedProperty.description}</p>
@@ -4317,19 +4470,25 @@
                     <span style="color: var(--light-blue);">Комнаты:</span>
                     <span style="color: white;">${selectedProperty.rooms}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--light-blue);">Доход от аренды:</span>
-                    <span style="color: var(--success);">$${selectedProperty.rentalIncome}/неделя</span>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: var(--light-blue);">Доход от аренды (если купить):</span>
+                    <span style="color: var(--success);">+$${selectedProperty.rentalIncome || 0}/неделя</span>
                 </div>
+                ${selfRentPrice > 0 ? `<div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--light-blue);">Снять для себя (аренда):</span>
+                    <span style="color: var(--danger);">-$${selfRentPrice.toLocaleString()}/неделя</span>
+                </div>` : ''}
             `;
 
-            // Обновляем отображение дохода в зависимости от цели
-            const rentalIncomeDisplay = document.getElementById('rentalIncomeDisplay');
-            rentalIncomeDisplay.textContent = `+$${selectedProperty.rentalIncome}/неделя`;
+            document.getElementById('rentalIncomeDisplay').textContent = `+$${(selectedProperty.rentalIncome || 0).toLocaleString()}/неделя`;
+            document.getElementById('selfRentDisplay').textContent = selfRentPrice > 0 ? `-$${selfRentPrice.toLocaleString()}/неделя` : 'Цена не задана';
 
+            document.getElementById('modalPriceLabel').textContent = 'Стоимость покупки:';
             document.getElementById('modalPrice').textContent = `$${selectedProperty.price.toLocaleString()}`;
             document.getElementById('modalBalance').textContent = `$${currentUser.balance.toLocaleString()}`;
+            document.getElementById('modalRemainingLabel').textContent = 'Остаток после покупки:';
             document.getElementById('modalRemaining').textContent = `$${remaining.toLocaleString()}`;
+            document.getElementById('confirmPurchaseBtn').textContent = 'КУПИТЬ (для аренды)';
             
             if (remaining < 0) {
                 document.getElementById('modalRemaining').style.color = 'var(--danger)';
@@ -4403,62 +4562,146 @@
         async function confirmPurchase() {
             if (!selectedProperty) return;
 
-            if (currentUser.balance >= selectedProperty.price) {
-                currentUser.balance -= selectedProperty.price;
-                
-                // Добавляем недвижимость с указанием цели покупки
+            if (purchasePurpose === 'self') {
+                // === РЕЖИМ "СНИМАТЬ ДЛЯ СЕБЯ" ===
+                const selfRentPrice = selectedProperty.selfRentPrice || 0;
+                if (selfRentPrice <= 0) {
+                    showNotification('Администратор не установил стоимость аренды для этого объекта', 'error');
+                    return;
+                }
+                if (currentUser.balance < selfRentPrice) {
+                    showNotification('Недостаточно средств для первого платежа!', 'error');
+                    return;
+                }
+                // Проверяем, не снимает ли уже игрок этот объект
+                if (currentUser.properties && currentUser.properties.some(p => p.id === selectedProperty.id && p.purpose === 'self')) {
+                    showNotification('Вы уже снимаете этот объект!', 'error');
+                    return;
+                }
+
+                // Первый платёж
+                currentUser.balance -= selfRentPrice;
                 currentUser.properties.push({
                     id: selectedProperty.id,
-                    purpose: purchasePurpose, // 'rent' или 'live'
-                    purchaseDate: new Date().toISOString(),
-                    purchasePrice: selectedProperty.price // Сохраняем цену покупки для продажи
+                    purpose: 'self',
+                    selfRentPrice: selfRentPrice,
+                    startDate: new Date().toISOString(),
+                    lastRentPaid: Date.now(),
+                    purchasePrice: 0 // Не покупка, а аренда
                 });
-                
+
                 const transaction = {
                     id: "trans_" + Date.now().toString(),
                     userId: currentUser.id,
-                    type: 'property_purchase',
-                    amount: -selectedProperty.price,
-                    description: `Покупка недвижимости: ${selectedProperty.title} (для ${purchasePurpose === 'rent' ? 'аренды' : 'проживания'})`,
+                    type: 'self_rent_payment',
+                    amount: -selfRentPrice,
+                    description: `Аренда (1-я неделя): ${selectedProperty.title} — -$${selfRentPrice.toLocaleString()}/нед`,
                     date: new Date().toISOString(),
                     propertyId: selectedProperty.id
                 };
                 transactions.push(transaction);
-                
+
                 const userIndex = users.findIndex(u => u.id === currentUser.id);
-                if (userIndex !== -1) {
-                    users[userIndex] = currentUser;
-                }
-                
-                // Сохраняем в облако
+                if (userIndex !== -1) users[userIndex] = currentUser;
+
                 if (syncMode === 'online' && firestore) {
                     await saveUserToFirebase(currentUser);
                     await saveTransactionToFirebase(transaction);
                 }
-                
-                // Сохраняем локально
                 saveLocalData();
-                
                 updateUserInfo();
-                
-                // Сразу обновляем список недвижимости без перезагрузки страницы
                 applyFilters();
-                
-                showNotification(`Поздравляем! Вы купили: "${selectedProperty.title}" для ${purchasePurpose === 'rent' ? 'аренды' : 'проживания'}`, 'success');
-                
+                showNotification(`Вы снимаете "${selectedProperty.title}" за $${selfRentPrice.toLocaleString()}/неделю`, 'success');
                 closeModal();
-                
-                // Обновляем страницу моей недвижимости если она открыта
                 if (!document.getElementById('myPropertiesPage').classList.contains('hidden')) {
                     renderOwnedProperties();
                 }
+
             } else {
-                showNotification('Недостаточно средств для покупки!', 'error');
+                // === РЕЖИМ ПОКУПКИ (rent / live) ===
+                if (currentUser.balance >= selectedProperty.price) {
+                    currentUser.balance -= selectedProperty.price;
+
+                    currentUser.properties.push({
+                        id: selectedProperty.id,
+                        purpose: purchasePurpose,
+                        purchaseDate: new Date().toISOString(),
+                        purchasePrice: selectedProperty.price
+                    });
+
+                    const transaction = {
+                        id: "trans_" + Date.now().toString(),
+                        userId: currentUser.id,
+                        type: 'property_purchase',
+                        amount: -selectedProperty.price,
+                        description: `Покупка недвижимости: ${selectedProperty.title} (для ${purchasePurpose === 'rent' ? 'аренды' : 'проживания'})`,
+                        date: new Date().toISOString(),
+                        propertyId: selectedProperty.id
+                    };
+                    transactions.push(transaction);
+
+                    const userIndex = users.findIndex(u => u.id === currentUser.id);
+                    if (userIndex !== -1) users[userIndex] = currentUser;
+
+                    if (syncMode === 'online' && firestore) {
+                        await saveUserToFirebase(currentUser);
+                        await saveTransactionToFirebase(transaction);
+                    }
+                    saveLocalData();
+                    updateUserInfo();
+                    applyFilters();
+                    showNotification(`Поздравляем! Вы купили: "${selectedProperty.title}" для ${purchasePurpose === 'rent' ? 'аренды' : 'проживания'}`, 'success');
+                    closeModal();
+                    if (!document.getElementById('myPropertiesPage').classList.contains('hidden')) {
+                        renderOwnedProperties();
+                    }
+                } else {
+                    showNotification('Недостаточно средств для покупки!', 'error');
+                }
             }
         }
 
+        // ==================== ФУНКЦИЯ СЪЕЗДА (SELF-RENT) ====================
+
+        async function vacateProperty(propertyId) {
+            if (!confirm('Вы уверены, что хотите съехать? Аренда прекратится, деньги не возвращаются.')) return;
+
+            const userPropertyIndex = currentUser.properties.findIndex(p => p.id === propertyId && p.purpose === 'self');
+            if (userPropertyIndex === -1) {
+                showNotification('Объект не найден', 'error');
+                return;
+            }
+            const prop = properties.find(p => p.id === propertyId);
+            const title = prop ? prop.title : propertyId;
+
+            currentUser.properties.splice(userPropertyIndex, 1);
+
+            const transaction = {
+                id: "trans_" + Date.now().toString(),
+                userId: currentUser.id,
+                type: 'self_rent_end',
+                amount: 0,
+                description: `Съехали из объекта: ${title}`,
+                date: new Date().toISOString(),
+                propertyId
+            };
+            transactions.push(transaction);
+
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) users[userIndex] = currentUser;
+
+            if (syncMode === 'online' && firestore) {
+                await saveUserToFirebase(currentUser);
+                await saveTransactionToFirebase(transaction);
+            }
+            saveLocalData();
+            updateUserInfo();
+            renderOwnedProperties();
+            showNotification(`Вы съехали из "${title}"`, 'warning');
+        }
+
         // ==================== ФУНКЦИЯ ПРОДАЖИ НЕДВИЖИМОСТИ ====================
-        
+
         async function sellProperty(propertyId) {
             if (!confirm('Вы уверены, что хотите продать эту недвижимость? Вы получите 50% от её стоимости.')) {
                 return;
@@ -4637,6 +4880,7 @@
             document.getElementById('editPropertyRooms').value = property.rooms;
             document.getElementById('editPropertySize').value = property.size;
             document.getElementById('editPropertyRental').value = property.rentalIncome;
+            document.getElementById('editPropertySelfRent').value = property.selfRentPrice || 0;
             document.getElementById('editPropertyDescription').value = property.description;
 
             // Показываем превью фотографии, если есть
@@ -4681,6 +4925,7 @@
             property.rooms = document.getElementById('editPropertyRooms').value;
             property.size = document.getElementById('editPropertySize').value;
             property.rentalIncome = parseInt(document.getElementById('editPropertyRental').value) || 0;
+            property.selfRentPrice = parseInt(document.getElementById('editPropertySelfRent').value) || 0;
             property.description = document.getElementById('editPropertyDescription').value;
 
             // Сохраняем в Firebase
@@ -5804,23 +6049,51 @@
             spinButton.disabled = true;
             spinButton.textContent = '🎰 КРУТИТСЯ... 🎰';
 
-            // Анимация вращения с тиками
-            const slots = ['🍒', '7️⃣', '💰', '🔔', '⭐'];
+            // Генерируем результаты ДО анимации (нельзя предсказать)
+            const results = generateSlotResults();
+
+            // Анимация: все три барабана вращаются, затем останавливаются по очереди
+            const symbolPool = ['🍒', '7️⃣', '💰', '🔔', '⭐', '🍒', '⭐', '🔔', '7️⃣', '💰'];
             const slotElements = [document.getElementById('slot1'), document.getElementById('slot2'), document.getElementById('slot3')];
 
-            for (let i = 0; i < 10; i++) {
+            // Фаза 1: все три вращаются 30 тиков
+            for (let i = 0; i < 30; i++) {
                 slotElements.forEach(slot => {
-                    slot.textContent = slots[Math.floor(Math.random() * slots.length)];
+                    slot.textContent = symbolPool[Math.floor(Math.random() * symbolPool.length)];
                     slot.classList.add('slot-animating');
                 });
-                CasinoAudio.playTick();
-                await new Promise(resolve => setTimeout(resolve, 100));
+                if (i % 3 === 0) CasinoAudio.playTick();
+                await new Promise(resolve => setTimeout(resolve, 70));
             }
-            
-            slotElements.forEach(slot => slot.classList.remove('slot-animating'));
-            
-            // Генерация финальных результатов с учетом размера ставки
-            const results = generateSlotResults(currentBet);
+
+            // Фаза 2: первый барабан останавливается
+            slotElements[0].classList.remove('slot-animating');
+            slotElements[0].textContent = results[0];
+            slotElements[0].style.border = '3px solid #4cd964';
+            CasinoAudio.playTick();
+            await new Promise(resolve => setTimeout(resolve, 350));
+
+            // Фаза 3: второй барабан останавливается
+            slotElements[1].classList.remove('slot-animating');
+            slotElements[1].textContent = results[1];
+            slotElements[1].style.border = '3px solid #4cd964';
+            CasinoAudio.playTick();
+            await new Promise(resolve => setTimeout(resolve, 350));
+
+            // Фаза 4: третий барабан (драматическая пауза перед остановкой)
+            for (let i = 0; i < 8; i++) {
+                slotElements[2].textContent = symbolPool[Math.floor(Math.random() * symbolPool.length)];
+                if (i % 2 === 0) CasinoAudio.playTick();
+                await new Promise(resolve => setTimeout(resolve, 120));
+            }
+            slotElements[2].classList.remove('slot-animating');
+            slotElements[2].textContent = results[2];
+            slotElements[2].style.border = '3px solid #4cd964';
+            CasinoAudio.playTick();
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            // Сбрасываем стили барабанов
+            slotElements.forEach(slot => { slot.style.border = '3px solid var(--casino-gold)'; });
             
             // Отображаем финальные результаты
             slotElements[0].textContent = results[0];
@@ -5924,6 +6197,13 @@
                     slot.classList.add('win-animation');
                     setTimeout(() => slot.classList.remove('win-animation'), 1500);
                 });
+                if (isBigWin) {
+                    const casinoCard = document.querySelector('.slot-machine');
+                    if (casinoCard) {
+                        casinoCard.classList.add('big-win-shake');
+                        setTimeout(() => casinoCard.classList.remove('big-win-shake'), 1000);
+                    }
+                }
             } else {
                 resultDiv.innerHTML = `<span style="color: var(--danger); font-size: 1.4rem; font-weight: bold;">${winMessage} Вы проиграли $${currentBet.toLocaleString()}</span>`;
                 showNotification(`Проигрыш: $${currentBet.toLocaleString()}`, 'error');
@@ -5948,38 +6228,21 @@
             }, 1000);
         }
 
-        function generateSlotResults(betAmount) {
-            const slots = ['🍒', '7️⃣', '💰', '🔔', '⭐'];
-            const results = [];
-            
-            // Чем выше ставка, тем меньше шанс на выигрыш
-            let winChance = 0.7; // 70% шанс на выигрыш при ставке $10
-            
-            if (betAmount <= 100) {
-                winChance = 0.7; // 70% шанс на низких ставках
-            } else if (betAmount <= 500) {
-                winChance = 0.5; // 50% шанс на средних ставках
-            } else {
-                winChance = 0.3; // 30% шанс на высоких ставках
-            }
-            
-            // Генерируем результаты с учетом шанса
-            if (Math.random() < winChance) {
-                // Выигрышная комбинация
-                const winningSymbol = slots[Math.floor(Math.random() * (betAmount <= 100 ? 4 : 3))];
-                results.push(winningSymbol, winningSymbol, winningSymbol);
-            } else {
-                // Проигрышная комбинация
-                for (let i = 0; i < 3; i++) {
-                    results.push(slots[Math.floor(Math.random() * slots.length)]);
-                }
-                // Гарантируем, что это не выигрышная комбинация
-                if (results[0] === results[1] && results[1] === results[2]) {
-                    results[2] = slots[(slots.indexOf(results[0]) + 1) % slots.length];
-                }
-            }
-            
-            return results;
+        function generateSlotResults() {
+            // Взвешенный пул символов: частота определяет шанс выпадения
+            // 🍒 — 28%, ⭐ — 24%, 🔔 — 20%, 7️⃣ — 16%, 💰 — 12%
+            const weightedPool = [
+                '🍒','🍒','🍒','🍒','🍒','🍒','🍒',
+                '⭐','⭐','⭐','⭐','⭐','⭐',
+                '🔔','🔔','🔔','🔔','🔔',
+                '7️⃣','7️⃣','7️⃣','7️⃣',
+                '💰','💰','💰'
+            ];
+            // Каждый барабан вращается полностью независимо — настоящий слот
+            const r1 = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+            const r2 = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+            const r3 = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+            return [r1, r2, r3];
         }
 
         // ==================== УПРАВЛЕНИЕ АКТИВАМИ ПОЛЬЗОВАТЕЛЕЙ (АДМИН) ====================
@@ -6255,9 +6518,13 @@
         }
 
         async function updateUserBalance(userId) {
+            if (!currentUser || !currentUser.isAdmin) {
+                showNotification('Доступ запрещён', 'error');
+                return;
+            }
             const input = document.getElementById(`balanceInput_${userId}`);
             const newBalance = parseInt(input.value);
-            
+
             if (isNaN(newBalance) || newBalance < 0) {
                 showNotification('Введите корректную сумму', 'error');
                 return;
@@ -6305,8 +6572,15 @@
             saveLocalData();
             
             showNotification(`Баланс пользователя ${users[userIndex].firstName} обновлён: $${newBalance.toLocaleString()}`, 'success');
-            renderUsersList(document.getElementById('searchUser').value.trim());
+            const searchEl = document.getElementById('searchUser');
+            renderUsersList(searchEl ? searchEl.value.trim() : '');
             updateAdminStats();
+            // Если обновляем баланс текущего пользователя — обновить navbar
+            if (currentUser && currentUser.id === userId) {
+                currentUser.balance = newBalance;
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+                updateUserInfo();
+            }
         }
 
         function searchUsers() {
@@ -6315,6 +6589,10 @@
         }
 
         function addMoneyToUser(userId, amount) {
+            if (!currentUser || !currentUser.isAdmin) {
+                showNotification('Доступ запрещён', 'error');
+                return;
+            }
             const userIndex = users.findIndex(u => u.id === userId);
             if (userIndex === -1) return;
             
@@ -6352,7 +6630,8 @@
             }
             saveLocalData();
             showNotification(`✅ Выдано $${amount.toLocaleString()} × ${targets.length} игроков`, 'success');
-            renderUsersList(document.getElementById('searchUser').value.trim());
+            const searchElG = document.getElementById('searchUser');
+            renderUsersList(searchElG ? searchElG.value.trim() : '');
             updateAdminStats();
         }
 
@@ -6363,6 +6642,10 @@
         }
 
         async function deleteUser(userId) {
+            if (!currentUser || !currentUser.isAdmin) {
+                showNotification('Доступ запрещён', 'error');
+                return;
+            }
             if (!confirm('Вы уверены, что хотите удалить этого пользователя? Все его данные будут потеряны.')) {
                 return;
             }
@@ -6420,8 +6703,10 @@
                 const purchasePrice = userProperty ? userProperty.purchasePrice : prop.price;
                 const sellPrice = Math.floor(purchasePrice * 0.5);
                 
-                totalValue += purchasePrice;
-                
+                if (purpose !== 'self') {
+                    totalValue += purchasePrice;
+                }
+
                 // Считаем доход только от недвижимости, купленной для аренды
                 if (purpose === 'rent') {
                     totalRentalIncome += prop.rentalIncome;
@@ -6448,9 +6733,12 @@
                         <h3 class="property-title">${prop.title}</h3>
                         <p class="property-description">${prop.description}</p>
                         <div style="margin: 10px 0;">
-                            <span style="background: ${purpose === 'rent' ? 'var(--success)' : 'var(--warning)'}; color: ${purpose === 'rent' ? 'white' : '#333'}; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold;">
-                                ${purpose === 'rent' ? 'Для аренды' : 'Для проживания'}
-                            </span>
+                            ${purpose === 'rent'
+                                ? '<span style="background:var(--success);color:white;padding:5px 10px;border-radius:15px;font-size:0.8rem;font-weight:bold;">🏠 Для аренды</span>'
+                                : purpose === 'self'
+                                    ? `<span style="background:var(--danger);color:white;padding:5px 10px;border-radius:15px;font-size:0.8rem;font-weight:bold;">🔑 Снято (аренда -$${(userProperty.selfRentPrice||0).toLocaleString()}/нед)</span>`
+                                    : '<span style="background:var(--warning);color:#333;padding:5px 10px;border-radius:15px;font-size:0.8rem;font-weight:bold;">🏡 Для проживания</span>'
+                            }
                         </div>
                         <div class="property-details">
                             <div class="detail">
@@ -6462,17 +6750,26 @@
                                 <div class="detail-label">Площадь</div>
                             </div>
                             <div class="detail">
-                                <div class="detail-value">${purpose === 'rent' ? `+$${prop.rentalIncome}` : '—'}</div>
-                                <div class="detail-label">Доход/неделя</div>
+                                <div class="detail-value" style="color:${purpose==='self'?'var(--danger)':purpose==='rent'?'var(--success)':'#aaa'}">
+                                    ${purpose === 'rent' ? `+$${prop.rentalIncome}` : purpose === 'self' ? `-$${(userProperty.selfRentPrice||0).toLocaleString()}` : '—'}
+                                </div>
+                                <div class="detail-label">${purpose === 'self' ? 'Аренда/неделя' : 'Доход/неделя'}</div>
                             </div>
                         </div>
                         <div class="property-footer">
                             <div>
-                                <div class="property-price">$${purchasePrice.toLocaleString()}</div>
-                                <div style="font-size: 0.8rem; color: var(--light-blue);">Продажа: $${sellPrice.toLocaleString()}</div>
+                                ${purpose === 'self'
+                                    ? `<div class="property-price" style="color:var(--danger); font-size:1.3rem;">-$${(userProperty.selfRentPrice||0).toLocaleString()}/нед</div>
+                                       <div style="font-size:0.8rem;color:var(--light-blue);">Снято с ${new Date(userProperty.startDate||userProperty.purchaseDate||Date.now()).toLocaleDateString('ru')}</div>`
+                                    : `<div class="property-price">$${purchasePrice.toLocaleString()}</div>
+                                       <div style="font-size:0.8rem;color:var(--light-blue);">Продажа: $${sellPrice.toLocaleString()}</div>`
+                                }
                             </div>
                             <div style="display: flex; gap: 10px;">
-                                <button class="btn btn-danger" onclick="sellProperty('${prop.id}')">Продать</button>
+                                ${purpose === 'self'
+                                    ? `<button class="btn btn-danger" onclick="vacateProperty('${prop.id}')">Съехать</button>`
+                                    : `<button class="btn btn-danger" onclick="sellProperty('${prop.id}')">Продать</button>`
+                                }
                             </div>
                         </div>
                     </div>
@@ -7149,7 +7446,7 @@ function updateMarket() {
 
 setInterval(updateMarket, 15000);
 
-// ===================== НЕДЕЛЬНЫЙ ДОХОД 📈 =====================
+// ===================== НЕДЕЛЬНЫЙ ДОХОД + СПИСАНИЕ АРЕНДЫ 📈 =====================
 
 async function payWeeklyIncome() {
     if (typeof currentUser === "undefined" || !currentUser) return;
@@ -7163,36 +7460,67 @@ async function payWeeklyIncome() {
         return;
     }
 
-    if (!currentUser.investments || currentUser.investments.length === 0) {
-        currentUser.lastInvestmentPayout = now;
-        saveLocalData();
-        updateInvestPortfolioStats();
-        return;
+    let changed = false;
+
+    // === Инвестиционный доход ===
+    if (currentUser.investments && currentUser.investments.length > 0) {
+        let total = 0;
+        currentUser.investments.forEach(item => {
+            const inv = investments.find(i => i.id === item.id);
+            if (inv) total += inv.income * item.amount;
+        });
+        if (total > 0) {
+            currentUser.balance += total;
+            const transaction = {
+                id: "trans_" + Date.now().toString(),
+                userId: currentUser.id,
+                type: 'investment_income',
+                amount: total,
+                description: `Недельный доход от инвестиций: +$${total.toLocaleString()}`,
+                date: new Date().toISOString()
+            };
+            transactions.push(transaction);
+            showNotification(`📈 Доход от инвестиций за неделю: +$${total.toLocaleString()}`, "success");
+            changed = true;
+        }
     }
 
-    let total = 0;
-    currentUser.investments.forEach(item => {
-        const inv = investments.find(i => i.id === item.id);
-        if (inv) total += inv.income * item.amount;
-    });
-
-    if (total > 0) {
-        currentUser.balance += total;
-        const transaction = {
-            id: "trans_" + Date.now().toString(),
-            userId: currentUser.id,
-            type: 'investment_income',
-            amount: total,
-            description: `Недельный доход от инвестиций: +$${total.toLocaleString()}`,
-            date: new Date().toISOString()
-        };
-        transactions.push(transaction);
-        const userIndex = users.findIndex(u => u.id === currentUser.id);
-        if (userIndex !== -1) users[userIndex] = currentUser;
-        showNotification(`📈 Доход от инвестиций за неделю: +$${total.toLocaleString()}`, "success");
+    // === Списание аренды "Снимать для себя" ===
+    if (currentUser.properties && currentUser.properties.length > 0) {
+        const selfRentProps = currentUser.properties.filter(p => p.purpose === 'self');
+        for (const userProp of selfRentProps) {
+            const rentAmount = userProp.selfRentPrice || 0;
+            if (rentAmount <= 0) continue;
+            const prop = (typeof properties !== 'undefined' ? properties : []).find(p => p.id === userProp.id);
+            const title = prop ? prop.title : userProp.id;
+            if (currentUser.balance >= rentAmount) {
+                currentUser.balance -= rentAmount;
+                const transaction = {
+                    id: "trans_" + Date.now().toString() + Math.random(),
+                    userId: currentUser.id,
+                    type: 'self_rent_payment',
+                    amount: -rentAmount,
+                    description: `Недельная аренда: ${title} — -$${rentAmount.toLocaleString()}`,
+                    date: new Date().toISOString(),
+                    propertyId: userProp.id
+                };
+                transactions.push(transaction);
+                showNotification(`🔑 Аренда "${title}": -$${rentAmount.toLocaleString()}`, "warning");
+            } else {
+                // Нет денег — автосъезд
+                showNotification(`⚠️ Нет средств для аренды "${title}". Вы автоматически съехали!`, "error");
+                currentUser.properties = currentUser.properties.filter(p => !(p.id === userProp.id && p.purpose === 'self'));
+            }
+            changed = true;
+        }
     }
 
     currentUser.lastInvestmentPayout = now;
+
+    if (changed) {
+        const userIndex = users.findIndex(u => u.id === currentUser.id);
+        if (userIndex !== -1) users[userIndex] = currentUser;
+    }
 
     if (typeof syncMode !== 'undefined' && syncMode === 'online' && typeof firestore !== 'undefined' && firestore) {
         await saveUserToFirebase(currentUser);
