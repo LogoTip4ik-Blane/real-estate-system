@@ -1263,6 +1263,458 @@
             color: var(--light-blue);
             margin-top: 5px;
         }
+
+        /* ===== THEMES ===== */
+        body[data-theme="red"] {
+            --primary-blue: #c0392b;
+            --dark-blue: #7b241c;
+            --accent-blue: #e74c3c;
+            --light-blue: #f1948a;
+            --bg-gradient: linear-gradient(135deg, #2c0b0b 0%, #5c1a1a 100%);
+            --card-bg: rgba(120, 30, 30, 0.4);
+            --card-border: rgba(231, 76, 60, 0.3);
+        }
+        body[data-theme="green"] {
+            --primary-blue: #27ae60;
+            --dark-blue: #1a6e3a;
+            --accent-blue: #2ecc71;
+            --light-blue: #82e0aa;
+            --bg-gradient: linear-gradient(135deg, #0b2c18 0%, #1a5c2e 100%);
+            --card-bg: rgba(30, 100, 55, 0.4);
+            --card-border: rgba(46, 204, 113, 0.3);
+        }
+        body[data-theme="purple"] {
+            --primary-blue: #8e44ad;
+            --dark-blue: #5b2c6f;
+            --accent-blue: #9b59b6;
+            --light-blue: #c39bd3;
+            --bg-gradient: linear-gradient(135deg, #1a0b2c 0%, #3d1a5c 100%);
+            --card-bg: rgba(80, 30, 120, 0.4);
+            --card-border: rgba(155, 89, 182, 0.3);
+        }
+        body[data-theme="dark"] {
+            --primary-blue: #555;
+            --dark-blue: #222;
+            --accent-blue: #888;
+            --light-blue: #aaa;
+            --bg-gradient: linear-gradient(135deg, #111 0%, #333 100%);
+            --card-bg: rgba(40, 40, 40, 0.8);
+            --card-border: rgba(120, 120, 120, 0.3);
+        }
+        .theme-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: 2px solid var(--accent-blue);
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .theme-fab:hover { transform: scale(1.1); }
+        .theme-picker-panel {
+            position: fixed;
+            bottom: 75px;
+            right: 20px;
+            background: var(--dark-blue);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            min-width: 150px;
+        }
+        .theme-picker-panel.open { display: flex; }
+        .theme-option {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .theme-option:hover { background: rgba(255,255,255,0.2); border-color: var(--accent-blue); }
+        .theme-option.active { border-color: var(--accent-blue); background: rgba(255,255,255,0.2); }
+
+        /* ===== NAV BADGE ===== */
+        .nav-badge {
+            position: absolute;
+            top: -4px;
+            right: -6px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: bold;
+            border-radius: 9px;
+            padding: 1px 5px;
+            min-width: 16px;
+            text-align: center;
+            display: none;
+        }
+        .nav-btn-wrap {
+            position: relative;
+            display: inline-flex;
+        }
+
+        /* ===== AVATAR NAV ===== */
+        #navUserAvatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            background: var(--card-bg);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        #navUserAvatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ===== AVATAR PHOTO ===== */
+        .avatar-photo-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--card-border);
+        }
+        .avatar-photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-blue);
+            display: block;
+            margin: 8px auto;
+        }
+        .avatar-photo-label {
+            display: inline-block;
+            padding: 7px 14px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .avatar-photo-label:hover { background: var(--accent-blue); }
+
+        /* ===== FEED ===== */
+        .feed-event-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.3s ease;
+        }
+        .feed-event-icon {
+            font-size: 1.8rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .feed-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: var(--card-bg);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .feed-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .feed-event-body { flex: 1; min-width: 0; }
+        .feed-event-body strong { color: white; font-size: 0.95rem; }
+        .feed-event-body p { color: var(--light-blue); font-size: 0.85rem; margin: 4px 0 0; }
+        .feed-event-time { color: rgba(255,255,255,0.4); font-size: 0.78rem; white-space: nowrap; }
+        .feed-empty { text-align: center; color: var(--light-blue); padding: 40px 0; opacity: 0.7; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+        /* ===== ТИКЕТЫ / ОТЧЁТЫ ===== */
+        .ticket-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+        .ticket-card:hover { transform: translateY(-2px); }
+        .ticket-card.pending { border-color: rgba(255,193,7,0.6); box-shadow: 0 0 10px rgba(255,193,7,0.1); }
+        .ticket-card.processed { border-color: rgba(46,204,113,0.5); box-shadow: 0 0 10px rgba(46,204,113,0.08); }
+        .ticket-status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+        .ticket-status-badge.pending { background: rgba(255,193,7,0.2); color: #ffc107; border: 1px solid rgba(255,193,7,0.4); }
+        .ticket-status-badge.processed { background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
+        .crime-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .crime-input-wrap {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .crime-input-wrap label { font-size: 0.85rem; color: var(--light-blue); }
+        .crime-input-wrap input { width: 60px; text-align: center; background: var(--dark-blue); border: 1px solid var(--card-border); color: white; border-radius: 6px; padding: 4px 6px; font-size: 0.9rem; }
+
+        /* Pay Stub */
+        .paystub-box {
+            background: #0a1a2d;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        .paystub-header {
+            text-align: center;
+            color: var(--accent-blue);
+            font-size: 0.95rem;
+            font-weight: bold;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 10px;
+        }
+        .paystub-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            color: var(--light-blue);
+        }
+        .paystub-row.income { color: #2ecc71; }
+        .paystub-row.deduction { color: #e74c3c; }
+        .paystub-row.fine { color: #e67e22; }
+        .paystub-divider {
+            border: none;
+            border-top: 1px dashed var(--card-border);
+            margin: 8px 0;
+        }
+        .paystub-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            padding: 8px 0 0;
+            border-top: 2px solid var(--accent-blue);
+            margin-top: 6px;
+        }
+        .fine-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .fine-row input { flex: 1; }
+        .fine-row input:last-of-type { flex: 0 0 100px; }
+
+        /* Admin ticket list */
+        .admin-ticket-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-ticket-item.pending { border-color: rgba(255,193,7,0.5); }
+
+        /* ===== ДОСТИЖЕНИЯ ===== */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .achievement-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 14px 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .achievement-card.unlocked {
+            border-color: rgba(255,215,0,0.5);
+            background: rgba(255,215,0,0.05);
+        }
+        .achievement-card.locked { opacity: 0.35; filter: grayscale(1); }
+        .achievement-card:hover { transform: translateY(-3px); }
+        .achievement-icon { font-size: 2rem; margin-bottom: 6px; }
+        .achievement-name { font-size: 0.78rem; font-weight: bold; color: white; margin-bottom: 4px; }
+        .achievement-desc { font-size: 0.7rem; color: var(--light-blue); }
+        .achievement-unlock-toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            z-index: 9999;
+            animation: toastIn 0.4s ease;
+        }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: none; } }
+
+        /* ===== РУЛЕТКА ===== */
+        .casino-tabs { display: flex; gap: 0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid var(--card-border); }
+        .casino-tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: none; color: var(--light-blue); font-size: 0.95rem; cursor: pointer; transition: background 0.2s; }
+        .casino-tab-btn.active { background: var(--primary-blue); color: white; font-weight: bold; }
+        .roulette-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            max-width: 340px;
+            margin: 0 auto 16px;
+        }
+        .roulette-bet-btn {
+            padding: 12px 8px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.15s, border-color 0.15s;
+            text-align: center;
+        }
+        .roulette-bet-btn:hover { transform: scale(1.04); }
+        .roulette-bet-btn.selected { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .roulette-bet-btn.red { background: #c0392b; }
+        .roulette-bet-btn.black { background: #2c3e50; }
+        .roulette-bet-btn.green { background: #27ae60; }
+        .roulette-bet-btn.neutral { background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--light-blue); }
+        .roulette-wheel {
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #c0392b 0deg 20deg, #2c3e50 20deg 40deg, #c0392b 40deg 60deg, #2c3e50 60deg 80deg,
+                #c0392b 80deg 100deg, #2c3e50 100deg 120deg, #27ae60 120deg 130deg,
+                #c0392b 130deg 150deg, #2c3e50 150deg 170deg, #c0392b 170deg 190deg,
+                #2c3e50 190deg 210deg, #c0392b 210deg 230deg, #2c3e50 230deg 250deg,
+                #c0392b 250deg 270deg, #2c3e50 270deg 290deg, #c0392b 290deg 310deg,
+                #2c3e50 310deg 330deg, #c0392b 330deg 350deg, #2c3e50 350deg 360deg
+            );
+            border: 4px solid #ffd700;
+            margin: 0 auto 12px;
+            position: relative;
+            transition: transform 3s cubic-bezier(0.17,0.67,0.12,0.99);
+        }
+        .roulette-ball {
+            position: absolute;
+            width: 14px; height: 14px;
+            background: white;
+            border-radius: 50%;
+            top: 8px; left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        /* ===== ПРОСМОТР ПРОФИЛЯ ИГРОКА ===== */
+        .player-profile-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 14px 10px;
+            flex: 1;
+            min-width: 80px;
+        }
+        .player-profile-stat .stat-val { font-size: 1.3rem; font-weight: bold; color: white; }
+        .player-profile-stat .stat-lbl { font-size: 0.72rem; color: var(--light-blue); margin-top: 4px; }
+
+        /* ===== ГРАФИК КАПИТАЛА ===== */
+        .capital-chart-wrap {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .capital-chart-wrap svg { width: 100%; height: 140px; display: block; }
+
+        /* ===== БИРЖА АКЦИЙ ===== */
+        .stock-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .stock-ticker { font-size: 1rem; font-weight: bold; color: var(--accent-blue); width: 55px; }
+        .stock-name { font-size: 0.85rem; color: var(--light-blue); flex: 1; min-width: 100px; }
+        .stock-price { font-size: 1rem; font-weight: bold; color: white; text-align: right; }
+        .stock-change { font-size: 0.82rem; font-weight: bold; }
+        .stock-change.up { color: #2ecc71; }
+        .stock-change.down { color: #e74c3c; }
+        .stock-actions { display: flex; gap: 6px; }
+        .stock-sparkline { width: 70px; height: 30px; }
+        .portfolio-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body>
@@ -1297,13 +1749,16 @@
                 <p>Эксклюзивная недвижимость для сотрудников</p>
             </div>
         </div>
-        <div class="user-info hidden" id="userInfo" onclick="showPage('profile')" style="cursor:pointer;" title="Открыть профиль">
-            <div class="badge" id="userBadge">Игрок</div>
-            <div class="cash" id="userCash">$0</div>
-            <div style="font-size:0.78rem; color:var(--light-blue);">Ваш баланс</div>
-            <div id="userLevelBadge" class="level-badge" style="background:rgba(142,158,181,0.2);color:#8e9eb5;">🐣 Новичок</div>
-            <div class="level-progress-bar" id="userLevelBar" style="width:90px;">
-                <div class="level-progress-fill" id="userLevelFill" style="width:0%;background:#8e9eb5;"></div>
+        <div style="display:flex;align-items:center;gap:10px;" class="hidden" id="userInfo">
+            <div id="navUserAvatar" onclick="showPage('profile')" title="Профиль"></div>
+            <div onclick="showPage('profile')" style="cursor:pointer;" title="Открыть профиль">
+                <div class="badge" id="userBadge">Игрок</div>
+                <div class="cash" id="userCash">$0</div>
+                <div style="font-size:0.78rem; color:var(--light-blue);">Ваш баланс</div>
+                <div id="userLevelBadge" class="level-badge" style="background:rgba(142,158,181,0.2);color:#8e9eb5;">🐣 Новичок</div>
+                <div class="level-progress-bar" id="userLevelBar" style="width:90px;">
+                    <div class="level-progress-fill" id="userLevelFill" style="width:0%;background:#8e9eb5;"></div>
+                </div>
             </div>
         </div>
         <div class="nav-links hidden" id="navLinks">
@@ -1315,6 +1770,9 @@
             <button class="btn btn-gold" onclick="showPage('casino')">🎰 Казино</button>
             <button class="nav-btn" onclick="showPage('invest')">📈 Инвестиции</button>
             <button class="btn btn-primary" onclick="showPage('leaderboard')" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.4);color:#ffd700;">🏆 Рейтинг</button>
+            <span class="nav-btn-wrap"><button class="btn btn-primary" onclick="showPage('feed')" style="background:rgba(255,165,0,0.15);border:1px solid rgba(255,165,0,0.4);color:#ffa500;">📰 Лента</button></span>
+            <button class="btn btn-primary" onclick="showPage('stocks')" style="background:rgba(46,213,115,0.15);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;">📊 Биржа</button>
+            <button class="btn btn-primary" onclick="showPage('report')" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.5);color:#3498db;">📋 Отчёт</button>
             <button class="btn btn-primary" onclick="showPage('profile')" style="background:rgba(74,144,226,0.25);border:1px solid var(--accent-blue);">👤 Профиль</button>
             <button class="btn btn-danger" onclick="logout()">Выйти</button>
             <!-- Секретная кнопка админа -->
@@ -1586,6 +2044,12 @@
                     Испытайте удачу! Сделайте ставку и крутите слоты. Если выпадут три одинаковых символа - вы выиграете джекпот!
                 </p>
                 
+                <div class="casino-tabs">
+                    <button class="casino-tab-btn active" data-tab="slots" onclick="switchCasinoTab('slots')">🎰 Слоты</button>
+                    <button class="casino-tab-btn" data-tab="roulette" onclick="switchCasinoTab('roulette')">🎲 Рулетка</button>
+                </div>
+
+                <div id="slotsSection">
                 <div class="card">
                     <div class="casino-stats">
                         <div class="casino-stat">
@@ -1648,10 +2112,34 @@
                     
                     <div id="casinoResult" style="margin-top: 20px; text-align: center; font-size: 1.2rem; min-height: 30px;"></div>
                 </div>
-                
+
                 <div style="color: var(--light-blue); font-size: 0.9rem; text-align: center; margin-top: 20px;">
                     <p>⚠️ Играйте ответственно. Чем выше ставка, тем меньше шанс на выигрыш!</p>
                     <p>Минимальная ставка: $10, максимальная: $10,000.</p>
+                </div>
+                </div><!-- /slotsSection -->
+
+                <!-- Рулетка -->
+                <div id="rouletteSection" style="display:none;">
+                    <div class="card" style="margin-bottom:20px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+                            <div>
+                                <div style="color:var(--light-blue);font-size:0.85rem;">Ваш баланс</div>
+                                <div style="font-size:1.6rem;font-weight:bold;color:var(--success);" id="rouletteBalance">$0</div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <label style="color:var(--light-blue);font-size:0.9rem;">Ставка:</label>
+                                <input type="number" id="customBetRoulette" class="bet-input" value="100" min="10" max="10000" oninput="document.getElementById('customBet').value=this.value;currentBet=parseInt(this.value)||100;" style="width:100px;">
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:center;margin-bottom:20px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Roulette_small.PNG/220px-Roulette_small.PNG"
+                                 id="rouletteWheel"
+                                 alt="Roulette" class="roulette-wheel"
+                                 style="width:140px;height:140px;border-radius:50%;border:4px solid #ffd700;object-fit:cover;transition:transform 3s cubic-bezier(0.17,0.67,0.12,0.99);">
+                        </div>
+                        <div id="rouletteBoard"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1730,6 +2218,14 @@
             <h2 style="color:var(--accent-blue);margin:24px 0 14px;">Уровни игрока</h2>
             <div id="profileLevelsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;"></div>
 
+            <!-- График капитала -->
+            <h2 style="color:var(--accent-blue);margin:24px 0 14px;">📈 График капитала</h2>
+            <div class="card capital-chart-wrap" id="capitalChartContainer" style="padding:16px;min-height:80px;"></div>
+
+            <!-- Достижения -->
+            <h2 style="color:var(--accent-blue);margin:24px 0 14px;">🏆 Достижения</h2>
+            <div class="achievements-grid" id="profileAchievements"></div>
+
             <!-- История транзакций -->
             <h2 style="color:var(--accent-blue);margin:24px 0 14px;">История операций</h2>
             <div id="profileTransactions">
@@ -1760,6 +2256,98 @@
         </div>
     </div>
 
+    <!-- ===== ЛЕНТА СОБЫТИЙ ===== -->
+    <div id="feedPage" class="page hidden">
+        <div style="padding:20px; max-width: 700px; margin: 0 auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+                <h1 style="color:#ffa500;">📰 Лента событий</h1>
+                <button class="btn btn-primary" onclick="renderFeed()" style="background:rgba(255,165,0,0.15);border:1px solid rgba(255,165,0,0.4);color:#ffa500;">🔄 Обновить</button>
+            </div>
+            <div id="feedList"></div>
+        </div>
+    </div>
+
+    <!-- ===== СТРАНИЦА ОТЧЁТА ===== -->
+    <div id="reportPage" class="page hidden">
+        <div style="padding:20px;max-width:700px;margin:0 auto;">
+            <h1 style="color:#3498db;margin-bottom:6px;">📋 Рабочий отчёт</h1>
+            <p style="color:var(--light-blue);margin-bottom:24px;font-size:0.9rem;">Заполни отчёт за неделю — администратор рассчитает твою зарплату.</p>
+
+            <div id="reportFormWrap" class="card" style="margin-bottom:24px;">
+                <h3 style="color:var(--accent-blue);margin-bottom:16px;">📝 Новый отчёт</h3>
+
+                <div class="form-grid" style="margin-bottom:14px;">
+                    <div>
+                        <label style="color:var(--light-blue);display:block;margin-bottom:6px;">Имя и Фамилия</label>
+                        <input type="text" id="reportName" placeholder="Иван Иванов" style="width:100%;">
+                    </div>
+                    <div>
+                        <label style="color:var(--light-blue);display:block;margin-bottom:6px;">Звание</label>
+                        <select id="reportRank" style="width:100%;">
+                            <option value="">— выберите звание —</option>
+                            <option value="Probationary Officer">Probationary Officer</option>
+                            <option value="Police Officer II">Police Officer II</option>
+                            <option value="Police Officer I">Police Officer I</option>
+                            <option value="Corporal">Corporal</option>
+                            <option value="Sergeant">Sergeant</option>
+                            <option value="Lieutenant">Lieutenant</option>
+                            <option value="Major">Major</option>
+                            <option value="Captain">Captain</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label style="color:var(--light-blue);display:block;margin-bottom:6px;">🚔 Раскрытые преступления (количество)</label>
+                    <div class="crime-grid">
+                        <div class="crime-input-wrap">
+                            <label>🚗 Угон</label>
+                            <input type="number" id="crimeTheft" min="0" value="0">
+                        </div>
+                        <div class="crime-input-wrap">
+                            <label>💰 Грабёж</label>
+                            <input type="number" id="crimeRobbery" min="0" value="0">
+                        </div>
+                        <div class="crime-input-wrap">
+                            <label>🔫 Вооружённое нападение</label>
+                            <input type="number" id="crimeAssault" min="0" value="0">
+                        </div>
+                        <div class="crime-input-wrap">
+                            <label>💀 Убийство</label>
+                            <input type="number" id="crimeMurder" min="0" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="color:var(--light-blue);display:block;margin-bottom:6px;">🗺️ Название вашего района</label>
+                    <input type="text" id="reportDistrict" placeholder="Например: Центральный район" style="width:100%;">
+                </div>
+
+                <button class="btn btn-primary" onclick="submitReport()" style="width:100%;padding:13px;font-size:1rem;">📤 Отправить отчёт</button>
+                <div id="reportPendingWarn" style="display:none;margin-top:10px;padding:10px;background:rgba(255,193,7,0.15);border:1px solid rgba(255,193,7,0.4);border-radius:8px;color:#ffc107;font-size:0.88rem;">
+                    ⚠️ У вас уже есть отчёт на рассмотрении. Дождитесь его обработки.
+                </div>
+            </div>
+
+            <h3 style="color:var(--light-blue);margin-bottom:12px;">📂 Мои отчёты</h3>
+            <div id="myTicketsList"></div>
+        </div>
+    </div>
+
+    <!-- ===== БИРЖА АКЦИЙ ===== -->
+    <div id="stocksPage" class="page hidden">
+        <div style="padding:20px;max-width:860px;margin:0 auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+                <h1 style="color:#2ecc71;">📊 Биржа акций</h1>
+                <button class="btn btn-primary" onclick="renderStocksPage()" style="background:rgba(46,213,115,0.15);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;">🔄 Обновить</button>
+            </div>
+            <div id="stocksList" style="margin-bottom:28px;"></div>
+            <h3 style="color:var(--accent-blue);margin-bottom:12px;">💼 Мой портфель</h3>
+            <div id="stocksPortfolio"></div>
+        </div>
+    </div>
+
         <!-- Админ-панель -->
         <div id="adminPage" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -1777,6 +2365,8 @@
                 <button class="admin-tab" onclick="switchAdminTab('sync')">Синхронизация</button>
                 <button class="admin-tab" onclick="switchAdminTab('cells')">Управление ячейками</button>
                 <button class="admin-tab" onclick="switchAdminTab('investments')">📈 Инвестиции</button>
+                <button class="admin-tab" onclick="switchAdminTab('tickets')">📋 Тикеты</button>
+                <button class="admin-tab" onclick="switchAdminTab('stocksAdmin')">📊 Биржа</button>
             </div>
             
             <!-- Вкладка: Пользователи -->
@@ -2176,6 +2766,111 @@
         </div>
     </div>
 
+    <!-- Вкладка тикетов (админ) -->
+    <div id="adminTabTickets" class="admin-section hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <h2 style="color:var(--accent-blue);">📋 Тикеты игроков</h2>
+            <button class="btn btn-primary" onclick="renderAdminTickets()" style="background:rgba(52,152,219,0.2);">🔄 Обновить</button>
+        </div>
+        <div style="margin-bottom:12px;">
+            <span style="color:var(--light-blue);font-size:0.88rem;">Pending: <strong id="ticketPendingCount" style="color:#ffc107;">0</strong> &nbsp;|&nbsp; Обработано: <strong id="ticketProcessedCount" style="color:#2ecc71;">0</strong></span>
+        </div>
+        <div id="adminTicketsList"></div>
+    </div>
+
+    <!-- Вкладка биржи (админ) -->
+    <div id="adminTabStocksAdmin" class="admin-section hidden">
+        <h2 style="color:var(--accent-blue);margin-bottom:20px;">📊 Управление биржей</h2>
+        <p style="color:var(--light-blue);margin-bottom:16px;font-size:0.9rem;">Устанавливай цены акций вручную. Изменения видны всем игрокам в реальном времени.</p>
+        <div id="adminStocksList"></div>
+    </div>
+
+    <!-- Модал тикета (обработка) -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content modal-extra-wide" style="max-width:860px;">
+            <button class="close-modal" onclick="closeTicketModal()">&times;</button>
+            <h2 style="color:#3498db;margin-bottom:16px;">📋 Обработка тикета</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <!-- Данные игрока -->
+                <div>
+                    <h3 style="color:var(--light-blue);margin-bottom:12px;font-size:0.95rem;">📄 Отчёт игрока</h3>
+                    <div id="ticketPlayerInfo" style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;font-size:0.88rem;line-height:2;"></div>
+                </div>
+                <!-- Калькулятор -->
+                <div>
+                    <h3 style="color:var(--light-blue);margin-bottom:12px;font-size:0.95rem;">💵 Калькулятор выплаты</h3>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                            <div>
+                                <label style="color:var(--light-blue);font-size:0.8rem;">Вызовы (кол-во)</label>
+                                <input type="number" id="tkCalls" min="0" value="0" oninput="calcLivePayStub()" style="width:100%;">
+                            </div>
+                            <div>
+                                <label style="color:var(--light-blue);font-size:0.8rem;">Бонус за район ($)</label>
+                                <input type="number" id="tkPrecinct" min="0" value="0" oninput="calcLivePayStub()" style="width:100%;">
+                            </div>
+                            <div>
+                                <label style="color:var(--light-blue);font-size:0.8rem;">Overtime (часы)</label>
+                                <input type="number" id="tkOvertime" min="0" value="0" step="0.5" oninput="calcLivePayStub()" style="width:100%;">
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;padding-top:18px;">
+                                <input type="checkbox" id="tkConduct" onchange="calcLivePayStub()" style="width:16px;height:16px;">
+                                <label style="color:var(--light-blue);font-size:0.82rem;">Clean Conduct +$200</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="color:var(--light-blue);font-size:0.8rem;display:block;margin-bottom:6px;">Штрафы</label>
+                            <div id="finesList"></div>
+                            <button onclick="addFineRow()" style="margin-top:6px;padding:5px 12px;font-size:0.8rem;background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.4);color:#e74c3c;border-radius:6px;cursor:pointer;">+ Добавить штраф</button>
+                        </div>
+                        <div>
+                            <label style="color:var(--light-blue);font-size:0.8rem;">Комментарий</label>
+                            <textarea id="tkNote" rows="2" placeholder="Дополнительный комментарий..." style="width:100%;resize:vertical;"></textarea>
+                        </div>
+                        <div>
+                            <label style="color:var(--light-blue);font-size:0.8rem;">Номер недели</label>
+                            <input type="text" id="tkWeek" placeholder="Неделя 1 / 2025" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Live Pay Stub -->
+            <div style="margin-top:20px;">
+                <h3 style="color:var(--light-blue);margin-bottom:10px;font-size:0.95rem;">📑 Предпросмотр расчётного листа</h3>
+                <div id="livePayStub" class="paystub-box"></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:16px;">
+                <button class="btn btn-primary" onclick="sendPayStub()" style="flex:1;padding:13px;font-size:1rem;">✅ Отправить расчёт</button>
+                <button class="btn btn-danger" onclick="closeTicketModal()" style="padding:13px 20px;">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал профиля игрока -->
+    <div class="modal" id="playerProfileModal">
+        <div class="modal-content modal-wide">
+            <button class="close-modal" onclick="document.getElementById('playerProfileModal').style.display='none'">&times;</button>
+            <div id="playerProfileContent"></div>
+        </div>
+    </div>
+
+    <!-- Модал покупки акций -->
+    <div class="modal" id="stockBuyModal">
+        <div class="modal-content" style="max-width:380px;">
+            <button class="close-modal" onclick="document.getElementById('stockBuyModal').style.display='none'">&times;</button>
+            <h3 id="stockBuyTitle" style="color:var(--accent-blue);margin-bottom:16px;"></h3>
+            <div style="margin-bottom:12px;">
+                <label style="color:var(--light-blue);display:block;margin-bottom:6px;">Количество акций</label>
+                <input type="number" id="stockBuyQty" min="1" value="1" style="width:100%;" oninput="updateStockBuyCost()">
+            </div>
+            <div id="stockBuyCostPreview" style="margin-bottom:16px;color:var(--light-blue);font-size:0.9rem;"></div>
+            <div style="display:flex;gap:10px;">
+                <button class="btn btn-primary" onclick="confirmStockBuy()" style="flex:1;">Купить</button>
+                <button class="btn btn-danger" onclick="document.getElementById('stockBuyModal').style.display='none'" style="padding:10px 18px;">Отмена</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Модальное окно покупки недвижимости -->
     <div class="modal" id="purchaseModal">
         <div class="modal-content modal-wide">
@@ -2451,6 +3146,49 @@
         let currentlyEditingCarId = null;
         let currentlyEditingInvestmentId = null;
         
+        // Новые фичи: лента, темы
+        let feedEvents = [];
+        let feedUnsubscribe = null;
+        let currentTheme = localStorage.getItem('bluelineTheme') || 'default';
+
+        // Тикеты
+        let tickets = [];
+        let adminTickets = [];
+        let ticketsUnsubscribe = null;
+        let adminTicketsUnsubscribe = null;
+        let currentTicketId = null;
+        let ticketFines = [];
+
+        // Достижения
+        const ACHIEVEMENTS = [
+            { id:'first_home',    icon:'🏠', name:'Первая квартира',    desc:'Купить первую недвижимость' },
+            { id:'landlord',      icon:'🏘️', name:'Лендлорд',           desc:'Купить 5 объектов недвижимости' },
+            { id:'millionaire',   icon:'💰', name:'Миллионер',          desc:'Достичь капитала $1 000 000' },
+            { id:'car_buyer',     icon:'🚗', name:'Автолюбитель',       desc:'Купить первый автомобиль' },
+            { id:'car_collector', icon:'🏎️', name:'Автоколлекционер',  desc:'Купить 3 автомобиля' },
+            { id:'lucky',         icon:'🍀', name:'Везунчик',           desc:'Выиграть $500+ за один спин' },
+            { id:'high_roller',   icon:'🎰', name:'Хай-роллер',         desc:'Выиграть $5 000+ за один спин' },
+            { id:'investor',      icon:'📊', name:'Инвестор',           desc:'Купить первую инвестицию' },
+            { id:'rich_kid',      icon:'👑', name:'Богач',              desc:'Достичь капитала $5 000 000' },
+            { id:'reporter',      icon:'📋', name:'Служака',            desc:'Подать первый рабочий отчёт' },
+        ];
+
+        // Рулетка
+        let rouletteBets = {}; // { type_value: amount }
+        let rouletteSpinning = false;
+        let rouletteRotation = 0;
+
+        // Биржа акций
+        let stocks = [];
+        let stocksUnsubscribe = null;
+        const STOCK_DEFS = [
+            { id:'BLRE', name:'BlueLine Realty',    emoji:'🏠' },
+            { id:'LUXE', name:'Luxe Motors Corp',   emoji:'🚗' },
+            { id:'DRIV', name:'DriveMax Auto',      emoji:'🏎️' },
+            { id:'CASP', name:'Casino & Spa Inc',   emoji:'🎰' },
+            { id:'SAFE', name:'SafeVault Bank',     emoji:'🏦' },
+        ];
+
         // Ключи для LocalStorage (резервное копирование)
         const STORAGE_KEYS = {
             USERS: 'real_estate_users_cloud',
@@ -3186,6 +3924,14 @@
                     }
                 });
             });
+
+            // Слушатель ленты событий
+            setupFeedListener();
+            // Тикеты
+            setupTicketsListener();
+            if (currentUser && currentUser.isAdmin) setupAdminTicketsListener();
+            // Биржа акций
+            setupStocksListener();
         }
 
         async function saveUserToFirebase(user) {
@@ -3213,9 +3959,13 @@
                     investments: Array.isArray(user.investments) ? user.investments : [],
                     lastInvestmentPayout: user.lastInvestmentPayout ? Number(user.lastInvestmentPayout) : 0,
                     avatar: user.avatar || null,
+                    avatarPhoto: user.avatarPhoto || null,
                     isAdmin: Boolean(user.isAdmin),
                     isHiddenAdmin: Boolean(user.isHiddenAdmin),
-                    registrationDate: user.registrationDate || new Date().toISOString()
+                    registrationDate: user.registrationDate || new Date().toISOString(),
+                    achievements:    Array.isArray(user.achievements)    ? user.achievements    : [],
+                    netWorthHistory: Array.isArray(user.netWorthHistory) ? user.netWorthHistory : [],
+                    stocks:          Array.isArray(user.stocks)          ? user.stocks          : []
                 };
                 
                 await firestore.collection('users').doc(userId).set(userToSave, { merge: true });
@@ -3492,19 +4242,12 @@
             const progress = getLevelProgress(netWorth);
             const nextLevel = LEVELS[index + 1];
 
-            // Аватар — emoji или инициалы
-            const initials = ((currentUser.firstName || '?')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+            // Аватар — фото / emoji / инициалы
             const avatarEl = document.getElementById('profileAvatar');
             if (avatarEl) {
-                if (currentUser.avatar) {
-                    avatarEl.textContent = currentUser.avatar;
-                    avatarEl.style.fontSize = '2.4rem';
-                    avatarEl.style.background = 'linear-gradient(135deg,#1a3a5f,#0d2137)';
-                } else {
-                    avatarEl.textContent = initials;
-                    avatarEl.style.fontSize = '';
-                    avatarEl.style.background = 'linear-gradient(135deg,#1a3a5f,#4a90e2)';
-                }
+                avatarEl.innerHTML = getAvatarHTML(currentUser, 80);
+                avatarEl.style.fontSize = currentUser.avatarPhoto ? '' : (currentUser.avatar ? '2.4rem' : '');
+                avatarEl.style.background = currentUser.avatarPhoto ? 'none' : 'linear-gradient(135deg,#1a3a5f,#4a90e2)';
             }
 
             const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -3584,6 +4327,9 @@
                 }).join('');
             }
 
+            renderCapitalChart();
+            renderAchievements();
+
             // История транзакций (последние 15)
             const txContainer = document.getElementById('profileTransactions');
             if (txContainer) {
@@ -3625,6 +4371,17 @@
             grid.innerHTML = AVATAR_EMOJIS.map(em => `
                 <button class="avatar-emoji-btn ${em === current ? 'selected' : ''}" onclick="selectAvatar('${em}')">${em}</button>
             `).join('');
+            // Show photo preview if exists
+            const prevWrap = document.getElementById('avatarPhotoPreviewWrap');
+            const prevImg = document.getElementById('avatarPhotoPreviewImg');
+            if (prevWrap && prevImg) {
+                if (currentUser && currentUser.avatarPhoto) {
+                    prevImg.src = currentUser.avatarPhoto;
+                    prevWrap.style.display = 'block';
+                } else {
+                    prevWrap.style.display = 'none';
+                }
+            }
             modal.classList.add('open');
         }
 
@@ -3644,6 +4401,8 @@
             if (syncMode === 'online' && firestore) await saveUserToFirebase(currentUser);
             // Перерисовать пикер + профиль
             document.getElementById('avatarPickerModal').classList.remove('open');
+            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+            updateUserInfo();
             renderProfile();
             showNotification('Аватарка обновлена!', 'success');
         }
@@ -3656,6 +4415,8 @@
             saveLocalData();
             if (syncMode === 'online' && firestore) await saveUserToFirebase(currentUser);
             document.getElementById('avatarPickerModal').classList.remove('open');
+            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+            updateUserInfo();
             renderProfile();
             showNotification('Аватарка сброшена', 'info');
         }
@@ -3710,16 +4471,13 @@
                     const height  = podiumHeights[pi];
                     const medal   = podiumMedals[pi];
                     const { level } = getLevel(u.netWorth);
-                    const initials = ((u.firstName || '?')[0] + (u.lastName || '')[0]).toUpperCase();
-                    const avatarContent = u.avatar || initials;
-                    const avatarFontSize = u.avatar ? '1.8rem' : '1.2rem';
                     const isMe = (u.id === myId);
                     const rankColors = { 1:'#ffd700', 2:'#c0c0c0', 3:'#cd7f32' };
                     const color = rankColors[rank] || '#6a8aaa';
                     return `
                         <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-                            <div class="lb-avatar" style="width:54px;height:54px;font-size:${avatarFontSize};border:2px solid ${color};${isMe?'box-shadow:0 0 14px '+color+'88;':''}">
-                                ${avatarContent}
+                            <div class="lb-avatar" style="width:54px;height:54px;overflow:hidden;border:2px solid ${color};${isMe?'box-shadow:0 0 14px '+color+'88;':''}">
+                                ${getAvatarHTML(u, 54)}
                             </div>
                             <div style="font-size:1.6rem;">${medal}</div>
                             <div style="font-weight:bold;color:${isMe ? 'var(--accent-blue)' : 'var(--light-blue)'};font-size:0.9rem;max-width:100px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -3741,8 +4499,6 @@
                     const rank = i + 1;
                     const { level } = getLevel(u.netWorth);
                     const initials = ((u.firstName || '?')[0] + (u.lastName || '')[0]).toUpperCase();
-                    const avatarContent = u.avatar || initials;
-                    const avatarFontSize = u.avatar ? '1.4rem' : '';
                     const isMe = (u.id === myId);
                     const propCount = (u.properties || []).length;
                     const carCount  = (u.cars || []).length;
@@ -3752,11 +4508,11 @@
                     return `
                         <div class="leaderboard-row ${topClass} ${isMe ? 'is-me' : ''}">
                             <div class="lb-rank">${rankLabel}</div>
-                            <div style="display:flex;align-items:center;gap:12px;">
-                                <div class="lb-avatar" style="${avatarFontSize ? 'font-size:'+avatarFontSize+';' : ''}">${avatarContent}</div>
+                            <div style="display:flex;align-items:center;gap:12px;flex:1;">
+                                <div class="lb-avatar" style="overflow:hidden;">${getAvatarHTML(u, 40)}</div>
                                 <div>
                                     <div style="font-weight:bold;color:${isMe ? 'var(--accent-blue)' : 'var(--light-blue)'};">
-                                        ${u.firstName || ''} ${u.lastName || ''}${isMe ? ' 👈 Это вы' : ''}
+                                        <span onclick="openPlayerProfile('${u.id}')" style="cursor:pointer;${isMe?'':'text-decoration:underline;text-decoration-style:dotted;'}" title="${isMe?'':'Посмотреть профиль'}">${u.firstName || ''} ${u.lastName || ''}${isMe ? ' 👈 Это вы' : ''}</span>
                                     </div>
                                     <div style="font-size:0.8rem;color:#6a8aaa;margin-top:3px;">
                                         <span class="level-badge" style="font-size:0.72rem;padding:2px 8px;background:${level.color}22;color:${level.color};border:1px solid ${level.color}44;">${level.icon} ${level.name}</span>
@@ -3849,6 +4605,7 @@
 
         async function initializeSystem() {
             try {
+                loadTheme();
                 setLoadingProgress(10, 'Инициализация...');
 
                 // Устанавливаем режим синхронизации
@@ -4159,13 +4916,16 @@
             document.getElementById('adminTabSync').classList.add('hidden');
             document.getElementById('adminTabCells').classList.add('hidden');
             document.getElementById('adminTabInvestments').classList.add('hidden');
+            document.getElementById('adminTabTickets').classList.add('hidden');
+            document.getElementById('adminTabStocksAdmin').classList.add('hidden');
 
             document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-            
-            document.getElementById('adminTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.remove('hidden');
-            
+
+            const tabEl = document.getElementById('adminTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            if (tabEl) tabEl.classList.remove('hidden');
+
             event.target.classList.add('active');
-            
+
             switch(tabName) {
                 case 'users':
                     renderUsersList();
@@ -4185,6 +4945,12 @@
                 case 'investments':
                     renderInvestmentsManagement();
                     break;
+                case 'tickets':
+                    renderAdminTickets();
+                    break;
+                case 'stocksAdmin':
+                    renderAdminStocks();
+                    break;
             }
         }
 
@@ -4202,7 +4968,11 @@
             document.getElementById('investPage').classList.add('hidden');
             document.getElementById('profilePage').classList.add('hidden');
             document.getElementById('leaderboardPage').classList.add('hidden');
+            document.getElementById('feedPage').classList.add('hidden');
+            document.getElementById('reportPage').classList.add('hidden');
+            document.getElementById('stocksPage').classList.add('hidden');
             document.getElementById('navbar').classList.add('hidden');
+            document.getElementById('themeFab').style.display = 'none';
         }
 
         function showApp() {
@@ -4210,16 +4980,17 @@
             document.getElementById('navbar').classList.remove('hidden');
             document.getElementById('userInfo').classList.remove('hidden');
             document.getElementById('navLinks').classList.remove('hidden');
-            
+            document.getElementById('themeFab').style.display = 'flex';
+
             updateUserInfo();
-            
+
             const adminButton = document.getElementById('adminNavButton');
             if (currentUser && currentUser.isAdmin) {
                 adminButton.classList.remove('hidden');
             } else {
                 adminButton.classList.add('hidden');
             }
-            
+
             showPage('main');
         }
 
@@ -4229,18 +5000,18 @@
                 return;
             }
             
-            document.getElementById('mainPage').classList.add('hidden');
-            document.getElementById('carsPage').classList.add('hidden');
-            document.getElementById('usedCarsPage').classList.add('hidden');
-            document.getElementById('myPropertiesPage').classList.add('hidden');
-            document.getElementById('myCarsPage').classList.add('hidden');
-            document.getElementById('casinoPage').classList.add('hidden');
-            document.getElementById('adminPage').classList.add('hidden');
-            document.getElementById('investPage').classList.add('hidden');
-            document.getElementById('profilePage').classList.add('hidden');
-            document.getElementById('leaderboardPage').classList.add('hidden');
+            // Hide all pages
+            ['main','cars','usedCars','myProperties','myCars','casino','admin','invest','profile','leaderboard','feed','report','stocks'].forEach(p => {
+                const el = document.getElementById(p + 'Page');
+                if (el) {
+                    el.classList.add('hidden');
+                    el.style.display = '';
+                }
+            });
 
-            document.getElementById(page + 'Page').classList.remove('hidden');
+            const targetPage = document.getElementById(page + 'Page');
+            if (!targetPage) return;
+            targetPage.classList.remove('hidden');
 
             switch(page) {
                 case 'main':
@@ -4274,6 +5045,15 @@
                     break;
                 case 'admin':
                     showAdminPanel();
+                    break;
+                case 'feed':
+                    renderFeed();
+                    break;
+                case 'report':
+                    renderMyTickets();
+                    break;
+                case 'stocks':
+                    renderStocksPage();
                     break;
             }
         }
@@ -4329,10 +5109,206 @@
             if (!document.getElementById('profilePage').classList.contains('hidden')) {
                 renderProfile();
             }
+
+            // Мини-аватар в навбаре
+            const navAv = document.getElementById('navUserAvatar');
+            if (navAv) navAv.innerHTML = getAvatarHTML(currentUser, 34);
+        }
+
+        // ==================== ТЕМЫ ОФОРМЛЕНИЯ ====================
+
+        function applyTheme(name) {
+            currentTheme = name;
+            if (name === 'default') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', name);
+            }
+            localStorage.setItem('bluelineTheme', name);
+            // mark active
+            document.querySelectorAll('.theme-option').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.theme-option').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(name) || (name === 'default' && btn.textContent.includes('Синяя'))) {
+                    btn.classList.add('active');
+                }
+            });
+            // close panel
+            document.getElementById('themePickerPanel').classList.remove('open');
+        }
+
+        function toggleThemePicker() {
+            document.getElementById('themePickerPanel').classList.toggle('open');
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('bluelineTheme') || 'default';
+            applyTheme(saved);
+        }
+
+        // Close theme panel when clicking outside
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('themePickerPanel');
+            const fab = document.getElementById('themeFab');
+            if (panel && fab && !panel.contains(e.target) && !fab.contains(e.target)) {
+                panel.classList.remove('open');
+            }
+        });
+
+        // ==================== УНИВЕРСАЛЬНЫЙ АВАТАР ====================
+
+        function getAvatarHTML(user, size) {
+            size = size || 44;
+            if (!user) return `<span style="font-size:${Math.round(size*0.5)}px;">👤</span>`;
+            if (user.avatarPhoto) {
+                return `<img src="${user.avatarPhoto}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;" alt="avatar">`;
+            }
+            if (user.avatar) {
+                return `<span style="font-size:${Math.round(size*0.5)}px;">${user.avatar}</span>`;
+            }
+            const initials = ((user.firstName || '?')[0] + (user.lastName || '')[0]).toUpperCase();
+            return `<span style="font-size:${Math.round(size*0.38)}px;font-weight:bold;color:#fff;">${initials}</span>`;
+        }
+
+        // ==================== ФОТО АВАТАР ====================
+
+        function handleAvatarPhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showNotification('Выбери файл-изображение', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    const ctx = canvas.getContext('2d');
+                    // crop to square from center
+                    const minSide = Math.min(img.width, img.height);
+                    const sx = (img.width - minSide) / 2;
+                    const sy = (img.height - minSide) / 2;
+                    ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, 100, 100);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                    currentUser.avatarPhoto = base64;
+                    // show preview
+                    const prevWrap = document.getElementById('avatarPhotoPreviewWrap');
+                    const prevImg = document.getElementById('avatarPhotoPreviewImg');
+                    if (prevWrap && prevImg) {
+                        prevImg.src = base64;
+                        prevWrap.style.display = 'block';
+                    }
+                    // save
+                    saveUserToFirebase(currentUser);
+                    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+                    updateUserInfo();
+                    showNotification('Фото аватара сохранено!', 'success');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            // reset input so same file can be re-uploaded
+            event.target.value = '';
+        }
+
+        async function resetPhotoAvatar() {
+            currentUser.avatarPhoto = null;
+            const prevWrap = document.getElementById('avatarPhotoPreviewWrap');
+            if (prevWrap) prevWrap.style.display = 'none';
+            await saveUserToFirebase(currentUser);
+            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+            updateUserInfo();
+            showNotification('Фото удалено', 'info');
+        }
+
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ====================
+
+        function escapeHtml(text) {
+            return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function autoResizeTextarea(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+        }
+
+        function timeAgo(ts) {
+            if (!ts) return '';
+            const date = ts.toDate ? ts.toDate() : new Date(ts);
+            const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+            if (diff < 60) return 'только что';
+            if (diff < 3600) return Math.floor(diff/60) + ' мин назад';
+            if (diff < 86400) return Math.floor(diff/3600) + ' ч назад';
+            return Math.floor(diff/86400) + ' д назад';
+        }
+
+        // ==================== ЛЕНТА СОБЫТИЙ ====================
+
+        async function logEvent(type, description, icon) {
+            if (!currentUser || syncMode !== 'online' || !firestore) return;
+            try {
+                await firestore.collection('events').add({
+                    type: type,
+                    userId: currentUser.id,
+                    firstName: currentUser.firstName || '',
+                    lastName: currentUser.lastName || '',
+                    avatar: currentUser.avatar || '',
+                    avatarPhoto: currentUser.avatarPhoto || null,
+                    icon: icon || '📌',
+                    description: description || '',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch(e) { console.warn('logEvent error:', e); }
+        }
+
+        function setupFeedListener() {
+            if (!firestore) return;
+            feedUnsubscribe && feedUnsubscribe();
+            try {
+                feedUnsubscribe = firestore.collection('events')
+                    .orderBy('timestamp', 'desc')
+                    .limit(30)
+                    .onSnapshot(snapshot => {
+                        feedEvents = [];
+                        snapshot.forEach(doc => feedEvents.push({ id: doc.id, ...doc.data() }));
+                        if (!document.getElementById('feedPage').classList.contains('hidden')) {
+                            renderFeed();
+                        }
+                    }, err => console.warn('feedListener error:', err));
+            } catch(e) { console.warn('setupFeedListener error:', e); }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedList');
+            if (!container) return;
+            if (feedEvents.length === 0) {
+                container.innerHTML = '<div class="feed-empty"><div style="font-size:3rem;margin-bottom:12px;">📭</div><div>Событий пока нет. Купи недвижимость или машину!</div></div>';
+                return;
+            }
+            container.innerHTML = feedEvents.map(ev => {
+                const name = escapeHtml((ev.firstName || '') + ' ' + (ev.lastName || '')).trim() || 'Игрок';
+                const desc = escapeHtml(ev.description || '');
+                const t = timeAgo(ev.timestamp);
+                const avatarInner = ev.avatarPhoto
+                    ? `<img src="${ev.avatarPhoto}" style="width:100%;height:100%;object-fit:cover;">`
+                    : (ev.avatar ? ev.avatar : (ev.firstName || '?')[0].toUpperCase());
+                return `
+                <div class="feed-event-item">
+                    <div class="feed-avatar">${avatarInner}</div>
+                    <div class="feed-event-icon">${escapeHtml(ev.icon || '📌')}</div>
+                    <div class="feed-event-body">
+                        <strong>${name}</strong>
+                        <p>${desc}</p>
+                    </div>
+                    <div class="feed-event-time">${t}</div>
+                </div>`;
+            }).join('');
         }
 
         // ==================== СИСТЕМА НЕДВИЖИМОСТИ ====================
-        
+
         function renderProperties(filteredProps = properties) {
             const container = document.getElementById('propertiesContainer');
             container.innerHTML = '';
@@ -4650,7 +5626,9 @@
                     saveLocalData();
                     updateUserInfo();
                     applyFilters();
+                    logEvent('property_purchase', `купил(а) недвижимость «${selectedProperty.title}» за $${selectedProperty.price.toLocaleString()}`, '🏠');
                     showNotification(`Поздравляем! Вы купили: "${selectedProperty.title}" для ${purchasePurpose === 'rent' ? 'аренды' : 'проживания'}`, 'success');
+                    checkAchievements();
                     closeModal();
                     if (!document.getElementById('myPropertiesPage').classList.contains('hidden')) {
                         renderOwnedProperties();
@@ -4759,6 +5737,7 @@
             
             // Обновляем интерфейс
             updateUserInfo();
+            logEvent('property_sale', `продал(а) недвижимость «${property.title}» за $${sellPrice.toLocaleString()}`, '💸');
             showNotification(`Вы продали недвижимость "${property.title}" за $${sellPrice.toLocaleString()} (50% от стоимости)`, 'success');
             
             // Обновляем отображение
@@ -5561,8 +6540,10 @@
                 // Сразу обновляем список автомобилей без перезагрузки страницы
                 applyCarFilters();
                 
+                logEvent('car_purchase', `купил(а) автомобиль «${selectedCar.title}» за $${selectedCar.price.toLocaleString()}`, '🚗');
                 showNotification(`Поздравляем! Вы купили: "${selectedCar.title}"`, 'success');
-                
+                checkAchievements();
+
                 closeCarModal();
                 
                 // Обновляем страницу моих автомобилей если она открыта
@@ -6142,6 +7123,7 @@
             
             // Обновляем баланс
             currentUser.balance += netChange;
+            window._lastCasinoWin = netChange > 0 ? winAmount : 0;
             
             // Создаём транзакцию
             const transaction = {
@@ -6203,6 +7185,7 @@
                         casinoCard.classList.add('big-win-shake');
                         setTimeout(() => casinoCard.classList.remove('big-win-shake'), 1000);
                     }
+                    logEvent('casino_win', `выиграл(а) $${winAmount.toLocaleString()} в казино (x${multiplier})`, '🎰');
                 }
             } else {
                 resultDiv.innerHTML = `<span style="color: var(--danger); font-size: 1.4rem; font-weight: bold;">${winMessage} Вы проиграли $${currentBet.toLocaleString()}</span>`;
@@ -6221,6 +7204,8 @@
             }
             saveLocalData();
             
+            checkAchievements();
+
             // Разблокируем кнопку
             setTimeout(() => {
                 spinButton.disabled = false;
@@ -6505,7 +7490,7 @@
                                    placeholder="= Установить баланс" style="width:160px;font-size:0.85rem;">
                             <button class="btn btn-primary" onclick="updateUserBalance('${user.id}')" style="padding:7px 12px;white-space:nowrap;font-size:0.85rem;">Установить</button>
                         </div>
-                        <div style="display:flex;gap:6px;">
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
                             <button class="btn btn-warning" onclick="openManageAssets('${user.id}')" style="padding:6px 12px;font-size:0.82rem;">Активы</button>
                             ${!user.isAdmin && user.id !== currentUser.id ?
                                 `<button class="btn btn-danger" onclick="deleteUser('${user.id}')" style="padding:6px 12px;font-size:0.82rem;">Удалить</button>` : ''}
@@ -7516,6 +8501,7 @@ async function payWeeklyIncome() {
     }
 
     currentUser.lastInvestmentPayout = now;
+    recordNetWorthHistory();
 
     if (changed) {
         const userIndex = users.findIndex(u => u.id === currentUser.id);
@@ -7565,6 +8551,7 @@ async function buyInvestment(id) {
     }
     saveLocalData();
     updateUserInfo();
+    checkAchievements();
     renderInvestments();
 }
 
@@ -7860,10 +8847,859 @@ async function addNewInvestment() {
 // ===================== СТАРТ =====================
 
 loadInvestments();
-        
+
+// ===================== СИСТЕМА ТИКЕТОВ =====================
+
+const RANK_SALARIES = {
+    'Probationary Officer': 1058,
+    'Police Officer II':    1250,
+    'Police Officer I':     1442,
+    'Corporal':             1635,
+    'Sergeant':             1827,
+    'Lieutenant':           2212,
+    'Major':                2692,
+    'Captain':              3095
+};
+
+async function submitReport() {
+    if (!currentUser) return;
+    const name     = (document.getElementById('reportName').value || '').trim();
+    const rank     = document.getElementById('reportRank').value;
+    const theft    = parseInt(document.getElementById('crimeTheft').value) || 0;
+    const robbery  = parseInt(document.getElementById('crimeRobbery').value) || 0;
+    const assault  = parseInt(document.getElementById('crimeAssault').value) || 0;
+    const murder   = parseInt(document.getElementById('crimeMurder').value) || 0;
+    const district = (document.getElementById('reportDistrict').value || '').trim();
+
+    if (!name || !rank || !district) {
+        showNotification('Заполните все поля', 'error');
+        return;
+    }
+    const hasPending = tickets.some(t => t.status === 'pending');
+    if (hasPending) {
+        document.getElementById('reportPendingWarn').style.display = 'block';
+        return;
+    }
+    try {
+        await firestore.collection('tickets').add({
+            playerId:       currentUser.id,
+            playerUsername: currentUser.username || '',
+            playerName:     name,
+            rank:           rank,
+            crimes:         { theft, robbery, assault, murder },
+            district:       district,
+            status:         'pending',
+            submittedAt:    firebase.firestore.FieldValue.serverTimestamp(),
+            processedAt:    null,
+            payStub:        null
+        });
+        document.getElementById('reportName').value     = '';
+        document.getElementById('reportRank').value     = '';
+        document.getElementById('crimeTheft').value     = '0';
+        document.getElementById('crimeRobbery').value   = '0';
+        document.getElementById('crimeAssault').value   = '0';
+        document.getElementById('crimeMurder').value    = '0';
+        document.getElementById('reportDistrict').value = '';
+        document.getElementById('reportPendingWarn').style.display = 'none';
+        showNotification('✅ Отчёт отправлен! Ожидайте обработки.', 'success');
+        checkAchievements();
+    } catch(e) {
+        console.error(e);
+        showNotification('Ошибка отправки отчёта', 'error');
+    }
+}
+
+function setupTicketsListener() {
+    if (!currentUser || !firestore) return;
+    if (ticketsUnsubscribe) ticketsUnsubscribe();
+    ticketsUnsubscribe = firestore.collection('tickets')
+        .where('playerId', '==', currentUser.id)
+        .orderBy('submittedAt', 'desc')
+        .onSnapshot(snap => {
+            tickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const hasPending = tickets.some(t => t.status === 'pending');
+            const warn = document.getElementById('reportPendingWarn');
+            if (warn) warn.style.display = hasPending ? 'block' : 'none';
+            if (!document.getElementById('reportPage').classList.contains('hidden')) renderMyTickets();
+        }, err => console.error('Tickets listener:', err));
+}
+
+function renderMyTickets() {
+    const list = document.getElementById('myTicketsList');
+    if (!list) return;
+    if (tickets.length === 0) {
+        list.innerHTML = '<p style="color:var(--light-blue);text-align:center;padding:20px;">Отчётов пока нет</p>';
+        return;
+    }
+    list.innerHTML = tickets.map(t => {
+        const date = t.submittedAt && t.submittedAt.toDate ? t.submittedAt.toDate().toLocaleDateString('ru-RU') : '—';
+        let payStubHTML = '';
+        if (t.payStub) {
+            const ps = t.payStub;
+            payStubHTML = `
+            <div class="paystub-box" style="margin-top:14px;font-size:0.82rem;">
+                <div style="text-align:center;font-weight:bold;margin-bottom:6px;">BLUELINE PD — РАСЧЁТНЫЙ ЛИСТ</div>
+                <div style="text-align:center;color:#aaa;margin-bottom:10px;font-size:0.78rem;">${ps.weekNumber||''}</div>
+                <div class="paystub-row income"><span>Базовая зарплата</span><span>$${(ps.baseSalary||0).toLocaleString()}</span></div>
+                ${ps.callBonus    ? `<div class="paystub-row income"><span>Бонус за вызовы</span><span>+$${ps.callBonus.toLocaleString()}</span></div>`    : ''}
+                ${ps.crimeBonus   ? `<div class="paystub-row income"><span>Бонус за преступления</span><span>+$${ps.crimeBonus.toLocaleString()}</span></div>`  : ''}
+                ${ps.precinctBonus? `<div class="paystub-row income"><span>Бонус района</span><span>+$${ps.precinctBonus.toLocaleString()}</span></div>`        : ''}
+                ${ps.conductBonus ? `<div class="paystub-row income"><span>Clean Conduct</span><span>+$${ps.conductBonus.toLocaleString()}</span></div>`         : ''}
+                ${ps.overtimePay  ? `<div class="paystub-row income"><span>Overtime</span><span>+$${ps.overtimePay.toLocaleString()}</span></div>`               : ''}
+                <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>
+                <div class="paystub-row"><span>Gross Pay</span><span style="font-weight:bold;">$${(ps.grossPay||0).toLocaleString()}</span></div>
+                <div class="paystub-row deduction"><span>Federal Tax (18%)</span><span>-$${(ps.federalTax||0).toLocaleString()}</span></div>
+                <div class="paystub-row deduction"><span>State Tax (5%)</span><span>-$${(ps.stateTax||0).toLocaleString()}</span></div>
+                <div class="paystub-row deduction"><span>FICA (7.5%)</span><span>-$${(ps.fica||0).toLocaleString()}</span></div>
+                <div class="paystub-row deduction"><span>Health Insurance</span><span>-$100</span></div>
+                <div class="paystub-row deduction"><span>Union Dues</span><span>-$30</span></div>
+                <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>
+                <div class="paystub-row"><span>Net Pay</span><span style="font-weight:bold;">$${(ps.netPay||0).toLocaleString()}</span></div>
+                ${(ps.fines||[]).map(f=>`<div class="paystub-row deduction"><span>Штраф: ${f.label}</span><span>-$${f.amount.toLocaleString()}</span></div>`).join('')}
+                ${ps.totalFines   ? `<div class="paystub-row deduction"><span>Итого штрафов</span><span>-$${ps.totalFines.toLocaleString()}</span></div>` : ''}
+                <div style="border-top:2px solid rgba(255,255,255,0.2);margin:8px 0;"></div>
+                <div class="paystub-total"><span>К выплате</span><span style="color:#2ecc71;">$${(ps.weeklyTotal||0).toLocaleString()}</span></div>
+                ${ps.note ? `<div style="margin-top:8px;color:var(--light-blue);font-size:0.78rem;">💬 ${ps.note}</div>` : ''}
+            </div>`;
+        }
+        return `
+        <div class="ticket-card ${t.status}" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-weight:bold;color:var(--accent-blue);">${t.rank||'—'} · ${t.district||'—'}</span>
+                <span style="padding:3px 10px;border-radius:20px;font-size:0.8rem;background:${t.status==='pending'?'rgba(255,193,7,0.2)':'rgba(46,204,113,0.2)'};color:${t.status==='pending'?'#ffc107':'#2ecc71'};">${t.status==='pending'?'⏳ На рассмотрении':'✅ Обработан'}</span>
+            </div>
+            <div style="color:var(--light-blue);font-size:0.85rem;">
+                🚗 ${t.crimes&&t.crimes.theft||0} · 💰 ${t.crimes&&t.crimes.robbery||0} · 🔫 ${t.crimes&&t.crimes.assault||0} · 💀 ${t.crimes&&t.crimes.murder||0}
+            </div>
+            <div style="color:var(--light-blue);font-size:0.8rem;margin-top:4px;">📅 ${date}</div>
+            ${payStubHTML}
+        </div>`;
+    }).join('');
+}
+
+function setupAdminTicketsListener() {
+    if (!firestore) return;
+    if (adminTicketsUnsubscribe) adminTicketsUnsubscribe();
+    adminTicketsUnsubscribe = firestore.collection('tickets')
+        .orderBy('submittedAt', 'desc')
+        .onSnapshot(snap => {
+            adminTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            if (!document.getElementById('adminTabTickets').classList.contains('hidden')) renderAdminTickets();
+        }, err => console.error('Admin tickets listener:', err));
+}
+
+function renderAdminTickets() {
+    const list = document.getElementById('adminTicketsList');
+    if (!list) return;
+    const pending   = adminTickets.filter(t => t.status === 'pending');
+    const processed = adminTickets.filter(t => t.status === 'processed');
+    const pc = document.getElementById('ticketPendingCount');
+    const rc = document.getElementById('ticketProcessedCount');
+    if (pc) pc.textContent = pending.length;
+    if (rc) rc.textContent = processed.length;
+    const renderItem = t => {
+        const date = t.submittedAt && t.submittedAt.toDate ? t.submittedAt.toDate().toLocaleDateString('ru-RU') : '—';
+        return `
+        <div class="admin-ticket-item" style="border-left:3px solid ${t.status==='pending'?'#ffc107':'#2ecc71'};">
+            <div>
+                <div style="font-weight:bold;color:var(--light-blue);">${t.playerName||'—'} <span style="font-size:0.8rem;">(@${t.playerUsername||'?'})</span></div>
+                <div style="color:var(--light-blue);font-size:0.82rem;">${t.rank||'—'} · ${t.district||'—'} · ${date}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:0.8rem;padding:3px 8px;border-radius:12px;background:${t.status==='pending'?'rgba(255,193,7,0.15)':'rgba(46,204,113,0.15)'};color:${t.status==='pending'?'#ffc107':'#2ecc71'};">${t.status==='pending'?'⏳ Pending':'✅ Done'}</span>
+                <button onclick="openTicketModal('${t.id}')" style="padding:6px 14px;background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.4);color:#3498db;border-radius:6px;cursor:pointer;font-size:0.85rem;">Открыть</button>
+            </div>
+        </div>`;
+    };
+    list.innerHTML = (pending.length + processed.length === 0)
+        ? '<p style="color:var(--light-blue);text-align:center;padding:20px;">Тикетов нет</p>'
+        : pending.map(renderItem).join('') + (processed.length ? '<hr style="border-color:rgba(255,255,255,0.1);margin:16px 0;">' + processed.map(renderItem).join('') : '');
+}
+
+function openTicketModal(ticketId) {
+    const t = adminTickets.find(t => t.id === ticketId);
+    if (!t) return;
+    currentTicketId = ticketId;
+    ticketFines = [];
+    const info = document.getElementById('ticketPlayerInfo');
+    if (info) {
+        const c = t.crimes || {};
+        info.innerHTML = `
+            <div><strong>Игрок:</strong> ${t.playerName||'—'}</div>
+            <div><strong>Ник:</strong> @${t.playerUsername||'—'}</div>
+            <div><strong>Звание:</strong> ${t.rank||'—'}</div>
+            <div><strong>Район:</strong> ${t.district||'—'}</div>
+            <div style="margin-top:10px;font-size:0.85rem;line-height:2;">
+                🚗 Угон: ${c.theft||0} <span style="color:#2ecc71;">(+$${((c.theft||0)*150).toLocaleString()})</span><br>
+                💰 Грабёж: ${c.robbery||0} <span style="color:#2ecc71;">(+$${((c.robbery||0)*300).toLocaleString()})</span><br>
+                🔫 Нападение: ${c.assault||0} <span style="color:#2ecc71;">(+$${((c.assault||0)*500).toLocaleString()})</span><br>
+                💀 Убийство: ${c.murder||0} <span style="color:#2ecc71;">(+$${((c.murder||0)*1500).toLocaleString()})</span>
+            </div>`;
+    }
+    document.getElementById('ticketModal')._ticketData = t;
+    document.getElementById('tkCalls').value    = 0;
+    document.getElementById('tkPrecinct').value = 0;
+    document.getElementById('tkOvertime').value = 0;
+    document.getElementById('tkConduct').checked = false;
+    document.getElementById('tkNote').value  = '';
+    document.getElementById('tkWeek').value  = '';
+    renderFinesList();
+    calcLivePayStub();
+    document.getElementById('ticketModal').style.display = 'flex';
+}
+
+function closeTicketModal() {
+    document.getElementById('ticketModal').style.display = 'none';
+    currentTicketId = null;
+    ticketFines = [];
+}
+
+function renderFinesList() {
+    const list = document.getElementById('finesList');
+    if (!list) return;
+    list.innerHTML = ticketFines.map((f, i) => `
+        <div class="fine-row">
+            <input type="text" value="${f.label}" placeholder="Причина" style="flex:1;" oninput="ticketFines[${i}].label=this.value;calcLivePayStub()">
+            <input type="number" value="${f.amount}" min="0" style="width:90px;" oninput="ticketFines[${i}].amount=Number(this.value);calcLivePayStub()">
+            <button onclick="removeFineRow(${i})" style="padding:4px 10px;background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.4);color:#e74c3c;border-radius:6px;cursor:pointer;">✕</button>
+        </div>`).join('');
+}
+
+function addFineRow() {
+    ticketFines.push({ label: '', amount: 0 });
+    renderFinesList();
+    calcLivePayStub();
+}
+
+function removeFineRow(i) {
+    ticketFines.splice(i, 1);
+    renderFinesList();
+    calcLivePayStub();
+}
+
+function calcLivePayStub() {
+    const modal = document.getElementById('ticketModal');
+    const t = modal && modal._ticketData;
+    if (!t) return;
+    const c           = t.crimes || {};
+    const rank        = t.rank || '';
+    const baseSalary  = RANK_SALARIES[rank] || 0;
+    const crimeBonus  = (c.theft||0)*150 + (c.robbery||0)*300 + (c.assault||0)*500 + (c.murder||0)*1500;
+    const callCount   = parseFloat(document.getElementById('tkCalls').value) || 0;
+    const callBonus   = Math.round(callCount * 50);
+    const precinctBonus = Math.round(parseFloat(document.getElementById('tkPrecinct').value) || 0);
+    const conductBonus  = document.getElementById('tkConduct').checked ? 200 : 0;
+    const overtimeHrs   = parseFloat(document.getElementById('tkOvertime').value) || 0;
+    const overtimePay   = Math.round(overtimeHrs * (baseSalary / 40) * 1.5);
+    const grossPay      = baseSalary + crimeBonus + callBonus + precinctBonus + conductBonus + overtimePay;
+    const federalTax    = Math.round(grossPay * 0.18);
+    const stateTax      = Math.round(grossPay * 0.05);
+    const fica          = Math.round(grossPay * 0.075);
+    const healthIns     = 100;
+    const unionDues     = 30;
+    const netPay        = grossPay - federalTax - stateTax - fica - healthIns - unionDues;
+    const totalFines    = ticketFines.reduce((s, f) => s + (Number(f.amount)||0), 0);
+    const weeklyTotal   = netPay - totalFines;
+    const stub = document.getElementById('livePayStub');
+    if (!stub) return;
+    stub.innerHTML = `
+        <div style="text-align:center;font-weight:bold;margin-bottom:6px;">BLUELINE POLICE DEPARTMENT</div>
+        <div style="text-align:center;color:#aaa;margin-bottom:10px;font-size:0.8rem;">PAY STATEMENT · ${document.getElementById('tkWeek').value||'—'}</div>
+        <div style="color:var(--light-blue);font-size:0.78rem;margin-bottom:8px;">ИМЯ: ${t.playerName||'—'} | ЗВАНИЕ: ${rank}</div>
+        <div style="border-top:1px solid rgba(255,255,255,0.15);margin:6px 0;"></div>
+        <div class="paystub-row income"><span>Базовая зарплата</span><span>$${baseSalary.toLocaleString()}</span></div>
+        ${callBonus    ? `<div class="paystub-row income"><span>Бонус вызовов (${callCount}×$50)</span><span>+$${callBonus.toLocaleString()}</span></div>` : ''}
+        ${crimeBonus   ? `<div class="paystub-row income"><span>Бонус за преступления</span><span>+$${crimeBonus.toLocaleString()}</span></div>` : ''}
+        ${precinctBonus? `<div class="paystub-row income"><span>Бонус района</span><span>+$${precinctBonus.toLocaleString()}</span></div>` : ''}
+        ${conductBonus ? `<div class="paystub-row income"><span>Clean Conduct</span><span>+$200</span></div>` : ''}
+        ${overtimePay  ? `<div class="paystub-row income"><span>Overtime (${overtimeHrs}h)</span><span>+$${overtimePay.toLocaleString()}</span></div>` : ''}
+        <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>
+        <div class="paystub-row"><span><strong>GROSS PAY</strong></span><span><strong>$${grossPay.toLocaleString()}</strong></span></div>
+        <div class="paystub-row deduction"><span>Federal Tax (18%)</span><span>-$${federalTax.toLocaleString()}</span></div>
+        <div class="paystub-row deduction"><span>State Tax (5%)</span><span>-$${stateTax.toLocaleString()}</span></div>
+        <div class="paystub-row deduction"><span>FICA (7.5%)</span><span>-$${fica.toLocaleString()}</span></div>
+        <div class="paystub-row deduction"><span>Health Insurance</span><span>-$100</span></div>
+        <div class="paystub-row deduction"><span>Union Dues</span><span>-$30</span></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>
+        <div class="paystub-row"><span><strong>NET PAY</strong></span><span><strong>$${netPay.toLocaleString()}</strong></span></div>
+        ${ticketFines.map(f=>`<div class="paystub-row deduction"><span>Штраф: ${f.label||'—'}</span><span>-$${(Number(f.amount)||0).toLocaleString()}</span></div>`).join('')}
+        ${totalFines ? `<div class="paystub-row deduction"><span><strong>Итого штрафов</strong></span><span><strong>-$${totalFines.toLocaleString()}</strong></span></div>` : ''}
+        <div style="border-top:2px solid rgba(255,255,255,0.25);margin:10px 0;"></div>
+        <div class="paystub-total"><span>💵 К ВЫПЛАТЕ</span><span style="color:${weeklyTotal>=0?'#2ecc71':'#e74c3c'};">$${weeklyTotal.toLocaleString()}</span></div>`;
+}
+
+async function sendPayStub() {
+    if (!currentTicketId) return;
+    const modal = document.getElementById('ticketModal');
+    const t = modal && modal._ticketData;
+    if (!t) return;
+    const c           = t.crimes || {};
+    const rank        = t.rank || '';
+    const baseSalary  = RANK_SALARIES[rank] || 0;
+    const crimeBonus  = (c.theft||0)*150 + (c.robbery||0)*300 + (c.assault||0)*500 + (c.murder||0)*1500;
+    const callCount   = parseFloat(document.getElementById('tkCalls').value) || 0;
+    const callBonus   = Math.round(callCount * 50);
+    const precinctBonus = Math.round(parseFloat(document.getElementById('tkPrecinct').value) || 0);
+    const conductBonus  = document.getElementById('tkConduct').checked ? 200 : 0;
+    const overtimeHrs   = parseFloat(document.getElementById('tkOvertime').value) || 0;
+    const overtimePay   = Math.round(overtimeHrs * (baseSalary / 40) * 1.5);
+    const grossPay      = baseSalary + crimeBonus + callBonus + precinctBonus + conductBonus + overtimePay;
+    const federalTax    = Math.round(grossPay * 0.18);
+    const stateTax      = Math.round(grossPay * 0.05);
+    const fica          = Math.round(grossPay * 0.075);
+    const healthIns     = 100;
+    const unionDues     = 30;
+    const netPay        = grossPay - federalTax - stateTax - fica - healthIns - unionDues;
+    const totalFines    = ticketFines.reduce((s, f) => s + (Number(f.amount)||0), 0);
+    const weeklyTotal   = netPay - totalFines;
+    const payStub = {
+        baseSalary, callBonus, crimeBonus, precinctBonus, conductBonus, overtimePay,
+        grossPay, federalTax, stateTax, fica, healthIns, unionDues,
+        netPay, fines: ticketFines.map(f => ({ label: f.label, amount: Number(f.amount)||0 })),
+        totalFines, weeklyTotal,
+        note:       document.getElementById('tkNote').value.trim(),
+        weekNumber: document.getElementById('tkWeek').value.trim()
+    };
+    try {
+        await firestore.collection('tickets').doc(currentTicketId).update({
+            status:      'processed',
+            payStub:     payStub,
+            processedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showNotification('✅ Расчётный лист отправлен!', 'success');
+        closeTicketModal();
+    } catch(e) {
+        console.error(e);
+        showNotification('Ошибка отправки расчёта', 'error');
+    }
+}
+
+// ===================== ДОСТИЖЕНИЯ =====================
+
+function checkAchievements() {
+    if (!currentUser) return;
+    const ach      = currentUser.achievements ? [...currentUser.achievements] : [];
+    const newUnlocks = [];
+    const propCount  = (currentUser.properties || []).length;
+    const carCount   = (currentUser.cars || []).length;
+    const invCount   = (currentUser.investments || []).length;
+    const netWorth   = getNetWorth(currentUser);
+    const check = (id, cond) => {
+        if (cond && !ach.includes(id)) { ach.push(id); newUnlocks.push(id); }
+    };
+    check('first_home',    propCount >= 1);
+    check('landlord',      propCount >= 5);
+    check('millionaire',   netWorth >= 1000000);
+    check('car_buyer',     carCount >= 1);
+    check('car_collector', carCount >= 3);
+    check('lucky',         (window._lastCasinoWin || 0) >= 500);
+    check('high_roller',   (window._lastCasinoWin || 0) >= 5000);
+    check('investor',      invCount >= 1);
+    check('rich_kid',      netWorth >= 5000000);
+    check('reporter',      tickets.length >= 1);
+    if (newUnlocks.length > 0) {
+        currentUser.achievements = ach;
+        saveUserToFirebase(currentUser);
+        newUnlocks.forEach(id => {
+            const a = ACHIEVEMENTS.find(a => a.id === id);
+            if (a) showAchievementToast(a);
+        });
+    }
+}
+
+function showAchievementToast(achievement) {
+    const toast = document.createElement('div');
+    toast.className = 'achievement-unlock-toast';
+    toast.innerHTML = `
+        <div style="font-size:0.78rem;opacity:0.8;margin-bottom:3px;">🏆 ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО</div>
+        <div style="font-size:1.05rem;font-weight:bold;">${achievement.icon} ${achievement.name}</div>
+        <div style="font-size:0.78rem;opacity:0.8;margin-top:2px;">${achievement.desc}</div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+}
+
+function renderAchievements() {
+    const container = document.getElementById('profileAchievements');
+    if (!container) return;
+    const unlocked = (currentUser && currentUser.achievements) || [];
+    container.innerHTML = ACHIEVEMENTS.map(a => `
+        <div class="achievement-card ${unlocked.includes(a.id) ? 'unlocked' : 'locked'}"
+             style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:1.8rem;margin-bottom:6px;">${a.icon}</div>
+            <div style="font-weight:bold;font-size:0.82rem;color:${unlocked.includes(a.id)?'#ffd700':'var(--light-blue)'};">${a.name}</div>
+            <div style="font-size:0.72rem;color:var(--light-blue);margin-top:3px;">${a.desc}</div>
+            <div style="font-size:0.72rem;margin-top:5px;color:${unlocked.includes(a.id)?'#2ecc71':'#6a8aaa'};">${unlocked.includes(a.id)?'✓ Получено':'🔒 Заблокировано'}</div>
+        </div>`).join('');
+}
+
+// ===================== РУЛЕТКА =====================
+
+const ROULETTE_RED = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+
+function switchCasinoTab(tab) {
+    const slotsEl    = document.getElementById('slotsSection');
+    const rouletteEl = document.getElementById('rouletteSection');
+    if (!slotsEl || !rouletteEl) return;
+    if (tab === 'slots') {
+        slotsEl.style.display    = '';
+        rouletteEl.style.display = 'none';
+    } else {
+        slotsEl.style.display    = 'none';
+        rouletteEl.style.display = '';
+        const rb = document.getElementById('rouletteBalance');
+        if (rb) rb.textContent = '$' + (currentUser ? currentUser.balance.toLocaleString() : '0');
+        renderRouletteBoard();
+    }
+    document.querySelectorAll('.casino-tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tab);
+    });
+}
+
+function placeRouletteBet(type, value) {
+    rouletteBets[type + '_' + value] = { type, value };
+    renderRouletteBoard();
+}
+
+function clearRouletteBets() {
+    rouletteBets = {};
+    renderRouletteBoard();
+}
+
+function renderRouletteBoard() {
+    const board = document.getElementById('rouletteBoard');
+    if (!board) return;
+    const betCount = Object.keys(rouletteBets).length;
+    const betBtns = [
+        { t:'color',  v:'red',   label:'🔴 Красное',  bg:'#c0392b' },
+        { t:'color',  v:'black', label:'⚫ Чёрное',   bg:'#2c3e50' },
+        { t:'parity', v:'odd',   label:'Нечётное',    bg:'rgba(255,255,255,0.1)' },
+        { t:'parity', v:'even',  label:'Чётное',      bg:'rgba(255,255,255,0.1)' },
+        { t:'dozen',  v:'1',     label:'1–12',         bg:'rgba(255,255,255,0.1)' },
+        { t:'dozen',  v:'2',     label:'13–24',        bg:'rgba(255,255,255,0.1)' },
+        { t:'dozen',  v:'3',     label:'25–36',        bg:'rgba(255,255,255,0.1)' }
+    ];
+    board.innerHTML = `
+        <div style="margin-bottom:12px;color:var(--light-blue);font-size:0.88rem;">Ставок: <strong style="color:${betCount?'#2ecc71':'var(--light-blue)'};">${betCount}</strong> · Ставка: <strong>$${currentBet.toLocaleString()}</strong></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+            ${betBtns.map(b=>`
+                <button onclick="placeRouletteBet('${b.t}','${b.v}')"
+                    style="padding:9px 14px;border-radius:8px;border:${rouletteBets[b.t+'_'+b.v]?'2px solid #ffd700':'1px solid rgba(255,255,255,0.15)'};cursor:pointer;font-size:0.85rem;font-weight:bold;color:white;background:${b.bg};">
+                    ${b.label}
+                </button>`).join('')}
+        </div>
+        <div style="display:grid;grid-template-columns:auto repeat(12,1fr);gap:3px;max-width:480px;margin-bottom:16px;">
+            <button onclick="placeRouletteBet('number','0')"
+                style="grid-row:span 3;background:#27ae60;border:${rouletteBets['number_0']?'2px solid #ffd700':'1px solid rgba(255,255,255,0.2)'};color:white;border-radius:4px;padding:8px 6px;cursor:pointer;font-weight:bold;font-size:0.9rem;writing-mode:vertical-rl;">0</button>
+            ${Array.from({length:36},(_,i)=>{
+                const n=i+1, isRed=ROULETTE_RED.includes(n), isActive=rouletteBets['number_'+n];
+                return `<button onclick="placeRouletteBet('number','${n}')"
+                    style="background:${isRed?'#c0392b':'#2c3e50'};border:${isActive?'2px solid #ffd700':'1px solid rgba(255,255,255,0.15)'};color:white;border-radius:4px;padding:6px 0;cursor:pointer;font-size:0.78rem;font-weight:bold;">${n}</button>`;
+            }).join('')}
+        </div>
+        <div style="display:flex;gap:10px;">
+            <button onclick="spinRoulette()" style="flex:1;padding:14px;background:linear-gradient(135deg,#e74c3c,#9b59b6);border:none;color:white;border-radius:10px;font-size:1.1rem;font-weight:bold;cursor:pointer;">🎲 КРУТИТЬ!</button>
+            <button onclick="clearRouletteBets()" style="padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--light-blue);border-radius:10px;cursor:pointer;">Очистить</button>
+        </div>
+        <div id="rouletteResult" style="margin-top:16px;text-align:center;min-height:30px;font-size:1.05rem;"></div>`;
+}
+
+async function spinRoulette() {
+    if (rouletteSpinning) return;
+    if (!currentUser) return;
+    if (Object.keys(rouletteBets).length === 0) { showNotification('Сделайте ставку!', 'warning'); return; }
+    const bet = currentBet;
+    if (currentUser.balance < bet) { showNotification('Недостаточно средств!', 'error'); return; }
+    rouletteSpinning = true;
+    const wheel = document.getElementById('rouletteWheel');
+    if (wheel) { rouletteRotation += 1440 + Math.random()*360; wheel.style.transform = `rotate(${rouletteRotation}deg)`; }
+    await new Promise(r => setTimeout(r, 3200));
+    const result = Math.floor(Math.random() * 37);
+    const isRed  = ROULETTE_RED.includes(result);
+    const isOdd  = result > 0 && result % 2 !== 0;
+    let totalWin = 0;
+    for (const key of Object.keys(rouletteBets)) {
+        const b = rouletteBets[key];
+        let won = false, mult = 0;
+        if      (b.type==='color'  && b.value==='red'   && isRed && result!==0) { won=true; mult=1; }
+        else if (b.type==='color'  && b.value==='black' && !isRed && result!==0) { won=true; mult=1; }
+        else if (b.type==='parity' && result!==0) {
+            if (b.value==='odd'  && isOdd)  { won=true; mult=1; }
+            if (b.value==='even' && !isOdd) { won=true; mult=1; }
+        }
+        else if (b.type==='dozen'  && result!==0 && Math.ceil(result/12)===parseInt(b.value)) { won=true; mult=2; }
+        else if (b.type==='number' && result===parseInt(b.value)) { won=true; mult=35; }
+        if (won) totalWin += bet * (mult + 1);
+    }
+    currentUser.balance -= bet;
+    if (totalWin > 0) currentUser.balance += totalWin;
+    window._lastCasinoWin = Math.max(0, totalWin - bet);
+    await saveUserToFirebase(currentUser);
+    updateUserInfo();
+    updateCasinoUI();
+    const rb = document.getElementById('rouletteBalance');
+    if (rb) rb.textContent = '$' + currentUser.balance.toLocaleString();
+    const profit = totalWin - bet;
+    const resultEl = document.getElementById('rouletteResult');
+    if (resultEl) {
+        const color = result===0 ? '#27ae60' : isRed ? '#e74c3c' : '#2c3e50';
+        resultEl.innerHTML = `
+            <span style="display:inline-block;width:38px;height:38px;border-radius:50%;background:${color};border:2px solid white;line-height:38px;font-weight:bold;margin-right:8px;vertical-align:middle;">${result}</span>
+            ${profit > 0
+                ? `<span style="color:#2ecc71;">🎉 Выигрыш: +$${profit.toLocaleString()}</span>`
+                : profit < 0
+                    ? `<span style="color:#e74c3c;">😔 Проигрыш: -$${bet.toLocaleString()}</span>`
+                    : `<span style="color:#ffc107;">Нет выигрыша</span>`}`;
+    }
+    checkAchievements();
+    rouletteSpinning = false;
+    rouletteBets = {};
+    renderRouletteBoard();
+}
+
+// ===================== ПРОСМОТР ПРОФИЛЯ ИГРОКА =====================
+
+async function openPlayerProfile(userId) {
+    let user = users.find(u => u.id === userId);
+    if (!user && firestore) {
+        try {
+            const doc = await firestore.collection('users').doc(userId).get();
+            if (doc.exists) user = { id: doc.id, ...doc.data() };
+        } catch(e) { console.error(e); }
+    }
+    if (!user) { showNotification('Профиль не найден', 'error'); return; }
+    const netWorth  = getNetWorth(user);
+    const { level } = getLevel(netWorth);
+    const propCount = (user.properties  || []).length;
+    const carCount  = (user.cars        || []).length;
+    const invCount  = (user.investments || []).reduce((s, i) => s + i.amount, 0);
+    const unlocked  = user.achievements || [];
+    const content   = document.getElementById('playerProfileContent');
+    if (!content) return;
+    content.innerHTML = `
+        <div style="text-align:center;margin-bottom:20px;">
+            <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto 12px;border:2px solid ${level.color};">${getAvatarHTML(user, 72)}</div>
+            <div style="font-size:1.4rem;font-weight:bold;">${user.firstName||''} ${user.lastName||''}</div>
+            <div style="color:var(--light-blue);margin-bottom:8px;">@${user.username||'—'}</div>
+            <div style="display:inline-block;padding:5px 14px;border-radius:20px;font-size:0.9rem;font-weight:bold;background:${level.color}22;color:${level.color};border:1px solid ${level.color}55;">${level.icon} ${level.name}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;text-align:center;">
+                <div style="font-size:1.4rem;">💵</div>
+                <div style="font-weight:bold;color:#2ecc71;margin:4px 0;">$${netWorth.toLocaleString()}</div>
+                <div style="color:var(--light-blue);font-size:0.8rem;">Net Worth</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;text-align:center;">
+                <div style="font-size:1.4rem;">🏠</div>
+                <div style="font-weight:bold;color:var(--accent-blue);margin:4px 0;">${propCount}</div>
+                <div style="color:var(--light-blue);font-size:0.8rem;">Объектов</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;text-align:center;">
+                <div style="font-size:1.4rem;">🚗</div>
+                <div style="font-weight:bold;color:var(--accent-blue);margin:4px 0;">${carCount}</div>
+                <div style="color:var(--light-blue);font-size:0.8rem;">Автомобилей</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;text-align:center;">
+                <div style="font-size:1.4rem;">📊</div>
+                <div style="font-weight:bold;color:var(--accent-blue);margin:4px 0;">${invCount}</div>
+                <div style="color:var(--light-blue);font-size:0.8rem;">Инвестиций</div>
+            </div>
+        </div>
+        ${unlocked.length > 0 ? `
+            <h3 style="color:var(--light-blue);margin-bottom:10px;font-size:0.95rem;">🏆 Достижения (${unlocked.length}/${ACHIEVEMENTS.length})</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                ${ACHIEVEMENTS.filter(a=>unlocked.includes(a.id)).map(a=>`
+                    <div style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:8px;padding:5px 10px;font-size:0.82rem;color:#ffd700;">${a.icon} ${a.name}</div>`).join('')}
+            </div>` : '<p style="color:var(--light-blue);font-size:0.88rem;">Достижений пока нет</p>'}`;
+    document.getElementById('playerProfileModal').style.display = 'flex';
+}
+
+// ===================== ГРАФИК КАПИТАЛА =====================
+
+function recordNetWorthHistory() {
+    if (!currentUser) return;
+    const history  = currentUser.netWorthHistory ? [...currentUser.netWorthHistory] : [];
+    const netWorth = getNetWorth(currentUser);
+    const today    = new Date().toISOString().slice(0, 10);
+    if (history.length > 0 && history[history.length - 1].date === today) {
+        history[history.length - 1].value = netWorth;
+    } else {
+        history.push({ date: today, value: netWorth });
+    }
+    if (history.length > 52) history.splice(0, history.length - 52);
+    currentUser.netWorthHistory = history;
+}
+
+function renderCapitalChart() {
+    const container = document.getElementById('capitalChartContainer');
+    if (!container) return;
+    const history = (currentUser && currentUser.netWorthHistory) || [];
+    if (history.length < 2) {
+        container.innerHTML = '<p style="color:var(--light-blue);text-align:center;padding:20px;font-size:0.88rem;">Недостаточно данных. График появится после нескольких посещений.</p>';
+        return;
+    }
+    const W = 600, H = 160, PAD = 36;
+    const values = history.map(h => h.value);
+    const minVal = Math.min(...values);
+    const maxVal = Math.max(...values);
+    const range  = maxVal - minVal || 1;
+    const points = history.map((h, i) => {
+        const x = PAD + (i / (history.length - 1)) * (W - PAD * 2);
+        const y = H - PAD - ((h.value - minVal) / range) * (H - PAD * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    const lastVal  = values[values.length - 1];
+    const firstVal = values[0];
+    const trend    = lastVal >= firstVal ? '#2ecc71' : '#e74c3c';
+    const change   = Math.abs(lastVal - firstVal);
+    container.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div style="font-size:0.85rem;color:var(--light-blue);">За ${history.length} точек</div>
+            <div style="font-size:0.88rem;color:${trend};">${lastVal>=firstVal?'↑':' ↓'} ${lastVal>=firstVal?'+':'−'}$${change.toLocaleString()}</div>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;overflow:visible;">
+            <text x="${PAD}" y="14" fill="#6a8aaa" font-size="11">$${maxVal.toLocaleString()}</text>
+            <text x="${PAD}" y="${H-4}" fill="#6a8aaa" font-size="11">$${minVal.toLocaleString()}</text>
+            <polyline points="${points}" fill="none" stroke="${trend}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+            <circle cx="${points.split(' ').pop().split(',')[0]}" cy="${points.split(' ').pop().split(',')[1]}" r="4.5" fill="${trend}"/>
+        </svg>`;
+}
+
+// ===================== БИРЖА АКЦИЙ =====================
+
+function setupStocksListener() {
+    if (!firestore) return;
+    if (stocksUnsubscribe) stocksUnsubscribe();
+    stocksUnsubscribe = firestore.collection('stocks').onSnapshot(snap => {
+        stocks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (!document.getElementById('stocksPage').classList.contains('hidden')) renderStocksPage();
+        if (currentUser && currentUser.isAdmin && !document.getElementById('adminTabStocksAdmin').classList.contains('hidden')) renderAdminStocks();
+    }, err => console.error('Stocks listener:', err));
+    initStocksIfNeeded();
+}
+
+async function initStocksIfNeeded() {
+    if (!firestore) return;
+    try {
+        const snap = await firestore.collection('stocks').get();
+        if (snap.empty) {
+            const defaults = { BLRE: 120, LUXE: 250, DRIV: 85, CASP: 430, SAFE: 200 };
+            for (const def of STOCK_DEFS) {
+                await firestore.collection('stocks').doc(def.id).set({
+                    id: def.id, name: def.name, emoji: def.emoji,
+                    price: defaults[def.id] || 100,
+                    priceHistory: [defaults[def.id] || 100],
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }
+    } catch(e) { console.error('Init stocks:', e); }
+}
+
+let _pendingStockBuy = null;
+
+function buyStock(stockId) {
+    const stock = stocks.find(s => s.id === stockId);
+    if (!stock) return;
+    _pendingStockBuy = stockId;
+    document.getElementById('stockBuyTitle').textContent = `${stock.emoji} Купить акции ${stock.id}`;
+    document.getElementById('stockBuyQty').value = 1;
+    updateStockBuyCost();
+    document.getElementById('stockBuyModal').style.display = 'flex';
+}
+
+function updateStockBuyCost() {
+    if (!_pendingStockBuy) return;
+    const stock = stocks.find(s => s.id === _pendingStockBuy);
+    if (!stock) return;
+    const qty   = parseInt(document.getElementById('stockBuyQty').value) || 1;
+    const total = qty * stock.price;
+    document.getElementById('stockBuyCostPreview').innerHTML = `
+        $${stock.price.toLocaleString()} × ${qty} = <strong style="color:#2ecc71;">$${total.toLocaleString()}</strong>
+        <br><span style="font-size:0.82rem;color:var(--light-blue);">Ваш баланс: $${(currentUser&&currentUser.balance||0).toLocaleString()}</span>`;
+}
+
+async function confirmStockBuy() {
+    if (!currentUser || !_pendingStockBuy) return;
+    const stock = stocks.find(s => s.id === _pendingStockBuy);
+    if (!stock) return;
+    const qty   = parseInt(document.getElementById('stockBuyQty').value) || 1;
+    if (qty < 1) { showNotification('Неверное количество', 'error'); return; }
+    const total = qty * stock.price;
+    if (currentUser.balance < total) { showNotification('Недостаточно средств', 'error'); return; }
+    currentUser.balance -= total;
+    const userStocks = currentUser.stocks ? [...currentUser.stocks] : [];
+    const existing   = userStocks.find(s => s.id === _pendingStockBuy);
+    if (existing) {
+        const total2 = existing.shares + qty;
+        existing.avgBuyPrice = Math.round((existing.avgBuyPrice * existing.shares + stock.price * qty) / total2);
+        existing.shares = total2;
+    } else {
+        userStocks.push({ id: _pendingStockBuy, shares: qty, avgBuyPrice: stock.price });
+    }
+    currentUser.stocks = userStocks;
+    await saveUserToFirebase(currentUser);
+    updateUserInfo();
+    document.getElementById('stockBuyModal').style.display = 'none';
+    _pendingStockBuy = null;
+    showNotification(`✅ Куплено ${qty} акций ${stock.id}!`, 'success');
+    checkAchievements();
+    renderStocksPage();
+}
+
+async function sellStock(stockId) {
+    if (!currentUser) return;
+    const stock = stocks.find(s => s.id === stockId);
+    if (!stock) return;
+    const userStocks = currentUser.stocks || [];
+    const holding    = userStocks.find(s => s.id === stockId);
+    if (!holding || holding.shares < 1) { showNotification('У вас нет этих акций', 'error'); return; }
+    const sellQtyStr = prompt(`Сколько акций ${stockId} продать? (у вас: ${holding.shares})`);
+    const sellQty    = parseInt(sellQtyStr || '0');
+    if (!sellQty || sellQty < 1 || sellQty > holding.shares) { showNotification('Неверное количество', 'error'); return; }
+    const revenue = sellQty * stock.price;
+    currentUser.balance += revenue;
+    holding.shares -= sellQty;
+    currentUser.stocks = holding.shares === 0 ? userStocks.filter(s => s.id !== stockId) : userStocks;
+    await saveUserToFirebase(currentUser);
+    updateUserInfo();
+    showNotification(`✅ Продано ${sellQty} акций ${stockId} за $${revenue.toLocaleString()}!`, 'success');
+    renderStocksPage();
+}
+
+function renderStocksPage() {
+    const listEl      = document.getElementById('stocksList');
+    const portfolioEl = document.getElementById('stocksPortfolio');
+    if (!listEl || !portfolioEl) return;
+    const userStocks = (currentUser && currentUser.stocks) || [];
+    if (stocks.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--light-blue);text-align:center;padding:20px;">Загрузка данных...</p>';
+        return;
+    }
+    listEl.innerHTML = stocks.map(s => {
+        const history   = s.priceHistory || [s.price];
+        const prevPrice = history.length >= 2 ? history[history.length-2] : s.price;
+        const change    = s.price - prevPrice;
+        const changePct = prevPrice ? ((change / prevPrice) * 100).toFixed(1) : '0.0';
+        const isUp      = change >= 0;
+        const holding   = userStocks.find(h => h.id === s.id);
+        const vals      = history.slice(-10);
+        const sparkH    = 30, sparkW = 80;
+        const sMin      = Math.min(...vals), sMax = Math.max(...vals);
+        const sRange    = sMax - sMin || 1;
+        const sparkPts  = vals.map((v,i) => {
+            const x = (i / (vals.length-1)) * sparkW;
+            const y = sparkH - ((v-sMin)/sRange)*sparkH;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+        return `
+        <div class="stock-row" style="justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:160px;">
+                <div style="font-size:1.5rem;">${s.emoji||'📈'}</div>
+                <div>
+                    <div class="stock-ticker">${s.id}</div>
+                    <div style="color:var(--light-blue);font-size:0.78rem;">${s.name}</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                ${vals.length>=2?`<svg width="${sparkW}" height="${sparkH}" viewBox="0 0 ${sparkW} ${sparkH}"><polyline points="${sparkPts}" fill="none" stroke="${isUp?'#2ecc71':'#e74c3c'}" stroke-width="1.5"/></svg>`:''}
+                <div style="text-align:right;">
+                    <div style="font-size:1rem;font-weight:bold;">$${s.price.toLocaleString()}</div>
+                    <div class="stock-change ${isUp?'up':'down'}" style="font-size:0.8rem;">${isUp?'+':''}${change.toLocaleString()} (${isUp?'+':''}${changePct}%)</div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                    <button onclick="buyStock('${s.id}')" style="padding:7px 12px;background:rgba(46,213,115,0.2);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;border-radius:7px;cursor:pointer;font-size:0.82rem;white-space:nowrap;">Купить</button>
+                    ${holding&&holding.shares>0?`<button onclick="sellStock('${s.id}')" style="padding:7px 12px;background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.4);color:#e74c3c;border-radius:7px;cursor:pointer;font-size:0.82rem;white-space:nowrap;">Продать</button>`:''}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+    if (userStocks.length === 0) {
+        portfolioEl.innerHTML = '<p style="color:var(--light-blue);text-align:center;padding:20px;background:rgba(255,255,255,0.03);border-radius:10px;">Ваш портфель пуст</p>';
+    } else {
+        let totalValue = 0;
+        portfolioEl.innerHTML = userStocks.map(h => {
+            const stock        = stocks.find(s => s.id === h.id);
+            const currentPrice = stock ? stock.price : h.avgBuyPrice;
+            const value        = h.shares * currentPrice;
+            const cost         = h.shares * h.avgBuyPrice;
+            const pnl          = value - cost;
+            totalValue += value;
+            return `
+            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div>
+                    <span style="font-weight:bold;color:var(--accent-blue);">${h.id}</span>
+                    <span style="color:var(--light-blue);margin-left:8px;font-size:0.85rem;">${h.shares} акций · cp $${currentPrice.toLocaleString()}</span>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:bold;">$${value.toLocaleString()}</div>
+                    <div style="font-size:0.8rem;color:${pnl>=0?'#2ecc71':'#e74c3c'};">${pnl>=0?'+':'−'}$${Math.abs(pnl).toLocaleString()}</div>
+                </div>
+            </div>`;
+        }).join('');
+        portfolioEl.innerHTML += `<div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.1);margin-top:4px;display:flex;justify-content:space-between;"><span style="color:var(--light-blue);">Всего</span><span style="font-weight:bold;color:#2ecc71;">$${totalValue.toLocaleString()}</span></div>`;
+    }
+}
+
+function renderAdminStocks() {
+    const list = document.getElementById('adminStocksList');
+    if (!list) return;
+    if (stocks.length === 0) {
+        list.innerHTML = '<p style="color:var(--light-blue);">Нет данных</p>';
+        return;
+    }
+    list.innerHTML = stocks.map(s => `
+        <div style="background:var(--card-bg);border-radius:10px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <span style="font-size:1.4rem;">${s.emoji||'📈'}</span>
+            <div style="flex:1;min-width:140px;">
+                <div style="font-weight:bold;color:var(--accent-blue);">${s.id}</div>
+                <div style="color:var(--light-blue);font-size:0.82rem;">${s.name}</div>
+                <div style="color:#2ecc71;font-size:0.88rem;margin-top:2px;">Текущая: $${s.price.toLocaleString()}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="number" id="stockNewPrice_${s.id}" value="${s.price}" min="1" style="width:120px;padding:8px 10px;">
+                <button onclick="adminUpdateStockPrice('${s.id}')" style="padding:8px 16px;background:rgba(46,213,115,0.2);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;border-radius:7px;cursor:pointer;">💾 Сохранить</button>
+            </div>
+        </div>`).join('');
+}
+
+async function adminUpdateStockPrice(stockId) {
+    if (!currentUser || !currentUser.isAdmin) return;
+    const input    = document.getElementById('stockNewPrice_' + stockId);
+    if (!input) return;
+    const newPrice = Math.round(parseFloat(input.value) || 0);
+    if (newPrice <= 0) { showNotification('Неверная цена', 'error'); return; }
+    try {
+        const stock   = stocks.find(s => s.id === stockId);
+        const history = stock ? [...(stock.priceHistory || [])] : [];
+        history.push(newPrice);
+        if (history.length > 52) history.splice(0, history.length - 52);
+        await firestore.collection('stocks').doc(stockId).update({
+            price:        newPrice,
+            priceHistory: history,
+            lastUpdated:  firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showNotification(`✅ ${stockId}: $${newPrice.toLocaleString()}`, 'success');
+    } catch(e) {
+        console.error(e);
+        showNotification('Ошибка обновления', 'error');
+    }
+}
+
+
 </script>
 
 <!-- ========== AVATAR PICKER MODAL ========== -->
+<!-- Theme FAB -->
+<button class="theme-fab" id="themeFab" onclick="toggleThemePicker()" title="Сменить тему">🎨</button>
+<div class="theme-picker-panel" id="themePickerPanel">
+    <div style="font-size:0.8rem;color:var(--light-blue);padding-bottom:4px;border-bottom:1px solid var(--card-border);margin-bottom:4px;">Тема оформления</div>
+    <button class="theme-option" onclick="applyTheme('default')">🔵 Синяя (по умолчанию)</button>
+    <button class="theme-option" onclick="applyTheme('red')">🔴 Красная</button>
+    <button class="theme-option" onclick="applyTheme('green')">🟢 Зелёная</button>
+    <button class="theme-option" onclick="applyTheme('purple')">🟣 Фиолетовая</button>
+    <button class="theme-option" onclick="applyTheme('dark')">⚫ Тёмная</button>
+</div>
+
 <div id="avatarPickerModal" class="avatar-picker-overlay" onclick="closeAvatarPicker(event)">
     <div class="avatar-picker-box" onclick="event.stopPropagation()">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
@@ -7872,7 +9708,20 @@ loadInvestments();
         </div>
         <div style="font-size:0.82rem;color:#6a8aaa;margin-bottom:4px;">Нажми на эмодзи чтобы выбрать его как аватарку</div>
         <div class="avatar-picker-grid" id="avatarPickerGrid"></div>
-        <div style="display:flex;gap:10px;margin-top:6px;">
+        <div class="avatar-photo-section">
+            <div style="font-size:0.85rem;color:var(--light-blue);margin-bottom:6px;text-align:center;">📷 Или загрузи своё фото</div>
+            <div id="avatarPhotoPreviewWrap" style="display:none;text-align:center;margin-bottom:8px;">
+                <img id="avatarPhotoPreviewImg" class="avatar-photo-preview" src="" alt="Фото аватара">
+                <div style="margin-top:6px;">
+                    <button class="btn btn-danger" onclick="resetPhotoAvatar()" style="padding:5px 12px;font-size:0.82rem;">✖ Удалить фото</button>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <label class="avatar-photo-label" for="avatarPhotoInput">📁 Выбрать фото</label>
+                <input type="file" id="avatarPhotoInput" accept="image/*" style="display:none;" onchange="handleAvatarPhotoUpload(event)">
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;">
             <button class="btn btn-danger" onclick="resetAvatar()" style="flex:1;padding:10px;">✖ Сбросить (инициалы)</button>
             <button class="btn btn-primary" onclick="closeAvatarPicker()" style="flex:1;padding:10px;">Закрыть</button>
         </div>
