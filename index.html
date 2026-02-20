@@ -2316,6 +2316,7 @@
                 <button class="admin-tab active" onclick="switchAdminTab('users')">Пользователи</button>
                 <button class="admin-tab" onclick="switchAdminTab('properties')">Управление недвижимостью</button>
                 <button class="admin-tab" onclick="switchAdminTab('cars')">Управление автомобилями</button>
+                <button class="admin-tab" onclick="switchAdminTab('usedCars')">🔧 Б/У авторынок</button>
                 <button class="admin-tab" onclick="switchAdminTab('stats')">Статистика</button>
                 <button class="admin-tab" onclick="switchAdminTab('actions')">Действия</button>
                 <button class="admin-tab" onclick="switchAdminTab('sync')">Синхронизация</button>
@@ -2546,6 +2547,120 @@
                 </div>
             </div>
             
+            <!-- Вкладка: Б/У авторынок -->
+            <div id="adminTabUsedCars" class="admin-section hidden">
+                <h2 style="color: var(--accent-blue); margin-bottom: 20px;">🔧 Управление б/у авторынком</h2>
+                <p style="color: var(--light-blue); margin-bottom: 20px;">Изменяйте цены, состояние, фотографии и описания подержанных автомобилей. Добавляйте новые лоты и удаляйте устаревшие.</p>
+
+                <div class="car-management">
+                    <div class="car-list">
+                        <h3 style="color: var(--accent-blue); margin-bottom: 15px;">Список б/у автомобилей</h3>
+                        <div id="adminUsedCarsList"></div>
+                        <button class="btn btn-primary" onclick="addNewUsedCar()" style="width: 100%; margin-top: 10px;">➕ Добавить лот</button>
+                    </div>
+
+                    <div class="car-form">
+                        <h3 style="color: var(--accent-blue); margin-bottom: 20px;" id="usedCarFormTitle">Выберите автомобиль</h3>
+
+                        <div class="image-upload" onclick="document.getElementById('usedCarImageUpload').click()">
+                            <input type="file" id="usedCarImageUpload" accept="image/*" onchange="previewUsedCarImage(event)">
+                            <div style="color: var(--light-blue); margin-bottom: 10px;">
+                                <div style="font-size: 3rem;">🚗</div>
+                                <div>Нажмите для загрузки фотографии</div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">Рекомендуемый размер: 800x600px</div>
+                            </div>
+                            <div class="image-preview" id="usedCarImagePreview"></div>
+                        </div>
+
+                        <div id="usedCarFormFields" class="hidden">
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Название</label>
+                                    <input type="text" id="editUsedCarTitle" placeholder="Название автомобиля">
+                                </div>
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Класс</label>
+                                    <select id="editUsedCarClass">
+                                        <option value="economy">Эконом</option>
+                                        <option value="comfort">Комфорт</option>
+                                        <option value="premium">Премиум</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Тип</label>
+                                    <select id="editUsedCarType">
+                                        <option value="sedan">Седан</option>
+                                        <option value="suv">Внедорожник</option>
+                                        <option value="sport">Спорткар</option>
+                                        <option value="luxury">Люкс</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Год выпуска</label>
+                                    <input type="text" id="editUsedCarYear" placeholder="Например: 2020">
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Состояние (%)</label>
+                                    <input type="number" id="editUsedCarDurability" min="10" max="99" placeholder="75">
+                                </div>
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Мощность</label>
+                                    <input type="text" id="editUsedCarPower" placeholder="Например: 150 л.с.">
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Цена новой ($)</label>
+                                    <input type="number" id="editUsedCarOriginalPrice" placeholder="Исходная цена">
+                                </div>
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Цена продажи ($)</label>
+                                    <input type="number" id="editUsedCarPrice" placeholder="Итоговая цена">
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Пробег</label>
+                                    <input type="text" id="editUsedCarMileage" placeholder="Например: 85,000 км">
+                                </div>
+                                <div>
+                                    <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Дефекты</label>
+                                    <input type="text" id="editUsedCarDefects" placeholder="Царапины, вмятины...">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style="color: var(--light-blue); display: block; margin-bottom: 8px;">Описание</label>
+                                <textarea id="editUsedCarDescription" rows="4" placeholder="Подробное описание..."></textarea>
+                            </div>
+
+                            <div style="margin-top: 8px;">
+                                <small style="color: var(--light-blue); opacity: 0.7;">💡 Цену продажи можно вычислить автоматически: Цена новой × (Состояние / 100)</small>
+                                <button class="btn" style="margin-top: 6px; background: var(--card-bg); color: var(--light-blue); border: 1px solid var(--border-color); font-size: 0.8rem; padding: 6px 12px;" onclick="autoCalcUsedCarPrice()">🔄 Авторасчёт цены</button>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn btn-success" onclick="saveUsedCarChanges()">Сохранить изменения</button>
+                                <button class="btn btn-danger" onclick="deleteUsedCar()">Удалить лот</button>
+                                <button class="btn btn-warning" onclick="resetUsedCarImage()">Удалить фото</button>
+                            </div>
+                        </div>
+
+                        <div id="usedCarFormEmpty" style="text-align: center; padding: 40px; color: var(--light-blue);">
+                            <p>Выберите автомобиль из списка слева для редактирования</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Вкладка: Статистика -->
             <div id="adminTabStats" class="admin-section hidden">
                 <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Системная информация</h2>
@@ -3075,6 +3190,7 @@
         // Для редактирования в админке
         let currentlyEditingPropertyId = null;
         let currentlyEditingCarId = null;
+        let currentlyEditingUsedCarId = null;
         let currentlyEditingInvestmentId = null;
         
         // Новые фичи: лента, темы
@@ -3126,11 +3242,11 @@
                 district: "poor",
                 title: "Комната в районе Чемберлен-Хиллз",
                 description: "Комната в общежитии для сотрудников. Минимальные удобства, но своя крыша над головой. 4 соседа, общий санузел.",
-                price: 25000,
+                price: 8500,
                 rooms: "1 комната",
                 size: "18 м²",
                 imageColor: "#8B4513",
-                rentalIncome: 100,
+                rentalIncome: 200,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3141,11 +3257,11 @@
                 district: "poor",
                 title: "Студия в промзоне",
                 description: "Маленькая студия с видом на заводские трубы. Своя мини-кухня и санузел. Требует косметического ремонта.",
-                price: 55000,
+                price: 24000,
                 rooms: "Студия",
                 size: "30 м²",
                 imageColor: "#A0522D",
-                rentalIncome: 200,
+                rentalIncome: 500,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3156,11 +3272,11 @@
                 district: "good",
                 title: "1-комнатная в Веспуччи",
                 description: "Современная квартира в спальном районе. Ремонт, парковка, рядом парк. Идеально для одного человека.",
-                price: 220000,
+                price: 85000,
                 rooms: "1 комната",
                 size: "60 м²",
                 imageColor: "#4682B4",
-                rentalIncome: 450,
+                rentalIncome: 1500,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3171,11 +3287,11 @@
                 district: "good",
                 title: "2-комнатная в Пиллбокс Хилл",
                 description: "Просторная квартира для семьи. Детская площадка во дворе, консьерж, подземный паркинг.",
-                price: 380000,
+                price: 160000,
                 rooms: "2 комнаты",
                 size: "85 м²",
                 imageColor: "#5F9EA0",
-                rentalIncome: 700,
+                rentalIncome: 2700,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3186,11 +3302,11 @@
                 district: "poor",
                 title: "Домик в Дэвисе",
                 description: "Небольшой дом с участком. Требует вложений в ремонт, но есть потенциал. Свой гараж.",
-                price: 180000,
+                price: 62000,
                 rooms: "2 спальни",
                 size: "80 м²",
                 imageColor: "#CD853F",
-                rentalIncome: 400,
+                rentalIncome: 1200,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3201,11 +3317,11 @@
                 district: "good",
                 title: "Дом в Миррор Парк",
                 description: "Классический семейный дом в тихом районе. Гараж на 2 авто, задний двор, зелёный газон.",
-                price: 650000,
+                price: 280000,
                 rooms: "3 спальни",
                 size: "120 м²",
                 imageColor: "#20B2AA",
-                rentalIncome: 1200,
+                rentalIncome: 4500,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3216,11 +3332,11 @@
                 district: "elite",
                 title: "Лофт в Рокфорд Хиллз",
                 description: "Элитные апартаменты с панорамными окнами. Высокие потолки, дизайнерский ремонт, умный дом.",
-                price: 1200000,
+                price: 600000,
                 rooms: "Лофт",
                 size: "120 м²",
                 imageColor: "#9370DB",
-                rentalIncome: 2500,
+                rentalIncome: 8800,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3231,11 +3347,11 @@
                 district: "elite",
                 title: "Особняк в Вайнвуд Хиллз",
                 description: "Роскошный особняк на закрытой территории. Бассейн, домашний кинотеатр, гараж на 4 авто.",
-                price: 4200000,
+                price: 2300000,
                 rooms: "5 спален",
                 size: "400 м²",
                 imageColor: "#DA70D6",
-                rentalIncome: 5000,
+                rentalIncome: 29000,
                 photos: [],
                 hasCustomImage: false,
                 cellId: null
@@ -3250,7 +3366,7 @@
                 type: "sedan",
                 title: "Toyota Corolla 2022",
                 description: "Надёжный и экономичный автомобиль для городской эксплуатации. Низкий расход топлива, комфортный салон.",
-                price: 25000,
+                price: 15000,
                 year: "2022",
                 power: "150 л.с.",
                 imageColor: "#3498db",
@@ -3264,7 +3380,7 @@
                 type: "suv",
                 title: "Hyundai Creta 2023",
                 description: "Компактный кроссовер с хорошей проходимостью. Современный дизайн, богатая комплектация.",
-                price: 30000,
+                price: 21000,
                 year: "2023",
                 power: "123 л.с.",
                 imageColor: "#2980b9",
@@ -3278,7 +3394,7 @@
                 type: "sedan",
                 title: "BMW 3 Series 2021",
                 description: "Немецкий бизнес-седан с отличной динамикой и комфортом. Премиальная отделка салона.",
-                price: 55000,
+                price: 58000,
                 year: "2021",
                 power: "184 л.с.",
                 imageColor: "#9b59b6",
@@ -3292,7 +3408,7 @@
                 type: "suv",
                 title: "Mercedes-Benz GLC 2022",
                 description: "Престижный кроссовер с высоким уровнем комфорта и безопасности. Полный привод, современные технологии.",
-                price: 75000,
+                price: 82000,
                 year: "2022",
                 power: "197 л.с.",
                 imageColor: "#8e44ad",
@@ -3306,7 +3422,7 @@
                 type: "sport",
                 title: "Porsche 911 Carrera 2023",
                 description: "Легендарный спорткар с задним расположением двигателя. Идеальная управляемость и потрясающая динамика.",
-                price: 180000,
+                price: 195000,
                 year: "2023",
                 power: "385 л.с.",
                 imageColor: "#e74c3c",
@@ -3319,8 +3435,8 @@
                 class: "premium",
                 type: "luxury",
                 title: "Mercedes-Benz S-Class 2023",
-                description: "Флагманский седан с максимальным уровнем комфорта и технологий. Массаджные кресла, система ароматизации.",
-                price: 250000,
+                description: "Флагманский седан с максимальным уровнем комфорта и технологий. Массажные кресла, система ароматизации.",
+                price: 285000,
                 year: "2023",
                 power: "435 л.с.",
                 imageColor: "#c0392b",
@@ -3334,7 +3450,7 @@
                 type: "suv",
                 title: "Range Rover Autobiography 2023",
                 description: "Роскошный внедорожник высшего класса. Пневмоподвеска, кожаные сиденья, всевозможные опции.",
-                price: 320000,
+                price: 380000,
                 year: "2023",
                 power: "400 л.с.",
                 imageColor: "#d35400",
@@ -3352,9 +3468,9 @@
                 type: "sedan",
                 title: "Toyota Corolla 2019",
                 description: "Надёжный седан с пробегом. Регулярное ТО, не битый, красивый серебристый цвет. Идеальный первый автомобиль.",
-                originalPrice: 22000,
+                originalPrice: 12000,
                 durability: 75,
-                price: 16500, // 22000 * 0.75
+                price: 9000,
                 year: "2019",
                 power: "132 л.с.",
                 imageColor: "#7f8c8d",
@@ -3371,9 +3487,9 @@
                 type: "suv",
                 title: "Hyundai Tucson 2018",
                 description: "Кроссовер в отличном состоянии для своего возраста. Полный привод, климат-контроль, кожаный салон.",
-                originalPrice: 28000,
+                originalPrice: 16000,
                 durability: 68,
-                price: 19040,
+                price: 10900,
                 year: "2018",
                 power: "150 л.с.",
                 imageColor: "#34495e",
@@ -3390,9 +3506,9 @@
                 type: "sedan",
                 title: "BMW 320i 2017",
                 description: "Немецкий премиум седан с богатой историей обслуживания. Спортивный пакет, кожаный салон, навигация.",
-                originalPrice: 45000,
+                originalPrice: 46000,
                 durability: 62,
-                price: 27900,
+                price: 28500,
                 year: "2017",
                 power: "184 л.с.",
                 imageColor: "#2c3e50",
@@ -3409,9 +3525,9 @@
                 type: "suv",
                 title: "Mercedes-Benz GLA 2019",
                 description: "Стильный компактный кроссовер от Mercedes. Панорамная крыша, премиум аудиосистема, камера заднего вида.",
-                originalPrice: 52000,
+                originalPrice: 64000,
                 durability: 72,
-                price: 37440,
+                price: 46000,
                 year: "2019",
                 power: "163 л.с.",
                 imageColor: "#2c3e50",
@@ -3428,9 +3544,9 @@
                 type: "sport",
                 title: "Porsche Cayman 2016",
                 description: "Легендарный спорткар с задним расположением двигателя. Сервисная история, не участвовал в гонках.",
-                originalPrice: 85000,
+                originalPrice: 155000,
                 durability: 58,
-                price: 49300,
+                price: 89900,
                 year: "2016",
                 power: "275 л.с.",
                 imageColor: "#c0392b",
@@ -3447,9 +3563,9 @@
                 type: "luxury",
                 title: "Audi A8 2018",
                 description: "Флагманский седан с максимальным комфортом. Массажные кресла, ночной визор, система динамического управления.",
-                originalPrice: 95000,
+                originalPrice: 225000,
                 durability: 65,
-                price: 61750,
+                price: 146000,
                 year: "2018",
                 power: "286 л.с.",
                 imageColor: "#95a5a6",
@@ -3466,9 +3582,9 @@
                 type: "sedan",
                 title: "Honda Civic 2020",
                 description: "Современный хетчбек с минимальным пробегом. Экономичный двигатель, мультимедиа система Apple CarPlay.",
-                originalPrice: 24000,
+                originalPrice: 14000,
                 durability: 80,
-                price: 19200,
+                price: 11200,
                 year: "2020",
                 power: "158 л.с.",
                 imageColor: "#3498db",
@@ -3485,9 +3601,9 @@
                 type: "suv",
                 title: "Volvo XC60 2019",
                 description: "Шведский внедорожник с акцентом на безопасность. Система автоторможения, адаптивный круиз-контроль.",
-                originalPrice: 58000,
+                originalPrice: 68000,
                 durability: 70,
-                price: 40600,
+                price: 47600,
                 year: "2019",
                 power: "250 л.с.",
                 imageColor: "#1a5276",
@@ -3504,9 +3620,9 @@
                 type: "sport",
                 title: "Nissan GT-R 2015",
                 description: "Легендарный Godzilla с феноменальной динамикой. Полный привод, керамические тормоза, спортивная подвеска.",
-                originalPrice: 120000,
+                originalPrice: 155000,
                 durability: 45,
-                price: 54000,
+                price: 69800,
                 year: "2015",
                 power: "545 л.с.",
                 imageColor: "#2c3e50",
@@ -3523,9 +3639,9 @@
                 type: "luxury",
                 title: "Lexus LS 2017",
                 description: "Роскошный японский седан с плавным ходом. Система шумоподавления, кресла с подогревом и вентиляцией.",
-                originalPrice: 90000,
+                originalPrice: 195000,
                 durability: 78,
-                price: 70200,
+                price: 152000,
                 year: "2017",
                 power: "415 л.с.",
                 imageColor: "#5d6d7e",
@@ -4823,6 +4939,7 @@
             document.getElementById('adminTabUsers').classList.add('hidden');
             document.getElementById('adminTabProperties').classList.add('hidden');
             document.getElementById('adminTabCars').classList.add('hidden');
+            document.getElementById('adminTabUsedCars').classList.add('hidden');
             document.getElementById('adminTabStats').classList.add('hidden');
             document.getElementById('adminTabActions').classList.add('hidden');
             document.getElementById('adminTabSync').classList.add('hidden');
@@ -4855,6 +4972,9 @@
                     break;
                 case 'investments':
                     renderInvestmentsManagement();
+                    break;
+                case 'usedCars':
+                    renderUsedCarsManagement();
                     break;
                 case 'tickets':
                     renderAdminTickets();
@@ -6204,8 +6324,182 @@
             selectCarForEditing(newCar.id);
         }
 
+        // ==================== УПРАВЛЕНИЕ Б/У АВТОРЫНКОМ (ADMIN) ====================
+
+        function renderUsedCarsManagement() {
+            const container = document.getElementById('adminUsedCarsList');
+            container.innerHTML = '';
+            usedCars.forEach(car => {
+                const item = document.createElement('div');
+                item.className = 'car-list-item';
+                item.innerHTML = `<span>${car.title}</span><span style="font-size:0.8rem;color:var(--light-blue);margin-left:8px;">${car.durability}% · $${car.price.toLocaleString()}</span>`;
+                item.onclick = () => selectUsedCarForEditing(car.id);
+                container.appendChild(item);
+            });
+        }
+
+        function selectUsedCarForEditing(carId) {
+            const car = usedCars.find(c => c.id === carId);
+            if (!car) return;
+
+            document.querySelectorAll('#adminUsedCarsList .car-list-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.car-list-item').classList.add('active');
+
+            document.getElementById('editUsedCarTitle').value       = car.title        || '';
+            document.getElementById('editUsedCarClass').value        = car.class        || 'economy';
+            document.getElementById('editUsedCarType').value         = car.type         || 'sedan';
+            document.getElementById('editUsedCarYear').value         = car.year         || '';
+            document.getElementById('editUsedCarPower').value        = car.power        || '';
+            document.getElementById('editUsedCarDurability').value   = car.durability   || 75;
+            document.getElementById('editUsedCarOriginalPrice').value = car.originalPrice || 0;
+            document.getElementById('editUsedCarPrice').value        = car.price        || 0;
+            document.getElementById('editUsedCarMileage').value      = car.mileage      || '';
+            document.getElementById('editUsedCarDefects').value      = car.defects      || '';
+            document.getElementById('editUsedCarDescription').value  = car.description  || '';
+
+            const preview = document.getElementById('usedCarImagePreview');
+            preview.innerHTML = (car.photos && car.photos.length > 0)
+                ? `<img src="${car.photos[0]}">`
+                : '<div style="color:var(--light-blue);">Фотографий нет</div>';
+
+            document.getElementById('usedCarFormFields').classList.remove('hidden');
+            document.getElementById('usedCarFormEmpty').classList.add('hidden');
+            document.getElementById('usedCarFormTitle').textContent = `Редактирование: ${car.title}`;
+            currentlyEditingUsedCarId = carId;
+        }
+
+        function autoCalcUsedCarPrice() {
+            const orig = parseInt(document.getElementById('editUsedCarOriginalPrice').value) || 0;
+            const dur  = parseInt(document.getElementById('editUsedCarDurability').value)    || 75;
+            document.getElementById('editUsedCarPrice').value = Math.round(orig * dur / 100);
+        }
+
+        async function saveUsedCarChanges() {
+            if (!currentlyEditingUsedCarId) {
+                showNotification('Сначала выберите автомобиль', 'error');
+                return;
+            }
+            const idx = usedCars.findIndex(c => c.id === currentlyEditingUsedCarId);
+            if (idx === -1) return;
+
+            usedCars[idx].title         = document.getElementById('editUsedCarTitle').value;
+            usedCars[idx].class         = document.getElementById('editUsedCarClass').value;
+            usedCars[idx].type          = document.getElementById('editUsedCarType').value;
+            usedCars[idx].year          = document.getElementById('editUsedCarYear').value;
+            usedCars[idx].power         = document.getElementById('editUsedCarPower').value;
+            usedCars[idx].durability    = parseInt(document.getElementById('editUsedCarDurability').value) || 75;
+            usedCars[idx].originalPrice = parseInt(document.getElementById('editUsedCarOriginalPrice').value) || 0;
+            usedCars[idx].price         = parseInt(document.getElementById('editUsedCarPrice').value) || 0;
+            usedCars[idx].mileage       = document.getElementById('editUsedCarMileage').value;
+            usedCars[idx].defects       = document.getElementById('editUsedCarDefects').value;
+            usedCars[idx].description   = document.getElementById('editUsedCarDescription').value;
+
+            saveLocalData();
+            if (syncMode === 'online' && firestore) await saveUsedCarsToFirebase();
+
+            showNotification('Изменения сохранены', 'success');
+            renderUsedCarsManagement();
+            if (!document.getElementById('usedCarsPage').classList.contains('hidden')) renderUsedCars();
+        }
+
+        async function deleteUsedCar() {
+            if (!currentlyEditingUsedCarId) {
+                showNotification('Сначала выберите автомобиль', 'error');
+                return;
+            }
+            if (!confirm('Удалить этот лот с авторынка?')) return;
+
+            if (syncMode === 'online' && firestore) {
+                try {
+                    await firestore.collection('usedCars').doc(currentlyEditingUsedCarId).delete();
+                } catch (e) { console.error(e); }
+            }
+            usedCars = usedCars.filter(c => c.id !== currentlyEditingUsedCarId);
+            saveLocalData();
+
+            document.getElementById('usedCarFormFields').classList.add('hidden');
+            document.getElementById('usedCarFormEmpty').classList.remove('hidden');
+            document.getElementById('usedCarFormTitle').textContent = 'Выберите автомобиль';
+            currentlyEditingUsedCarId = null;
+
+            showNotification('Лот удалён', 'warning');
+            renderUsedCarsManagement();
+            if (!document.getElementById('usedCarsPage').classList.contains('hidden')) renderUsedCars();
+        }
+
+        function previewUsedCarImage(event) {
+            const preview = document.getElementById('usedCarImagePreview');
+            preview.innerHTML = '';
+            if (!event.target.files || !event.target.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                preview.appendChild(img);
+                if (currentlyEditingUsedCarId) {
+                    const idx = usedCars.findIndex(c => c.id === currentlyEditingUsedCarId);
+                    if (idx !== -1) {
+                        usedCars[idx].photos = [e.target.result];
+                        usedCars[idx].hasCustomImage = true;
+                        saveLocalData();
+                        if (syncMode === 'online' && firestore) saveUsedCarsToFirebase();
+                        showNotification('Фотография загружена', 'success');
+                    }
+                }
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function resetUsedCarImage() {
+            if (!currentlyEditingUsedCarId) {
+                showNotification('Сначала выберите автомобиль', 'error');
+                return;
+            }
+            const idx = usedCars.findIndex(c => c.id === currentlyEditingUsedCarId);
+            if (idx === -1) return;
+            usedCars[idx].photos = [];
+            usedCars[idx].hasCustomImage = false;
+            document.getElementById('usedCarImagePreview').innerHTML = '<div style="color:var(--light-blue);">Фотографий нет</div>';
+            saveLocalData();
+            if (syncMode === 'online' && firestore) saveUsedCarsToFirebase();
+            showNotification('Фотография удалена', 'warning');
+        }
+
+        function addNewUsedCar() {
+            const newCar = {
+                id: "used_" + Date.now().toString(),
+                class: "economy",
+                type: "sedan",
+                title: "Новый б/у автомобиль",
+                description: "Описание автомобиля",
+                originalPrice: 20000,
+                durability: 75,
+                price: 15000,
+                year: "2020",
+                power: "150 л.с.",
+                imageColor: "#f39c12",
+                photos: [],
+                hasCustomImage: false,
+                isUsed: true,
+                mileage: "50,000 км",
+                defects: "Нет",
+                cellId: null
+            };
+            usedCars.push(newCar);
+            saveLocalData();
+            if (syncMode === 'online' && firestore) saveUsedCarsToFirebase();
+            showNotification('Новый лот добавлен', 'success');
+            renderUsedCarsManagement();
+            // Автовыбор нового лота
+            const items = document.querySelectorAll('#adminUsedCarsList .car-list-item');
+            if (items.length) {
+                const last = items[items.length - 1];
+                last.click();
+            }
+        }
+
         // ==================== СИСТЕМА АВТОМОБИЛЕЙ ====================
-        
+
         function renderCars(filteredCars = cars) {
             const container = document.getElementById('carsContainer');
             container.innerHTML = '';
@@ -6855,7 +7149,7 @@
 
         function setBetAllIn() {
             if (!currentUser) return;
-            const allIn = Math.min(10000, Math.floor(currentUser.balance));
+            const allIn = Math.min(25000, Math.floor(currentUser.balance));
             setBet(allIn);
             showNotification(`🎲 Ва-банк! Ставка: $${allIn.toLocaleString()}`, 'warning');
         }
@@ -6869,7 +7163,7 @@
             
             // Обновляем текущую ставку
             const customBetInput = document.getElementById('customBet');
-            const maxBet = Math.min(10000, Math.floor(currentUser.balance));
+            const maxBet = Math.min(25000, Math.floor(currentUser.balance));
             if (parseInt(customBetInput.value) > maxBet) {
                 customBetInput.value = maxBet;
             }
@@ -6886,7 +7180,7 @@
         function setBet(amount) {
             if (!currentUser) return;
             
-            const maxBet = Math.min(10000, Math.floor(currentUser.balance));
+            const maxBet = Math.min(25000, Math.floor(currentUser.balance));
             
             if (amount < 10) {
                 amount = 10;
@@ -6912,7 +7206,7 @@
                 return;
             }
             
-            const maxBet = Math.min(10000, Math.floor(currentUser.balance));
+            const maxBet = Math.min(25000, Math.floor(currentUser.balance));
             if (currentBet > maxBet) {
                 showNotification(`Максимальная ставка: $${maxBet}`, 'error');
                 currentBet = maxBet;
@@ -8286,16 +8580,16 @@
         // ===================== INVEST MODULE =====================
 
 let investments = [
-    { id: "inv1",  name: "Tech фонд",         icon: "💻", price: 1000, basePrice: 1000, income: 25 },
-    { id: "inv2",  name: "Нефть",              icon: "🛢️", price: 500,  basePrice: 500,  income: 12 },
-    { id: "inv3",  name: "Крипто индекс",      icon: "₿",  price: 200,  basePrice: 200,  income: 6  },
-    { id: "inv4",  name: "Золото",             icon: "🥇", price: 750,  basePrice: 750,  income: 15 },
-    { id: "inv5",  name: "Фармацевтика",       icon: "💊", price: 600,  basePrice: 600,  income: 14 },
-    { id: "inv6",  name: "Авиация",            icon: "✈️", price: 400,  basePrice: 400,  income: 9  },
-    { id: "inv7",  name: "Банковский сектор",  icon: "🏦", price: 850,  basePrice: 850,  income: 18 },
-    { id: "inv8",  name: "Оружейный концерн",  icon: "🔫", price: 1200, basePrice: 1200, income: 28 },
-    { id: "inv9",  name: "Медиа-холдинг",      icon: "📺", price: 300,  basePrice: 300,  income: 7  },
-    { id: "inv10", name: "Недвижимость REIT",  icon: "🏗️", price: 950,  basePrice: 950,  income: 22 }
+    { id: "inv1",  name: "Tech фонд",         icon: "💻", price: 1500, basePrice: 1500, income: 38 },
+    { id: "inv2",  name: "Нефть",              icon: "🛢️", price: 1000, basePrice: 1000, income: 22 },
+    { id: "inv3",  name: "Крипто индекс",      icon: "₿",  price: 600,  basePrice: 600,  income: 18 },
+    { id: "inv4",  name: "Золото",             icon: "🥇", price: 2000, basePrice: 2000, income: 30 },
+    { id: "inv5",  name: "Фармацевтика",       icon: "💊", price: 900,  basePrice: 900,  income: 22 },
+    { id: "inv6",  name: "Авиация",            icon: "✈️", price: 700,  basePrice: 700,  income: 16 },
+    { id: "inv7",  name: "Банковский сектор",  icon: "🏦", price: 2500, basePrice: 2500, income: 48 },
+    { id: "inv8",  name: "Оружейный концерн",  icon: "🔫", price: 4000, basePrice: 4000, income: 90 },
+    { id: "inv9",  name: "Медиа-холдинг",      icon: "📺", price: 500,  basePrice: 500,  income: 14 },
+    { id: "inv10", name: "Недвижимость REIT",  icon: "🏗️", price: 3500, basePrice: 3500, income: 72 }
 ];
 
 let investmentHistory = {};
