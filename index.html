@@ -1771,7 +1771,6 @@
             <button class="nav-btn" onclick="showPage('invest')">📈 Инвестиции</button>
             <button class="btn btn-primary" onclick="showPage('leaderboard')" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.4);color:#ffd700;">🏆 Рейтинг</button>
             <span class="nav-btn-wrap"><button class="btn btn-primary" onclick="showPage('feed')" style="background:rgba(255,165,0,0.15);border:1px solid rgba(255,165,0,0.4);color:#ffa500;">📰 Лента</button></span>
-            <button class="btn btn-primary" onclick="showPage('stocks')" style="background:rgba(46,213,115,0.15);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;">📊 Биржа</button>
             <button class="btn btn-primary" onclick="showPage('report')" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.5);color:#3498db;">📋 Отчёт</button>
             <button class="btn btn-primary" onclick="showPage('profile')" style="background:rgba(74,144,226,0.25);border:1px solid var(--accent-blue);">👤 Профиль</button>
             <button class="btn btn-danger" onclick="logout()">Выйти</button>
@@ -2044,12 +2043,6 @@
                     Испытайте удачу! Сделайте ставку и крутите слоты. Если выпадут три одинаковых символа - вы выиграете джекпот!
                 </p>
                 
-                <div class="casino-tabs">
-                    <button class="casino-tab-btn active" data-tab="slots" onclick="switchCasinoTab('slots')">🎰 Слоты</button>
-                    <button class="casino-tab-btn" data-tab="roulette" onclick="switchCasinoTab('roulette')">🎲 Рулетка</button>
-                </div>
-
-                <div id="slotsSection">
                 <div class="card">
                     <div class="casino-stats">
                         <div class="casino-stat">
@@ -2116,30 +2109,6 @@
                 <div style="color: var(--light-blue); font-size: 0.9rem; text-align: center; margin-top: 20px;">
                     <p>⚠️ Играйте ответственно. Чем выше ставка, тем меньше шанс на выигрыш!</p>
                     <p>Минимальная ставка: $10, максимальная: $10,000.</p>
-                </div>
-                </div><!-- /slotsSection -->
-
-                <!-- Рулетка -->
-                <div id="rouletteSection" style="display:none;">
-                    <div class="card" style="margin-bottom:20px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
-                            <div>
-                                <div style="color:var(--light-blue);font-size:0.85rem;">Ваш баланс</div>
-                                <div style="font-size:1.6rem;font-weight:bold;color:var(--success);" id="rouletteBalance">$0</div>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <label style="color:var(--light-blue);font-size:0.9rem;">Ставка:</label>
-                                <input type="number" id="customBetRoulette" class="bet-input" value="100" min="10" max="10000" oninput="document.getElementById('customBet').value=this.value;currentBet=parseInt(this.value)||100;" style="width:100px;">
-                            </div>
-                        </div>
-                        <div style="display:flex;justify-content:center;margin-bottom:20px;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Roulette_small.PNG/220px-Roulette_small.PNG"
-                                 id="rouletteWheel"
-                                 alt="Roulette" class="roulette-wheel"
-                                 style="width:140px;height:140px;border-radius:50%;border:4px solid #ffd700;object-fit:cover;transition:transform 3s cubic-bezier(0.17,0.67,0.12,0.99);">
-                        </div>
-                        <div id="rouletteBoard"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -2335,19 +2304,6 @@
         </div>
     </div>
 
-    <!-- ===== БИРЖА АКЦИЙ ===== -->
-    <div id="stocksPage" class="page hidden">
-        <div style="padding:20px;max-width:860px;margin:0 auto;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
-                <h1 style="color:#2ecc71;">📊 Биржа акций</h1>
-                <button class="btn btn-primary" onclick="renderStocksPage()" style="background:rgba(46,213,115,0.15);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;">🔄 Обновить</button>
-            </div>
-            <div id="stocksList" style="margin-bottom:28px;"></div>
-            <h3 style="color:var(--accent-blue);margin-bottom:12px;">💼 Мой портфель</h3>
-            <div id="stocksPortfolio"></div>
-        </div>
-    </div>
-
         <!-- Админ-панель -->
         <div id="adminPage" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -2366,7 +2322,6 @@
                 <button class="admin-tab" onclick="switchAdminTab('cells')">Управление ячейками</button>
                 <button class="admin-tab" onclick="switchAdminTab('investments')">📈 Инвестиции</button>
                 <button class="admin-tab" onclick="switchAdminTab('tickets')">📋 Тикеты</button>
-                <button class="admin-tab" onclick="switchAdminTab('stocksAdmin')">📊 Биржа</button>
             </div>
             
             <!-- Вкладка: Пользователи -->
@@ -2778,13 +2733,6 @@
         <div id="adminTicketsList"></div>
     </div>
 
-    <!-- Вкладка биржи (админ) -->
-    <div id="adminTabStocksAdmin" class="admin-section hidden">
-        <h2 style="color:var(--accent-blue);margin-bottom:20px;">📊 Управление биржей</h2>
-        <p style="color:var(--light-blue);margin-bottom:16px;font-size:0.9rem;">Устанавливай цены акций вручную. Изменения видны всем игрокам в реальном времени.</p>
-        <div id="adminStocksList"></div>
-    </div>
-
     <!-- Модал тикета (обработка) -->
     <div class="modal" id="ticketModal">
         <div class="modal-content modal-extra-wide" style="max-width:860px;">
@@ -2851,23 +2799,6 @@
         <div class="modal-content modal-wide">
             <button class="close-modal" onclick="document.getElementById('playerProfileModal').style.display='none'">&times;</button>
             <div id="playerProfileContent"></div>
-        </div>
-    </div>
-
-    <!-- Модал покупки акций -->
-    <div class="modal" id="stockBuyModal">
-        <div class="modal-content" style="max-width:380px;">
-            <button class="close-modal" onclick="document.getElementById('stockBuyModal').style.display='none'">&times;</button>
-            <h3 id="stockBuyTitle" style="color:var(--accent-blue);margin-bottom:16px;"></h3>
-            <div style="margin-bottom:12px;">
-                <label style="color:var(--light-blue);display:block;margin-bottom:6px;">Количество акций</label>
-                <input type="number" id="stockBuyQty" min="1" value="1" style="width:100%;" oninput="updateStockBuyCost()">
-            </div>
-            <div id="stockBuyCostPreview" style="margin-bottom:16px;color:var(--light-blue);font-size:0.9rem;"></div>
-            <div style="display:flex;gap:10px;">
-                <button class="btn btn-primary" onclick="confirmStockBuy()" style="flex:1;">Купить</button>
-                <button class="btn btn-danger" onclick="document.getElementById('stockBuyModal').style.display='none'" style="padding:10px 18px;">Отмена</button>
-            </div>
         </div>
     </div>
 
@@ -3171,22 +3102,6 @@
             { id:'investor',      icon:'📊', name:'Инвестор',           desc:'Купить первую инвестицию' },
             { id:'rich_kid',      icon:'👑', name:'Богач',              desc:'Достичь капитала $5 000 000' },
             { id:'reporter',      icon:'📋', name:'Служака',            desc:'Подать первый рабочий отчёт' },
-        ];
-
-        // Рулетка
-        let rouletteBets = {}; // { type_value: amount }
-        let rouletteSpinning = false;
-        let rouletteRotation = 0;
-
-        // Биржа акций
-        let stocks = [];
-        let stocksUnsubscribe = null;
-        const STOCK_DEFS = [
-            { id:'BLRE', name:'BlueLine Realty',    emoji:'🏠' },
-            { id:'LUXE', name:'Luxe Motors Corp',   emoji:'🚗' },
-            { id:'DRIV', name:'DriveMax Auto',      emoji:'🏎️' },
-            { id:'CASP', name:'Casino & Spa Inc',   emoji:'🎰' },
-            { id:'SAFE', name:'SafeVault Bank',     emoji:'🏦' },
         ];
 
         // Ключи для LocalStorage (резервное копирование)
@@ -3930,8 +3845,6 @@
             // Тикеты
             setupTicketsListener();
             if (currentUser && currentUser.isAdmin) setupAdminTicketsListener();
-            // Биржа акций
-            setupStocksListener();
         }
 
         async function saveUserToFirebase(user) {
@@ -3964,8 +3877,7 @@
                     isHiddenAdmin: Boolean(user.isHiddenAdmin),
                     registrationDate: user.registrationDate || new Date().toISOString(),
                     achievements:    Array.isArray(user.achievements)    ? user.achievements    : [],
-                    netWorthHistory: Array.isArray(user.netWorthHistory) ? user.netWorthHistory : [],
-                    stocks:          Array.isArray(user.stocks)          ? user.stocks          : []
+                    netWorthHistory: Array.isArray(user.netWorthHistory) ? user.netWorthHistory : []
                 };
                 
                 await firestore.collection('users').doc(userId).set(userToSave, { merge: true });
@@ -4917,7 +4829,6 @@
             document.getElementById('adminTabCells').classList.add('hidden');
             document.getElementById('adminTabInvestments').classList.add('hidden');
             document.getElementById('adminTabTickets').classList.add('hidden');
-            document.getElementById('adminTabStocksAdmin').classList.add('hidden');
 
             document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
 
@@ -4948,9 +4859,6 @@
                 case 'tickets':
                     renderAdminTickets();
                     break;
-                case 'stocksAdmin':
-                    renderAdminStocks();
-                    break;
             }
         }
 
@@ -4970,7 +4878,6 @@
             document.getElementById('leaderboardPage').classList.add('hidden');
             document.getElementById('feedPage').classList.add('hidden');
             document.getElementById('reportPage').classList.add('hidden');
-            document.getElementById('stocksPage').classList.add('hidden');
             document.getElementById('navbar').classList.add('hidden');
             document.getElementById('themeFab').style.display = 'none';
         }
@@ -5001,7 +4908,7 @@
             }
             
             // Hide all pages
-            ['main','cars','usedCars','myProperties','myCars','casino','admin','invest','profile','leaderboard','feed','report','stocks'].forEach(p => {
+            ['main','cars','usedCars','myProperties','myCars','casino','admin','invest','profile','leaderboard','feed','report'].forEach(p => {
                 const el = document.getElementById(p + 'Page');
                 if (el) {
                     el.classList.add('hidden');
@@ -5051,9 +4958,6 @@
                     break;
                 case 'report':
                     renderMyTickets();
-                    break;
-                case 'stocks':
-                    renderStocksPage();
                     break;
             }
         }
@@ -8914,9 +8818,13 @@ function setupTicketsListener() {
     if (ticketsUnsubscribe) ticketsUnsubscribe();
     ticketsUnsubscribe = firestore.collection('tickets')
         .where('playerId', '==', currentUser.id)
-        .orderBy('submittedAt', 'desc')
         .onSnapshot(snap => {
-            tickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            tickets = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                .sort((a, b) => {
+                    const ta = a.submittedAt && a.submittedAt.seconds ? a.submittedAt.seconds : 0;
+                    const tb = b.submittedAt && b.submittedAt.seconds ? b.submittedAt.seconds : 0;
+                    return tb - ta;
+                });
             const hasPending = tickets.some(t => t.status === 'pending');
             const warn = document.getElementById('reportPendingWarn');
             if (warn) warn.style.display = hasPending ? 'block' : 'none';
@@ -8981,9 +8889,13 @@ function setupAdminTicketsListener() {
     if (!firestore) return;
     if (adminTicketsUnsubscribe) adminTicketsUnsubscribe();
     adminTicketsUnsubscribe = firestore.collection('tickets')
-        .orderBy('submittedAt', 'desc')
         .onSnapshot(snap => {
-            adminTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            adminTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                .sort((a, b) => {
+                    const ta = a.submittedAt && a.submittedAt.seconds ? a.submittedAt.seconds : 0;
+                    const tb = b.submittedAt && b.submittedAt.seconds ? b.submittedAt.seconds : 0;
+                    return tb - ta;
+                });
             if (!document.getElementById('adminTabTickets').classList.contains('hidden')) renderAdminTickets();
         }, err => console.error('Admin tickets listener:', err));
 }
@@ -9232,130 +9144,6 @@ function renderAchievements() {
         </div>`).join('');
 }
 
-// ===================== РУЛЕТКА =====================
-
-const ROULETTE_RED = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
-
-function switchCasinoTab(tab) {
-    const slotsEl    = document.getElementById('slotsSection');
-    const rouletteEl = document.getElementById('rouletteSection');
-    if (!slotsEl || !rouletteEl) return;
-    if (tab === 'slots') {
-        slotsEl.style.display    = '';
-        rouletteEl.style.display = 'none';
-    } else {
-        slotsEl.style.display    = 'none';
-        rouletteEl.style.display = '';
-        const rb = document.getElementById('rouletteBalance');
-        if (rb) rb.textContent = '$' + (currentUser ? currentUser.balance.toLocaleString() : '0');
-        renderRouletteBoard();
-    }
-    document.querySelectorAll('.casino-tab-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.tab === tab);
-    });
-}
-
-function placeRouletteBet(type, value) {
-    rouletteBets[type + '_' + value] = { type, value };
-    renderRouletteBoard();
-}
-
-function clearRouletteBets() {
-    rouletteBets = {};
-    renderRouletteBoard();
-}
-
-function renderRouletteBoard() {
-    const board = document.getElementById('rouletteBoard');
-    if (!board) return;
-    const betCount = Object.keys(rouletteBets).length;
-    const betBtns = [
-        { t:'color',  v:'red',   label:'🔴 Красное',  bg:'#c0392b' },
-        { t:'color',  v:'black', label:'⚫ Чёрное',   bg:'#2c3e50' },
-        { t:'parity', v:'odd',   label:'Нечётное',    bg:'rgba(255,255,255,0.1)' },
-        { t:'parity', v:'even',  label:'Чётное',      bg:'rgba(255,255,255,0.1)' },
-        { t:'dozen',  v:'1',     label:'1–12',         bg:'rgba(255,255,255,0.1)' },
-        { t:'dozen',  v:'2',     label:'13–24',        bg:'rgba(255,255,255,0.1)' },
-        { t:'dozen',  v:'3',     label:'25–36',        bg:'rgba(255,255,255,0.1)' }
-    ];
-    board.innerHTML = `
-        <div style="margin-bottom:12px;color:var(--light-blue);font-size:0.88rem;">Ставок: <strong style="color:${betCount?'#2ecc71':'var(--light-blue)'};">${betCount}</strong> · Ставка: <strong>$${currentBet.toLocaleString()}</strong></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-            ${betBtns.map(b=>`
-                <button onclick="placeRouletteBet('${b.t}','${b.v}')"
-                    style="padding:9px 14px;border-radius:8px;border:${rouletteBets[b.t+'_'+b.v]?'2px solid #ffd700':'1px solid rgba(255,255,255,0.15)'};cursor:pointer;font-size:0.85rem;font-weight:bold;color:white;background:${b.bg};">
-                    ${b.label}
-                </button>`).join('')}
-        </div>
-        <div style="display:grid;grid-template-columns:auto repeat(12,1fr);gap:3px;max-width:480px;margin-bottom:16px;">
-            <button onclick="placeRouletteBet('number','0')"
-                style="grid-row:span 3;background:#27ae60;border:${rouletteBets['number_0']?'2px solid #ffd700':'1px solid rgba(255,255,255,0.2)'};color:white;border-radius:4px;padding:8px 6px;cursor:pointer;font-weight:bold;font-size:0.9rem;writing-mode:vertical-rl;">0</button>
-            ${Array.from({length:36},(_,i)=>{
-                const n=i+1, isRed=ROULETTE_RED.includes(n), isActive=rouletteBets['number_'+n];
-                return `<button onclick="placeRouletteBet('number','${n}')"
-                    style="background:${isRed?'#c0392b':'#2c3e50'};border:${isActive?'2px solid #ffd700':'1px solid rgba(255,255,255,0.15)'};color:white;border-radius:4px;padding:6px 0;cursor:pointer;font-size:0.78rem;font-weight:bold;">${n}</button>`;
-            }).join('')}
-        </div>
-        <div style="display:flex;gap:10px;">
-            <button onclick="spinRoulette()" style="flex:1;padding:14px;background:linear-gradient(135deg,#e74c3c,#9b59b6);border:none;color:white;border-radius:10px;font-size:1.1rem;font-weight:bold;cursor:pointer;">🎲 КРУТИТЬ!</button>
-            <button onclick="clearRouletteBets()" style="padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--light-blue);border-radius:10px;cursor:pointer;">Очистить</button>
-        </div>
-        <div id="rouletteResult" style="margin-top:16px;text-align:center;min-height:30px;font-size:1.05rem;"></div>`;
-}
-
-async function spinRoulette() {
-    if (rouletteSpinning) return;
-    if (!currentUser) return;
-    if (Object.keys(rouletteBets).length === 0) { showNotification('Сделайте ставку!', 'warning'); return; }
-    const bet = currentBet;
-    if (currentUser.balance < bet) { showNotification('Недостаточно средств!', 'error'); return; }
-    rouletteSpinning = true;
-    const wheel = document.getElementById('rouletteWheel');
-    if (wheel) { rouletteRotation += 1440 + Math.random()*360; wheel.style.transform = `rotate(${rouletteRotation}deg)`; }
-    await new Promise(r => setTimeout(r, 3200));
-    const result = Math.floor(Math.random() * 37);
-    const isRed  = ROULETTE_RED.includes(result);
-    const isOdd  = result > 0 && result % 2 !== 0;
-    let totalWin = 0;
-    for (const key of Object.keys(rouletteBets)) {
-        const b = rouletteBets[key];
-        let won = false, mult = 0;
-        if      (b.type==='color'  && b.value==='red'   && isRed && result!==0) { won=true; mult=1; }
-        else if (b.type==='color'  && b.value==='black' && !isRed && result!==0) { won=true; mult=1; }
-        else if (b.type==='parity' && result!==0) {
-            if (b.value==='odd'  && isOdd)  { won=true; mult=1; }
-            if (b.value==='even' && !isOdd) { won=true; mult=1; }
-        }
-        else if (b.type==='dozen'  && result!==0 && Math.ceil(result/12)===parseInt(b.value)) { won=true; mult=2; }
-        else if (b.type==='number' && result===parseInt(b.value)) { won=true; mult=35; }
-        if (won) totalWin += bet * (mult + 1);
-    }
-    currentUser.balance -= bet;
-    if (totalWin > 0) currentUser.balance += totalWin;
-    window._lastCasinoWin = Math.max(0, totalWin - bet);
-    await saveUserToFirebase(currentUser);
-    updateUserInfo();
-    updateCasinoUI();
-    const rb = document.getElementById('rouletteBalance');
-    if (rb) rb.textContent = '$' + currentUser.balance.toLocaleString();
-    const profit = totalWin - bet;
-    const resultEl = document.getElementById('rouletteResult');
-    if (resultEl) {
-        const color = result===0 ? '#27ae60' : isRed ? '#e74c3c' : '#2c3e50';
-        resultEl.innerHTML = `
-            <span style="display:inline-block;width:38px;height:38px;border-radius:50%;background:${color};border:2px solid white;line-height:38px;font-weight:bold;margin-right:8px;vertical-align:middle;">${result}</span>
-            ${profit > 0
-                ? `<span style="color:#2ecc71;">🎉 Выигрыш: +$${profit.toLocaleString()}</span>`
-                : profit < 0
-                    ? `<span style="color:#e74c3c;">😔 Проигрыш: -$${bet.toLocaleString()}</span>`
-                    : `<span style="color:#ffc107;">Нет выигрыша</span>`}`;
-    }
-    checkAchievements();
-    rouletteSpinning = false;
-    rouletteBets = {};
-    renderRouletteBoard();
-}
-
 // ===================== ПРОСМОТР ПРОФИЛЯ ИГРОКА =====================
 
 async function openPlayerProfile(userId) {
@@ -9464,226 +9252,6 @@ function renderCapitalChart() {
         </svg>`;
 }
 
-// ===================== БИРЖА АКЦИЙ =====================
-
-function setupStocksListener() {
-    if (!firestore) return;
-    if (stocksUnsubscribe) stocksUnsubscribe();
-    stocksUnsubscribe = firestore.collection('stocks').onSnapshot(snap => {
-        stocks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        if (!document.getElementById('stocksPage').classList.contains('hidden')) renderStocksPage();
-        if (currentUser && currentUser.isAdmin && !document.getElementById('adminTabStocksAdmin').classList.contains('hidden')) renderAdminStocks();
-    }, err => console.error('Stocks listener:', err));
-    initStocksIfNeeded();
-}
-
-async function initStocksIfNeeded() {
-    if (!firestore) return;
-    try {
-        const snap = await firestore.collection('stocks').get();
-        if (snap.empty) {
-            const defaults = { BLRE: 120, LUXE: 250, DRIV: 85, CASP: 430, SAFE: 200 };
-            for (const def of STOCK_DEFS) {
-                await firestore.collection('stocks').doc(def.id).set({
-                    id: def.id, name: def.name, emoji: def.emoji,
-                    price: defaults[def.id] || 100,
-                    priceHistory: [defaults[def.id] || 100],
-                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-        }
-    } catch(e) { console.error('Init stocks:', e); }
-}
-
-let _pendingStockBuy = null;
-
-function buyStock(stockId) {
-    const stock = stocks.find(s => s.id === stockId);
-    if (!stock) return;
-    _pendingStockBuy = stockId;
-    document.getElementById('stockBuyTitle').textContent = `${stock.emoji} Купить акции ${stock.id}`;
-    document.getElementById('stockBuyQty').value = 1;
-    updateStockBuyCost();
-    document.getElementById('stockBuyModal').style.display = 'flex';
-}
-
-function updateStockBuyCost() {
-    if (!_pendingStockBuy) return;
-    const stock = stocks.find(s => s.id === _pendingStockBuy);
-    if (!stock) return;
-    const qty   = parseInt(document.getElementById('stockBuyQty').value) || 1;
-    const total = qty * stock.price;
-    document.getElementById('stockBuyCostPreview').innerHTML = `
-        $${stock.price.toLocaleString()} × ${qty} = <strong style="color:#2ecc71;">$${total.toLocaleString()}</strong>
-        <br><span style="font-size:0.82rem;color:var(--light-blue);">Ваш баланс: $${(currentUser&&currentUser.balance||0).toLocaleString()}</span>`;
-}
-
-async function confirmStockBuy() {
-    if (!currentUser || !_pendingStockBuy) return;
-    const stock = stocks.find(s => s.id === _pendingStockBuy);
-    if (!stock) return;
-    const qty   = parseInt(document.getElementById('stockBuyQty').value) || 1;
-    if (qty < 1) { showNotification('Неверное количество', 'error'); return; }
-    const total = qty * stock.price;
-    if (currentUser.balance < total) { showNotification('Недостаточно средств', 'error'); return; }
-    currentUser.balance -= total;
-    const userStocks = currentUser.stocks ? [...currentUser.stocks] : [];
-    const existing   = userStocks.find(s => s.id === _pendingStockBuy);
-    if (existing) {
-        const total2 = existing.shares + qty;
-        existing.avgBuyPrice = Math.round((existing.avgBuyPrice * existing.shares + stock.price * qty) / total2);
-        existing.shares = total2;
-    } else {
-        userStocks.push({ id: _pendingStockBuy, shares: qty, avgBuyPrice: stock.price });
-    }
-    currentUser.stocks = userStocks;
-    await saveUserToFirebase(currentUser);
-    updateUserInfo();
-    document.getElementById('stockBuyModal').style.display = 'none';
-    _pendingStockBuy = null;
-    showNotification(`✅ Куплено ${qty} акций ${stock.id}!`, 'success');
-    checkAchievements();
-    renderStocksPage();
-}
-
-async function sellStock(stockId) {
-    if (!currentUser) return;
-    const stock = stocks.find(s => s.id === stockId);
-    if (!stock) return;
-    const userStocks = currentUser.stocks || [];
-    const holding    = userStocks.find(s => s.id === stockId);
-    if (!holding || holding.shares < 1) { showNotification('У вас нет этих акций', 'error'); return; }
-    const sellQtyStr = prompt(`Сколько акций ${stockId} продать? (у вас: ${holding.shares})`);
-    const sellQty    = parseInt(sellQtyStr || '0');
-    if (!sellQty || sellQty < 1 || sellQty > holding.shares) { showNotification('Неверное количество', 'error'); return; }
-    const revenue = sellQty * stock.price;
-    currentUser.balance += revenue;
-    holding.shares -= sellQty;
-    currentUser.stocks = holding.shares === 0 ? userStocks.filter(s => s.id !== stockId) : userStocks;
-    await saveUserToFirebase(currentUser);
-    updateUserInfo();
-    showNotification(`✅ Продано ${sellQty} акций ${stockId} за $${revenue.toLocaleString()}!`, 'success');
-    renderStocksPage();
-}
-
-function renderStocksPage() {
-    const listEl      = document.getElementById('stocksList');
-    const portfolioEl = document.getElementById('stocksPortfolio');
-    if (!listEl || !portfolioEl) return;
-    const userStocks = (currentUser && currentUser.stocks) || [];
-    if (stocks.length === 0) {
-        listEl.innerHTML = '<p style="color:var(--light-blue);text-align:center;padding:20px;">Загрузка данных...</p>';
-        return;
-    }
-    listEl.innerHTML = stocks.map(s => {
-        const history   = s.priceHistory || [s.price];
-        const prevPrice = history.length >= 2 ? history[history.length-2] : s.price;
-        const change    = s.price - prevPrice;
-        const changePct = prevPrice ? ((change / prevPrice) * 100).toFixed(1) : '0.0';
-        const isUp      = change >= 0;
-        const holding   = userStocks.find(h => h.id === s.id);
-        const vals      = history.slice(-10);
-        const sparkH    = 30, sparkW = 80;
-        const sMin      = Math.min(...vals), sMax = Math.max(...vals);
-        const sRange    = sMax - sMin || 1;
-        const sparkPts  = vals.map((v,i) => {
-            const x = (i / (vals.length-1)) * sparkW;
-            const y = sparkH - ((v-sMin)/sRange)*sparkH;
-            return `${x.toFixed(1)},${y.toFixed(1)}`;
-        }).join(' ');
-        return `
-        <div class="stock-row" style="justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
-            <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:160px;">
-                <div style="font-size:1.5rem;">${s.emoji||'📈'}</div>
-                <div>
-                    <div class="stock-ticker">${s.id}</div>
-                    <div style="color:var(--light-blue);font-size:0.78rem;">${s.name}</div>
-                </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-                ${vals.length>=2?`<svg width="${sparkW}" height="${sparkH}" viewBox="0 0 ${sparkW} ${sparkH}"><polyline points="${sparkPts}" fill="none" stroke="${isUp?'#2ecc71':'#e74c3c'}" stroke-width="1.5"/></svg>`:''}
-                <div style="text-align:right;">
-                    <div style="font-size:1rem;font-weight:bold;">$${s.price.toLocaleString()}</div>
-                    <div class="stock-change ${isUp?'up':'down'}" style="font-size:0.8rem;">${isUp?'+':''}${change.toLocaleString()} (${isUp?'+':''}${changePct}%)</div>
-                </div>
-                <div style="display:flex;gap:6px;">
-                    <button onclick="buyStock('${s.id}')" style="padding:7px 12px;background:rgba(46,213,115,0.2);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;border-radius:7px;cursor:pointer;font-size:0.82rem;white-space:nowrap;">Купить</button>
-                    ${holding&&holding.shares>0?`<button onclick="sellStock('${s.id}')" style="padding:7px 12px;background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.4);color:#e74c3c;border-radius:7px;cursor:pointer;font-size:0.82rem;white-space:nowrap;">Продать</button>`:''}
-                </div>
-            </div>
-        </div>`;
-    }).join('');
-    if (userStocks.length === 0) {
-        portfolioEl.innerHTML = '<p style="color:var(--light-blue);text-align:center;padding:20px;background:rgba(255,255,255,0.03);border-radius:10px;">Ваш портфель пуст</p>';
-    } else {
-        let totalValue = 0;
-        portfolioEl.innerHTML = userStocks.map(h => {
-            const stock        = stocks.find(s => s.id === h.id);
-            const currentPrice = stock ? stock.price : h.avgBuyPrice;
-            const value        = h.shares * currentPrice;
-            const cost         = h.shares * h.avgBuyPrice;
-            const pnl          = value - cost;
-            totalValue += value;
-            return `
-            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                <div>
-                    <span style="font-weight:bold;color:var(--accent-blue);">${h.id}</span>
-                    <span style="color:var(--light-blue);margin-left:8px;font-size:0.85rem;">${h.shares} акций · cp $${currentPrice.toLocaleString()}</span>
-                </div>
-                <div style="text-align:right;">
-                    <div style="font-weight:bold;">$${value.toLocaleString()}</div>
-                    <div style="font-size:0.8rem;color:${pnl>=0?'#2ecc71':'#e74c3c'};">${pnl>=0?'+':'−'}$${Math.abs(pnl).toLocaleString()}</div>
-                </div>
-            </div>`;
-        }).join('');
-        portfolioEl.innerHTML += `<div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.1);margin-top:4px;display:flex;justify-content:space-between;"><span style="color:var(--light-blue);">Всего</span><span style="font-weight:bold;color:#2ecc71;">$${totalValue.toLocaleString()}</span></div>`;
-    }
-}
-
-function renderAdminStocks() {
-    const list = document.getElementById('adminStocksList');
-    if (!list) return;
-    if (stocks.length === 0) {
-        list.innerHTML = '<p style="color:var(--light-blue);">Нет данных</p>';
-        return;
-    }
-    list.innerHTML = stocks.map(s => `
-        <div style="background:var(--card-bg);border-radius:10px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-            <span style="font-size:1.4rem;">${s.emoji||'📈'}</span>
-            <div style="flex:1;min-width:140px;">
-                <div style="font-weight:bold;color:var(--accent-blue);">${s.id}</div>
-                <div style="color:var(--light-blue);font-size:0.82rem;">${s.name}</div>
-                <div style="color:#2ecc71;font-size:0.88rem;margin-top:2px;">Текущая: $${s.price.toLocaleString()}</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-                <input type="number" id="stockNewPrice_${s.id}" value="${s.price}" min="1" style="width:120px;padding:8px 10px;">
-                <button onclick="adminUpdateStockPrice('${s.id}')" style="padding:8px 16px;background:rgba(46,213,115,0.2);border:1px solid rgba(46,213,115,0.4);color:#2ecc71;border-radius:7px;cursor:pointer;">💾 Сохранить</button>
-            </div>
-        </div>`).join('');
-}
-
-async function adminUpdateStockPrice(stockId) {
-    if (!currentUser || !currentUser.isAdmin) return;
-    const input    = document.getElementById('stockNewPrice_' + stockId);
-    if (!input) return;
-    const newPrice = Math.round(parseFloat(input.value) || 0);
-    if (newPrice <= 0) { showNotification('Неверная цена', 'error'); return; }
-    try {
-        const stock   = stocks.find(s => s.id === stockId);
-        const history = stock ? [...(stock.priceHistory || [])] : [];
-        history.push(newPrice);
-        if (history.length > 52) history.splice(0, history.length - 52);
-        await firestore.collection('stocks').doc(stockId).update({
-            price:        newPrice,
-            priceHistory: history,
-            lastUpdated:  firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showNotification(`✅ ${stockId}: $${newPrice.toLocaleString()}`, 'success');
-    } catch(e) {
-        console.error(e);
-        showNotification('Ошибка обновления', 'error');
-    }
-}
 
 
 </script>
